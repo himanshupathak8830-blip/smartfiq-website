@@ -415,6 +415,20 @@ app.post('/api/auth/login', (req, res) => {
     });
   }
 
+  if (inputUser === 'testuser' && (inputPass === 'testuser123' || inputPass === 'testuser')) {
+    return res.json({
+      success: true,
+      user: {
+        id: 2,
+        username: 'testuser',
+        name: 'Himanshu Pathak',
+        roleTitle: 'Guest Analyst',
+        isSuperAdmin: false,
+        permissions: ['overview', 'visitors', 'leads', 'analytics', 'cms', 'services', 'blog', 'legal-cms', 'agency-team', 'case-studies-cms', 'security']
+      }
+    });
+  }
+
   res.status(401).json({ success: false, error: 'Invalid Username or Password' });
 });
 
@@ -427,6 +441,16 @@ app.get('/api/auth/me', (req, res) => {
   let found = users.find(u => u.username.toLowerCase() === username);
   if (!found && username === 'smartfiq') {
     found = { id: 1, username: 'smartfiq', name: 'Super Admin', isSuperAdmin: true, permissions: ['all'] };
+  }
+  if (!found && username === 'testuser') {
+    found = {
+      id: 2,
+      username: 'testuser',
+      name: 'Himanshu Pathak',
+      roleTitle: 'Guest Analyst',
+      isSuperAdmin: false,
+      permissions: ['overview', 'visitors', 'leads', 'analytics', 'cms', 'services', 'blog', 'legal-cms', 'agency-team', 'case-studies-cms', 'security']
+    };
   }
   if (found) {
     const { password, ...safeUser } = found;

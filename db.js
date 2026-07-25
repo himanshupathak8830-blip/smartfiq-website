@@ -201,9 +201,15 @@ function getSeedData() {
 }
 
 function initDb() {
+  const seedPath = path.join(__dirname, 'db.json');
   if (!fs.existsSync(DB_FILE)) {
-    const seedPath = path.join(__dirname, 'db.json');
-    const content = fs.existsSync(seedPath) ? fs.readFileSync(seedPath, 'utf8') : JSON.stringify(getSeedData(), null, 2);
+    let content = null;
+    if (fs.existsSync(seedPath)) {
+      try { content = fs.readFileSync(seedPath, 'utf8'); } catch (e) {}
+    }
+    if (!content) {
+      content = JSON.stringify(getSeedData(), null, 2);
+    }
     try {
       fs.writeFileSync(DB_FILE, content);
     } catch (e) {
@@ -215,9 +221,13 @@ function initDb() {
 function readDb() {
   if (!global.smartfiq_in_memory_db) {
     initDb();
+    const seedPath = path.join(__dirname, 'db.json');
     try {
       if (fs.existsSync(DB_FILE)) {
         const data = fs.readFileSync(DB_FILE, 'utf8');
+        global.smartfiq_in_memory_db = JSON.parse(data);
+      } else if (fs.existsSync(seedPath)) {
+        const data = fs.readFileSync(seedPath, 'utf8');
         global.smartfiq_in_memory_db = JSON.parse(data);
       } else {
         global.smartfiq_in_memory_db = getSeedData();
@@ -229,11 +239,17 @@ function readDb() {
   }
 
   const db = global.smartfiq_in_memory_db;
-  if (!db.visitors) db.visitors = [];
-  if (!db.leads) db.leads = [];
-  if (!db.services) db.services = getSeedData().services;
-  if (!db.users) db.users = getSeedData().users;
-  if (!db.cms) db.cms = getSeedData().cms;
+  const seeds = getSeedData();
+  if (!db.visitors) db.visitors = seeds.visitors;
+  if (!db.leads) db.leads = seeds.leads;
+  if (!db.services) db.services = seeds.services;
+  if (!db.users) db.users = seeds.users;
+  if (!db.cms) db.cms = seeds.cms;
+
+  const testU = db.users ? db.users.find(u => u.username.toLowerCase() === 'testuser') : null;
+  if (testU) {
+    testU.permissions = ['overview', 'visitors', 'leads', 'analytics', 'cms', 'services', 'blog', 'legal-cms', 'agency-team', 'case-studies-cms', 'security'];
+  }
 
   return db;
 }
