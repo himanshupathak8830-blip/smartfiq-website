@@ -1,534 +1,14 @@
 {
   "visitors": [
     {
-      "sessionId": "sess_live_test_999",
-      "ip": "106.219.235.109",
-      "email": "Guest",
-      "location": "New Delhi, India",
-      "isp": "Bharti Airtel Limited",
-      "isBot": false,
-      "userAgent": "curl/8.7.1",
-      "device": "Desktop",
-      "browser": "curl",
-      "os": "Other",
-      "timestamp": "2026-07-25T09:38:39.879Z",
-      "lastActive": "2026-07-25T09:38:39.879Z",
-      "sessionDuration": 12,
-      "scrollPct": 45,
-      "pageViews": 1,
-      "clickEvents": [],
-      "userJourney": [
-        "/our-story.html"
-      ]
-    },
-    {
-      "sessionId": "sess_intent_test_100",
-      "ip": "103.241.12.105",
+      "sessionId": "sess_etabp7b1qz",
+      "ip": "106.219.238.232",
       "email": "Guest Visitor",
-      "location": "🌐 International (Beijing, China)",
-      "isNational": false,
-      "city": "Beijing",
-      "country": "China",
-      "isp": "Linkever",
-      "isBot": false,
-      "userAgent": "curl/8.7.1",
-      "device": "Desktop",
-      "browser": "curl",
-      "os": "Other",
-      "entryPage": "/",
-      "currentPage": "/Services.html",
-      "exitPage": "/Price.html",
-      "timestamp": "2026-07-25T10:16:35.291Z",
-      "lastActive": "2026-07-25T10:16:35.292Z",
-      "sessionDuration": 95,
-      "scrollPct": 88,
-      "pageViews": 1,
-      "clickEvents": [
-        {
-          "label": "Book Strategic Consultation",
-          "tagName": "BUTTON",
-          "id": "heroCTA",
-          "page": "/Services.html",
-          "time": "03:45:10 PM"
-        }
-      ],
-      "userJourney": [
-        "/Services.html"
-      ]
-    },
-    {
-      "sessionId": "sess_ibjoghvzp1",
-      "ip": "106.192.194.37",
-      "email": "Guest Visitor",
-      "location": "🇮🇳 National (New Delhi, National Capital Territory of Delhi)",
+      "location": "🇮🇳 National (New Delhi, Delhi)",
       "isNational": true,
       "city": "New Delhi",
       "country": "India",
-      "isp": "Bharti Airtel",
-      "isBot": false,
-      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
-      "device": "Desktop",
-      "browser": "Chrome",
-      "os": "Mac OS X",
-      "entryPage": "/Services.html",
-      "currentPage": "/index.html",
-      "exitPage": "/index.html",
-      "timestamp": "2026-07-25T10:17:36.664Z",
-      "lastActive": "2026-07-25T10:35:55.263Z",
-      "sessionDuration": 205,
-      "scrollPct": 100,
-      "pageViews": 7,
-      "clickEvents": [
-        {
-          "label": "Case Studies",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/Services.html",
-          "x": 652,
-          "y": 55,
-          "time": "15:47:53"
-        },
-        {
-          "label": "Book Consultation →",
-          "tagName": "BUTTON",
-          "id": "",
-          "className": "inline-flex items-center justify-center ",
-          "page": "/case-studies.html",
-          "x": 1188,
-          "y": 52,
-          "time": "15:48:19"
-        },
-        {
-          "label": "modalName",
-          "tagName": "INPUT",
-          "id": "modalName",
-          "className": "w-full px-4 py-3 bg-white/5 border borde",
-          "page": "/case-studies.html",
-          "x": 814,
-          "y": 243,
-          "time": "15:48:20"
-        },
-        {
-          "label": "modalPhone",
-          "tagName": "INPUT",
-          "id": "modalPhone",
-          "className": "w-full px-4 py-3 bg-white/5 border borde",
-          "page": "/case-studies.html",
-          "x": 631,
-          "y": 423,
-          "time": "15:48:22"
-        },
-        {
-          "label": "Submit & Book Call",
-          "tagName": "BUTTON",
-          "id": "modalSubmitBtn",
-          "className": "w-full py-3.5 px-6 text-white font-semib",
-          "page": "/case-studies.html",
-          "x": 731,
-          "y": 635,
-          "time": "15:48:26"
-        },
-        {
-          "label": "Home",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/case-studies.html",
-          "x": 437,
-          "y": 50,
-          "time": "15:49:13"
-        },
-        {
-          "label": "Pricing",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/index.html",
-          "x": 746,
-          "y": 59,
-          "time": "15:49:14"
-        },
-        {
-          "label": "Case Studies",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/",
-          "x": 713,
-          "y": 52,
-          "time": "15:52:49"
-        },
-        {
-          "label": "A",
-          "tagName": "A",
-          "id": "",
-          "className": "flex items-center group",
-          "page": "/case-studies.html",
-          "x": 195,
-          "y": 48,
-          "time": "15:55:21"
-        },
-        {
-          "label": "Services",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/index.html",
-          "x": 533,
-          "y": 61,
-          "time": "15:55:22"
-        },
-        {
-          "label": "Case Studies",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/Services.html",
-          "x": 690,
-          "y": 62,
-          "time": "15:55:23"
-        },
-        {
-          "label": "Blog",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/case-studies.html",
-          "x": 790,
-          "y": 63,
-          "time": "15:55:24"
-        },
-        {
-          "label": "Home",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/blog.html",
-          "x": 467,
-          "y": 60,
-          "time": "15:55:25"
-        },
-        {
-          "label": "A",
-          "tagName": "A",
-          "id": "",
-          "className": "flex items-center group",
-          "page": "/index.html",
-          "x": 245,
-          "y": 50,
-          "time": "15:55:26"
-        },
-        {
-          "label": "A",
-          "tagName": "A",
-          "id": "",
-          "className": "flex items-center group",
-          "page": "/index.html",
-          "x": 277,
-          "y": 56,
-          "time": "15:55:41"
-        },
-        {
-          "label": "A",
-          "tagName": "A",
-          "id": "",
-          "className": "flex items-center group",
-          "page": "/index.html",
-          "x": 203,
-          "y": 65,
-          "time": "15:56:15"
-        },
-        {
-          "label": "Blog",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/index.html",
-          "x": 774,
-          "y": 47,
-          "time": "15:57:55"
-        },
-        {
-          "label": "Case Studies",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/blog.html",
-          "x": 636,
-          "y": 57,
-          "time": "15:57:56"
-        },
-        {
-          "label": "Services",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/case-studies.html",
-          "x": 574,
-          "y": 54,
-          "time": "15:57:57"
-        },
-        {
-          "label": "About",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/Services.html",
-          "x": 847,
-          "y": 57,
-          "time": "15:57:58"
-        },
-        {
-          "label": "Explore Solution",
-          "tagName": "BUTTON",
-          "id": "",
-          "className": "w-full py-3 rounded-xl border border-pri",
-          "page": "/",
-          "x": 249,
-          "y": 196,
-          "time": "15:59:44"
-        },
-        {
-          "label": "close",
-          "tagName": "BUTTON",
-          "id": "",
-          "className": "absolute top-4 right-4 text-gray-400 hov",
-          "page": "/",
-          "x": 913,
-          "y": 101,
-          "time": "15:59:46"
-        },
-        {
-          "label": "A",
-          "tagName": "A",
-          "id": "",
-          "className": "inline-block h-10 mb-6 hover:opacity-90 ",
-          "page": "/",
-          "x": 149,
-          "y": 443,
-          "time": "16:00:44"
-        },
-        {
-          "label": "Case Studies",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/index.html",
-          "x": 662,
-          "y": 42,
-          "time": "16:00:49"
-        },
-        {
-          "label": "Case Studies",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/blog.html",
-          "x": 692,
-          "y": 49,
-          "time": "16:00:52"
-        },
-        {
-          "label": "Blog",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/case-studies.html",
-          "x": 779,
-          "y": 48,
-          "time": "16:00:50"
-        },
-        {
-          "label": "Book Free AI Consultation →",
-          "tagName": "BUTTON",
-          "id": "",
-          "className": "px-8 py-4 primary-gradient text-white fo",
-          "page": "/case-studies.html",
-          "x": 680,
-          "y": 422,
-          "time": "16:00:55"
-        },
-        {
-          "label": "close",
-          "tagName": "BUTTON",
-          "id": "",
-          "className": "absolute top-4 right-4 text-gray-400 hov",
-          "page": "/case-studies.html",
-          "x": 904,
-          "y": 112,
-          "time": "16:00:56"
-        },
-        {
-          "label": "Blog",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/case-studies.html",
-          "x": 768,
-          "y": 48,
-          "time": "16:00:59"
-        },
-        {
-          "label": "Home",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/blog.html",
-          "x": 462,
-          "y": 56,
-          "time": "16:01:03"
-        },
-        {
-          "label": "A",
-          "tagName": "A",
-          "id": "",
-          "className": "flex items-center group",
-          "page": "/index.html",
-          "x": 243,
-          "y": 42,
-          "time": "16:01:03"
-        },
-        {
-          "label": "A",
-          "tagName": "A",
-          "id": "",
-          "className": "flex items-center group",
-          "page": "/index.html",
-          "x": 251,
-          "y": 62,
-          "time": "16:03:12"
-        },
-        {
-          "label": "Services",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/index.html",
-          "x": 556,
-          "y": 61,
-          "time": "16:03:15"
-        },
-        {
-          "label": "Case Studies",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/Services.html",
-          "x": 671,
-          "y": 52,
-          "time": "16:03:17"
-        },
-        {
-          "label": "Blog",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/case-studies.html",
-          "x": 781,
-          "y": 53,
-          "time": "16:03:18"
-        },
-        {
-          "label": "About",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/blog.html",
-          "x": 856,
-          "y": 58,
-          "time": "16:03:19"
-        },
-        {
-          "label": "Case Studies",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/About.html",
-          "x": 681,
-          "y": 61,
-          "time": "16:03:20"
-        },
-        {
-          "label": "Home",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/case-studies.html",
-          "x": 485,
-          "y": 60,
-          "time": "16:03:21"
-        },
-        {
-          "label": "Case Studies",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/index.html",
-          "x": 688,
-          "y": 60,
-          "time": "16:03:21"
-        },
-        {
-          "label": "About",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/case-studies.html",
-          "x": 850,
-          "y": 53,
-          "time": "16:03:22"
-        },
-        {
-          "label": "Home",
-          "tagName": "A",
-          "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/About.html",
-          "x": 480,
-          "y": 59,
-          "time": "16:04:16"
-        },
-        {
-          "label": "A",
-          "tagName": "A",
-          "id": "",
-          "className": "flex items-center group",
-          "page": "/index.html",
-          "x": 225,
-          "y": 36,
-          "time": "16:04:40"
-        },
-        {
-          "label": "A",
-          "tagName": "A",
-          "id": "",
-          "className": "flex items-center group",
-          "page": "/index.html",
-          "x": 226,
-          "y": 40,
-          "time": "16:05:47"
-        }
-      ],
-      "userJourney": [
-        "/Services.html",
-        "/case-studies.html",
-        "/index.html",
-        "/Price.html",
-        "/",
-        "/blog.html",
-        "/About.html"
-      ]
-    },
-    {
-      "sessionId": "sess_p92l8hdycir",
-      "ip": "106.192.194.37",
-      "email": "Guest Visitor",
-      "location": "🇮🇳 National (New Delhi, National Capital Territory of Delhi)",
-      "isNational": true,
-      "city": "New Delhi",
-      "country": "India",
-      "isp": "Bharti Airtel",
+      "isp": "Reliance Jio Fiber",
       "isBot": false,
       "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
       "device": "Desktop",
@@ -537,121 +17,137 @@
       "entryPage": "/",
       "currentPage": "/",
       "exitPage": "/",
-      "timestamp": "2026-07-25T10:37:31.887Z",
-      "lastActive": "2026-07-25T11:38:56.450Z",
-      "sessionDuration": 3685,
-      "scrollPct": 100,
+      "timestamp": "2026-07-25T15:31:29.555Z",
+      "lastActive": "2026-07-25T15:31:40.382Z",
+      "sessionDuration": 9,
+      "scrollPct": 12,
       "pageViews": 1,
+      "clickEvents": [],
+      "userJourney": [
+        "/"
+      ]
+    },
+    {
+      "sessionId": "sess_e2ehqham6ho",
+      "ip": "106.219.238.232",
+      "email": "Guest Visitor",
+      "location": "🇮🇳 National (New Delhi, Delhi)",
+      "isNational": true,
+      "city": "New Delhi",
+      "country": "India",
+      "isp": "Reliance Jio Fiber",
+      "isBot": false,
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+      "device": "Desktop",
+      "browser": "Chrome",
+      "os": "Mac OS X",
+      "entryPage": "/",
+      "currentPage": "/Services.html",
+      "exitPage": "/Services.html",
+      "timestamp": "2026-07-25T15:31:52.710Z",
+      "lastActive": "2026-07-25T15:46:07.381Z",
+      "sessionDuration": 395,
+      "scrollPct": 100,
+      "pageViews": 7,
       "clickEvents": [
         {
-          "label": "Explore Solution",
+          "label": "Book Your Free AI Audit\narrow_forward",
           "tagName": "BUTTON",
           "id": "",
-          "className": "w-full py-3 rounded-xl border border-pri",
-          "page": "/",
-          "x": 266,
-          "y": 545,
-          "time": "16:07:38"
+          "className": "inline-flex items-center gap-2 bg-gradie",
+          "page": "/our-story.html",
+          "x": 758,
+          "y": 169,
+          "time": "21:02:36"
         },
         {
           "label": "close",
           "tagName": "BUTTON",
           "id": "",
           "className": "absolute top-4 right-4 text-gray-400 hov",
-          "page": "/",
-          "x": 905,
-          "y": 107,
-          "time": "16:07:39"
+          "page": "/our-story.html",
+          "x": 925,
+          "y": 109,
+          "time": "21:02:37"
         },
         {
-          "label": "contactName",
-          "tagName": "INPUT",
-          "id": "contactName",
-          "className": "w-full bg-surface-container border borde",
-          "page": "/",
-          "x": 761,
-          "y": 338,
-          "time": "16:09:19"
-        }
-      ],
-      "userJourney": [
-        "/"
-      ]
-    },
-    {
-      "sessionId": "sess_mdf97zgsbnr",
-      "ip": "106.192.194.37",
-      "email": "Guest Visitor",
-      "location": "🇮🇳 National (New Delhi, National Capital Territory of Delhi)",
-      "isNational": true,
-      "city": "New Delhi",
-      "country": "India",
-      "isp": "Bharti Airtel",
-      "isBot": false,
-      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
-      "device": "Desktop",
-      "browser": "Chrome",
-      "os": "Mac OS X",
-      "entryPage": "/",
-      "currentPage": "/index.html",
-      "exitPage": "/index.html",
-      "timestamp": "2026-07-25T10:57:12.961Z",
-      "lastActive": "2026-07-25T11:00:57.446Z",
-      "sessionDuration": 228,
-      "scrollPct": 12,
-      "pageViews": 1,
-      "clickEvents": [],
-      "userJourney": [
-        "/index.html"
-      ]
-    },
-    {
-      "sessionId": "sess_vrqvflmkq29",
-      "ip": "106.192.194.37",
-      "email": "Guest Visitor",
-      "location": "🇮🇳 National (New Delhi, National Capital Territory of Delhi)",
-      "isNational": true,
-      "city": "New Delhi",
-      "country": "India",
-      "isp": "Bharti Airtel",
-      "isBot": false,
-      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
-      "device": "Desktop",
-      "browser": "Chrome",
-      "os": "Mac OS X",
-      "entryPage": "/",
-      "currentPage": "/index.html",
-      "exitPage": "/index.html",
-      "timestamp": "2026-07-25T11:03:27.662Z",
-      "lastActive": "2026-07-25T11:03:54.342Z",
-      "sessionDuration": 23,
-      "scrollPct": 100,
-      "pageViews": 3,
-      "clickEvents": [
-        {
-          "label": "Services",
-          "tagName": "A",
+          "label": "Book Consultation →",
+          "tagName": "BUTTON",
           "id": "",
-          "className": "relative py-1 text-[15px] font-medium tr",
-          "page": "/",
-          "x": 556,
-          "y": 66,
-          "time": "16:33:29"
+          "className": "inline-flex items-center justify-center ",
+          "page": "/blog.html",
+          "x": 1175,
+          "y": 55,
+          "time": "21:03:03"
+        },
+        {
+          "label": "modalName",
+          "tagName": "INPUT",
+          "id": "modalName",
+          "className": "w-full px-4 py-3 bg-white/5 border borde",
+          "page": "/blog.html",
+          "x": 744,
+          "y": 249,
+          "time": "21:03:04"
+        },
+        {
+          "label": "modalPhone",
+          "tagName": "INPUT",
+          "id": "modalPhone",
+          "className": "w-full px-4 py-3 bg-white/5 border borde",
+          "page": "/blog.html",
+          "x": 629,
+          "y": 427,
+          "time": "21:03:05"
+        },
+        {
+          "label": "Submit & Book Call",
+          "tagName": "BUTTON",
+          "id": "modalSubmitBtn",
+          "className": "w-full py-3.5 px-6 text-white font-semib",
+          "page": "/blog.html",
+          "x": 697,
+          "y": 619,
+          "time": "21:03:08"
+        },
+        {
+          "label": "Book Consultation →",
+          "tagName": "BUTTON",
+          "id": "",
+          "className": "inline-flex items-center justify-center ",
+          "page": "/blog.html",
+          "x": 1147,
+          "y": 67,
+          "time": "21:03:50"
         },
         {
           "label": "A",
           "tagName": "A",
           "id": "",
           "className": "flex items-center group",
-          "page": "/Services.html",
-          "x": 218,
-          "y": 50,
-          "time": "16:33:30"
+          "page": "/blog.html",
+          "x": 243,
+          "y": 49,
+          "time": "21:05:22"
+        },
+        {
+          "label": "Services",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/index.html",
+          "x": 553,
+          "y": 45,
+          "time": "21:13:22"
         }
       ],
       "userJourney": [
         "/",
         "/Services.html",
+        "/case-studies.html",
+        "/blog.html",
+        "/About.html",
+        "/our-story.html",
         "/index.html"
       ]
     }
@@ -704,6 +200,22 @@
       "aiScore": 80,
       "assignedTo": "Aman",
       "notes": ""
+    },
+    {
+      "name": "Himanshu Pathak",
+      "email": "himanshu.data.acc@gmail.com",
+      "phone": "8588050920",
+      "budget": "₹50k - ₹1.5L",
+      "message": "s",
+      "ip": "49.36.10.150",
+      "location": "Mumbai, India",
+      "isBot": false,
+      "timestamp": "2026-07-25T15:34:14.435Z",
+      "source": "Modal Form",
+      "status": "New",
+      "aiScore": 71,
+      "assignedTo": "Aman",
+      "notes": ""
     }
   ],
   "cms": {
@@ -718,8 +230,9 @@
     "contactEmail": "smartfiqagency@gmail.com",
     "contactPhone": "+91 7678188047",
     "contactAddress": "New Delhi, India",
-    "whatsappNumber": "917678188047",
-    "consultEmail": "smartfiqagency@gmail.com"
+    "whatsappNumber": "7678188047",
+    "consultEmail": "smartfiqagency@gmail.com",
+    "supportEmail": "smartfiqagency@gmail.com"
   },
   "services": [
     {
@@ -1022,7 +535,17 @@
       "roleTitle": "Guest Analyst",
       "isSuperAdmin": false,
       "permissions": [
-        "analytics"
+        "overview",
+        "visitors",
+        "leads",
+        "analytics",
+        "cms",
+        "services",
+        "blog",
+        "legal-cms",
+        "agency-team",
+        "case-studies-cms",
+        "security"
       ]
     }
   ],
