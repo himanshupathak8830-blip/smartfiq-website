@@ -10,8 +10,8 @@
 
     // --- 1. HEADER COMPONENT ---
     function renderHeader() {
+        const existingHeader = document.getElementById('smartfiq-header');
         const headerContainer = document.getElementById('site-header') || document.getElementById('smartfiq-header-container');
-        if (!headerContainer) return;
 
         const navLinks = [
             { name: 'Home', href: 'index.html' },
@@ -41,44 +41,46 @@
             `;
         }).join('');
 
-        headerContainer.outerHTML = `
-        <header id="smartfiq-header"
-            class="fixed top-[20px] left-1/2 -translate-x-1/2 z-[100] w-[calc(100%-2rem)] max-w-[1180px] h-[64px] rounded-full bg-[rgba(15,15,18,0.55)] backdrop-blur-[20px] border border-[rgba(255,255,255,0.08)] shadow-[0_12px_40px_rgba(0,0,0,0.25)] transition-all duration-300 ease-in-out font-plus-jakarta animate-header-slide-down">
-            <div class="w-full h-full px-6 flex items-center justify-between relative">
-                <!-- LEFT: Transparent Logo -->
-                <a href="index.html" class="flex items-center group">
-                    <img src="logo-transparent.png" alt="SmartFiQ Logo" class="h-8 md:h-9 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
-                </a>
+        if (headerContainer && !existingHeader) {
+            headerContainer.innerHTML = `
+            <header id="smartfiq-header"
+                class="fixed top-[20px] left-1/2 -translate-x-1/2 z-[100] w-[calc(100%-2rem)] max-w-[1180px] h-[64px] rounded-full bg-[rgba(15,15,18,0.75)] backdrop-blur-[20px] border border-[rgba(255,255,255,0.12)] shadow-[0_12px_40px_rgba(0,0,0,0.35)] transition-all duration-300 ease-in-out font-plus-jakarta">
+                <div class="w-full h-full px-6 flex items-center justify-between relative">
+                    <!-- LEFT: Transparent Logo -->
+                    <a href="index.html" class="flex items-center group">
+                        <img src="logo-transparent.png" alt="SmartFiQ Logo" class="h-8 md:h-9 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
+                    </a>
 
-                <!-- CENTER: Navigation Links -->
-                <nav class="hidden md:flex items-center space-x-7 lg:space-x-9">
-                    ${desktopNavHTML}
-                </nav>
+                    <!-- CENTER: Navigation Links -->
+                    <nav class="hidden md:flex items-center space-x-7 lg:space-x-9">
+                        ${desktopNavHTML}
+                    </nav>
 
-                <!-- RIGHT: Primary CTA Button -->
-                <div class="hidden md:flex items-center">
-                    <button onclick="openContactModal()" class="inline-flex items-center justify-center px-[28px] py-[14px] text-[15px] font-semibold text-white bg-gradient-to-r from-[#FF6B3D] to-[#FF3D00] rounded-full transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-[0_0_25px_rgba(255,107,61,0.5)] active:scale-95 cursor-pointer">
-                        Book Consultation &rarr;
+                    <!-- RIGHT: Primary CTA Button -->
+                    <div class="hidden md:flex items-center">
+                        <button onclick="openContactModal()" class="inline-flex items-center justify-center px-[28px] py-[14px] text-[15px] font-semibold text-white bg-gradient-to-r from-[#FF6B3D] to-[#FF3D00] rounded-full transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-[0_0_25px_rgba(255,107,61,0.5)] active:scale-95 cursor-pointer">
+                            Book Consultation &rarr;
+                        </button>
+                    </div>
+
+                    <!-- Mobile Hamburger Menu Button -->
+                    <button id="mobileMenuBtn" onclick="toggleSmartfiqMobileMenu()" class="md:hidden flex flex-col justify-center items-center w-9 h-9 text-white focus:outline-none p-1 rounded-full hover:bg-white/5 transition-colors" aria-label="Toggle Navigation Menu">
+                        <div id="bar1" class="w-5 h-[2px] bg-white rounded-full transition-all duration-300"></div>
+                        <div id="bar2" class="w-5 h-[2px] bg-white rounded-full transition-all duration-300 my-1"></div>
+                        <div id="bar3" class="w-5 h-[2px] bg-white rounded-full transition-all duration-300"></div>
                     </button>
-                </div>
 
-                <!-- Mobile Hamburger Menu Button -->
-                <button id="mobileMenuBtn" onclick="toggleSmartfiqMobileMenu()" class="md:hidden flex flex-col justify-center items-center w-9 h-9 text-white focus:outline-none p-1 rounded-full hover:bg-white/5 transition-colors" aria-label="Toggle Navigation Menu">
-                    <div id="bar1" class="w-5 h-[2px] bg-white rounded-full transition-all duration-300"></div>
-                    <div id="bar2" class="w-5 h-[2px] bg-white rounded-full transition-all duration-300 my-1"></div>
-                    <div id="bar3" class="w-5 h-[2px] bg-white rounded-full transition-all duration-300"></div>
-                </button>
-
-                <!-- Mobile Glass Dropdown Menu -->
-                <div id="smartfiqMobileDropdown" class="hidden md:hidden absolute top-[calc(100%+12px)] left-0 w-full bg-[rgba(15,15,18,0.92)] backdrop-blur-[24px] border border-[rgba(255,255,255,0.08)] p-6 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col gap-4 animate-in fade-in slide-in-from-top-2 duration-200 z-50">
-                    ${mobileNavHTML}
-                    <button onclick="openContactModal(); toggleSmartfiqMobileMenu();" class="w-full mt-2 inline-flex items-center justify-center px-[28px] py-[14px] text-[15px] font-semibold text-white bg-gradient-to-r from-[#FF6B3D] to-[#FF3D00] rounded-full transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_25px_rgba(255,107,61,0.5)] active:scale-95">
-                        Book Consultation &rarr;
-                    </button>
+                    <!-- Mobile Glass Dropdown Menu -->
+                    <div id="smartfiqMobileDropdown" class="hidden md:hidden absolute top-[calc(100%+12px)] left-0 w-full bg-[rgba(15,15,18,0.92)] backdrop-blur-[24px] border border-[rgba(255,255,255,0.08)] p-6 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col gap-4 animate-in fade-in slide-in-from-top-2 duration-200 z-50">
+                        ${mobileNavHTML}
+                        <button onclick="openContactModal(); toggleSmartfiqMobileMenu();" class="w-full mt-2 inline-flex items-center justify-center px-[28px] py-[14px] text-[15px] font-semibold text-white bg-gradient-to-r from-[#FF6B3D] to-[#FF3D00] rounded-full transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_25px_rgba(255,107,61,0.5)] active:scale-95">
+                            Book Consultation &rarr;
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </header>
-        `;
+            </header>
+            `;
+        }
 
         // Scroll Shrink Listener
         window.addEventListener('scroll', function () {
