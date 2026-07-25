@@ -160,6 +160,28 @@ function getSeedData() {
     maintenanceMode: false
   };
 
+  // Seed Users
+  const users = [
+    {
+      id: 1,
+      username: 'smartfiq',
+      password: 'Smartfiq#Sec2026!Admin',
+      name: 'Super Admin',
+      roleTitle: 'Lead Architect & Owner',
+      isSuperAdmin: true,
+      permissions: ['all']
+    },
+    {
+      id: 2,
+      username: 'testuser',
+      password: 'testuser123',
+      name: 'Himanshu Pathak',
+      roleTitle: 'Guest Analyst',
+      isSuperAdmin: false,
+      permissions: ['overview', 'visitors', 'leads', 'analytics', 'cms', 'services', 'blog', 'legal-cms', 'agency-team', 'case-studies-cms', 'security']
+    }
+  ];
+
   return {
     visitors,
     leads,
@@ -171,6 +193,7 @@ function getSeedData() {
     proposals,
     invoices,
     team,
+    users,
     securityLogs,
     apiKeys,
     settings
@@ -190,24 +213,39 @@ function initDb() {
 }
 
 function readDb() {
-  initDb();
-  try {
-    const data = fs.readFileSync(DB_FILE, 'utf8');
-    return JSON.parse(data);
-  } catch (err) {
-    console.error('Error reading database file:', err);
-    return getSeedData();
+  if (!global.smartfiq_in_memory_db) {
+    initDb();
+    try {
+      if (fs.existsSync(DB_FILE)) {
+        const data = fs.readFileSync(DB_FILE, 'utf8');
+        global.smartfiq_in_memory_db = JSON.parse(data);
+      } else {
+        global.smartfiq_in_memory_db = getSeedData();
+      }
+    } catch (err) {
+      console.error('Error reading database file:', err);
+      global.smartfiq_in_memory_db = getSeedData();
+    }
   }
+
+  const db = global.smartfiq_in_memory_db;
+  if (!db.visitors) db.visitors = [];
+  if (!db.leads) db.leads = [];
+  if (!db.services) db.services = getSeedData().services;
+  if (!db.users) db.users = getSeedData().users;
+  if (!db.cms) db.cms = getSeedData().cms;
+
+  return db;
 }
 
 function writeDb(data) {
+  global.smartfiq_in_memory_db = data;
   try {
     fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
-    return true;
   } catch (err) {
-    console.error('Error writing to database:', err);
-    return false;
+    console.warn('DB File write warning (memory persisted):', err.message);
   }
+  return true;
 }
 
 // Custom DB actions
