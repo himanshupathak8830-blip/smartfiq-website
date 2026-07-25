@@ -253,14 +253,20 @@
         }, 100);
     }
 
-    // --- Initialize Components on DOM ready ---
-    document.addEventListener('DOMContentLoaded', function () {
+    // --- Initialize Components immediately or on DOM ready ---
+    function initComponents() {
         renderHeader();
         renderFooter();
         renderContactModal();
         if (typeof loadCmsData === 'function') loadCmsData();
         if (typeof trackVisitor === 'function') trackVisitor();
-    });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initComponents);
+    } else {
+        initComponents();
+    }
 })();
 
 // --- GLOBAL HELPER FUNCTIONS ---
