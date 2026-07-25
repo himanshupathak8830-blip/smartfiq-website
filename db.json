@@ -538,8 +538,8 @@
       "currentPage": "/",
       "exitPage": "/",
       "timestamp": "2026-07-25T10:37:31.887Z",
-      "lastActive": "2026-07-25T11:02:56.362Z",
-      "sessionDuration": 1525,
+      "lastActive": "2026-07-25T11:15:56.589Z",
+      "sessionDuration": 2305,
       "scrollPct": 100,
       "pageViews": 1,
       "clickEvents": [
@@ -602,6 +602,56 @@
       "pageViews": 1,
       "clickEvents": [],
       "userJourney": [
+        "/index.html"
+      ]
+    },
+    {
+      "sessionId": "sess_vrqvflmkq29",
+      "ip": "106.192.194.37",
+      "email": "Guest Visitor",
+      "location": "🇮🇳 National (New Delhi, National Capital Territory of Delhi)",
+      "isNational": true,
+      "city": "New Delhi",
+      "country": "India",
+      "isp": "Bharti Airtel",
+      "isBot": false,
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+      "device": "Desktop",
+      "browser": "Chrome",
+      "os": "Mac OS X",
+      "entryPage": "/",
+      "currentPage": "/index.html",
+      "exitPage": "/index.html",
+      "timestamp": "2026-07-25T11:03:27.662Z",
+      "lastActive": "2026-07-25T11:03:54.342Z",
+      "sessionDuration": 23,
+      "scrollPct": 100,
+      "pageViews": 3,
+      "clickEvents": [
+        {
+          "label": "Services",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/",
+          "x": 556,
+          "y": 66,
+          "time": "16:33:29"
+        },
+        {
+          "label": "A",
+          "tagName": "A",
+          "id": "",
+          "className": "flex items-center group",
+          "page": "/Services.html",
+          "x": 218,
+          "y": 50,
+          "time": "16:33:30"
+        }
+      ],
+      "userJourney": [
+        "/",
+        "/Services.html",
         "/index.html"
       ]
     }

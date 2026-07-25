@@ -99,11 +99,31 @@ app.get('/', (req, res) => {
 });
 
 // Serve admin dashboard at /admin
-app.get('/admin', (req, res) => {
+app.get(['/admin', '/admin.html'], (req, res) => {
   res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
-// Serve static resources if any (like screen.png)
+// Serve static HTML pages
+const htmlPages = [
+  { routes: ['/Services.html', '/services.html', '/Services', '/services'], file: 'Services.html' },
+  { routes: ['/About.html', '/about.html', '/About', '/about'], file: 'About.html' },
+  { routes: ['/case-studies.html', '/case-studies', '/Case-Studies'], file: 'case-studies.html' },
+  { routes: ['/blog.html', '/blog', '/Blog'], file: 'blog.html' },
+  { routes: ['/blog-detail.html', '/blog-detail'], file: 'blog-detail.html' },
+  { routes: ['/faq.html', '/faq', '/FAQ'], file: 'faq.html' },
+  { routes: ['/insights.html', '/insights'], file: 'insights.html' },
+  { routes: ['/our-story.html', '/our-story'], file: 'our-story.html' },
+  { routes: ['/privacy-policy.html', '/privacy-policy'], file: 'privacy-policy.html' },
+  { routes: ['/terms.html', '/terms'], file: 'terms.html' }
+];
+
+htmlPages.forEach(p => {
+  app.get(p.routes, (req, res) => {
+    res.sendFile(path.join(__dirname, p.file));
+  });
+});
+
+// Serve static resources if any (like logo-transparent.png, images.webp)
 app.use(express.static(__dirname));
 
 // ==================== REST APIS ====================
