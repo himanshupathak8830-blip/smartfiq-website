@@ -123,7 +123,29 @@ htmlPages.forEach(p => {
   });
 });
 
-// Serve static resources if any (like logo-transparent.png, images.webp)
+// Serve image assets
+app.get(['/logo-transparent.png', '/logo.png'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'logo-transparent.png'));
+});
+app.get('/images.webp', (req, res) => {
+  res.sendFile(path.join(__dirname, 'images.webp'));
+});
+
+// Serve core script files
+app.get('/components.js', (req, res) => {
+  res.sendFile(path.join(__dirname, 'components.js'));
+});
+app.get('/cms-engine.js', (req, res) => {
+  res.sendFile(path.join(__dirname, 'cms-engine.js'));
+});
+app.get('/blog.js', (req, res) => {
+  res.sendFile(path.join(__dirname, 'blog.js'));
+});
+app.get('/blog-js/blog-data.js', (req, res) => {
+  res.sendFile(path.join(__dirname, 'blog-js', 'blog-data.js'));
+});
+
+// Serve static resources fallback
 app.use(express.static(__dirname));
 
 // ==================== REST APIS ====================
