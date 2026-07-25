@@ -538,8 +538,8 @@
       "currentPage": "/",
       "exitPage": "/",
       "timestamp": "2026-07-25T10:37:31.887Z",
-      "lastActive": "2026-07-25T10:52:56.367Z",
-      "sessionDuration": 925,
+      "lastActive": "2026-07-25T10:59:57.406Z",
+      "sessionDuration": 1345,
       "scrollPct": 100,
       "pageViews": 1,
       "clickEvents": [
@@ -576,6 +576,33 @@
       ],
       "userJourney": [
         "/"
+      ]
+    },
+    {
+      "sessionId": "sess_mdf97zgsbnr",
+      "ip": "106.192.194.37",
+      "email": "Guest Visitor",
+      "location": "🇮🇳 National (New Delhi, National Capital Territory of Delhi)",
+      "isNational": true,
+      "city": "New Delhi",
+      "country": "India",
+      "isp": "Bharti Airtel",
+      "isBot": false,
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+      "device": "Desktop",
+      "browser": "Chrome",
+      "os": "Mac OS X",
+      "entryPage": "/",
+      "currentPage": "/index.html",
+      "exitPage": "/index.html",
+      "timestamp": "2026-07-25T10:57:12.961Z",
+      "lastActive": "2026-07-25T10:59:57.418Z",
+      "sessionDuration": 167,
+      "scrollPct": 12,
+      "pageViews": 1,
+      "clickEvents": [],
+      "userJourney": [
+        "/index.html"
       ]
     }
   ],
