@@ -246,11 +246,6 @@ function readDb() {
   if (!db.users) db.users = seeds.users;
   if (!db.cms) db.cms = seeds.cms;
 
-  const testU = db.users ? db.users.find(u => u.username.toLowerCase() === 'testuser') : null;
-  if (testU) {
-    testU.permissions = ['overview', 'visitors', 'leads', 'analytics', 'cms', 'services', 'blog', 'legal-cms', 'agency-team', 'case-studies-cms', 'security'];
-  }
-
   return db;
 }
 
