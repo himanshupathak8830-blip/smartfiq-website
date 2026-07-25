@@ -780,12 +780,16 @@ app.delete('/api/case-studies/:id', (req, res) => {
   res.json({ success: true });
 });
 
-// Start integrated server
-app.listen(PORT, () => {
-  console.log(`===============================================`);
-  console.log(`SmartFiQ Integrated Server started successfully`);
-  console.log(`Port: ${PORT}`);
-  console.log(`Home Page URL: http://localhost:${PORT}/`);
-  console.log(`Admin Dashboard URL: http://localhost:${PORT}/admin`);
-  console.log(`===============================================`);
-});
+// Start integrated server for local development or traditional hosting
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`===============================================`);
+    console.log(`SmartFiQ Integrated Server started successfully`);
+    console.log(`Port: ${PORT}`);
+    console.log(`Home Page URL: http://localhost:${PORT}/`);
+    console.log(`Admin Dashboard URL: http://localhost:${PORT}/admin`);
+    console.log(`===============================================`);
+  });
+}
+
+module.exports = app;

@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const DB_FILE = path.join(__dirname, 'db.json');
+const DB_FILE = process.env.VERCEL ? path.join('/tmp', 'db.json') : path.join(__dirname, 'db.json');
 
 // Get default initial seeded database for all 25 modules
 function getSeedData() {
@@ -179,7 +179,13 @@ function getSeedData() {
 
 function initDb() {
   if (!fs.existsSync(DB_FILE)) {
-    fs.writeFileSync(DB_FILE, JSON.stringify(getSeedData(), null, 2));
+    const seedPath = path.join(__dirname, 'db.json');
+    const content = fs.existsSync(seedPath) ? fs.readFileSync(seedPath, 'utf8') : JSON.stringify(getSeedData(), null, 2);
+    try {
+      fs.writeFileSync(DB_FILE, content);
+    } catch (e) {
+      console.warn('DB File write warning:', e.message);
+    }
   }
 }
 
