@@ -123,6 +123,28 @@ htmlPages.forEach(p => {
   });
 });
 
+// Case-insensitive catch-all HTML page resolver
+app.get('/:page', (req, res, next) => {
+  const page = req.params.page;
+  if (!page || page.startsWith('api')) return next();
+  
+  const possibleFiles = [
+    page,
+    page.endsWith('.html') ? page : `${page}.html`
+  ];
+
+  try {
+    const files = fs.readdirSync(__dirname);
+    for (const f of possibleFiles) {
+      const match = files.find(file => file.toLowerCase() === f.toLowerCase());
+      if (match) {
+        return res.sendFile(path.join(__dirname, match));
+      }
+    }
+  } catch (err) {}
+  next();
+});
+
 // Serve image assets
 app.get(['/logo-transparent.png', '/logo.png'], (req, res) => {
   res.sendFile(path.join(__dirname, 'logo-transparent.png'));
