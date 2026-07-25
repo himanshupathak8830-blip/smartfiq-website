@@ -1,0 +1,1095 @@
+{
+  "visitors": [
+    {
+      "sessionId": "sess_live_test_999",
+      "ip": "106.219.235.109",
+      "email": "Guest",
+      "location": "New Delhi, India",
+      "isp": "Bharti Airtel Limited",
+      "isBot": false,
+      "userAgent": "curl/8.7.1",
+      "device": "Desktop",
+      "browser": "curl",
+      "os": "Other",
+      "timestamp": "2026-07-25T09:38:39.879Z",
+      "lastActive": "2026-07-25T09:38:39.879Z",
+      "sessionDuration": 12,
+      "scrollPct": 45,
+      "pageViews": 1,
+      "clickEvents": [],
+      "userJourney": [
+        "/our-story.html"
+      ]
+    },
+    {
+      "sessionId": "sess_intent_test_100",
+      "ip": "103.241.12.105",
+      "email": "Guest Visitor",
+      "location": "🌐 International (Beijing, China)",
+      "isNational": false,
+      "city": "Beijing",
+      "country": "China",
+      "isp": "Linkever",
+      "isBot": false,
+      "userAgent": "curl/8.7.1",
+      "device": "Desktop",
+      "browser": "curl",
+      "os": "Other",
+      "entryPage": "/",
+      "currentPage": "/Services.html",
+      "exitPage": "/Price.html",
+      "timestamp": "2026-07-25T10:16:35.291Z",
+      "lastActive": "2026-07-25T10:16:35.292Z",
+      "sessionDuration": 95,
+      "scrollPct": 88,
+      "pageViews": 1,
+      "clickEvents": [
+        {
+          "label": "Book Strategic Consultation",
+          "tagName": "BUTTON",
+          "id": "heroCTA",
+          "page": "/Services.html",
+          "time": "03:45:10 PM"
+        }
+      ],
+      "userJourney": [
+        "/Services.html"
+      ]
+    },
+    {
+      "sessionId": "sess_ibjoghvzp1",
+      "ip": "106.192.194.37",
+      "email": "Guest Visitor",
+      "location": "🇮🇳 National (New Delhi, National Capital Territory of Delhi)",
+      "isNational": true,
+      "city": "New Delhi",
+      "country": "India",
+      "isp": "Bharti Airtel",
+      "isBot": false,
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+      "device": "Desktop",
+      "browser": "Chrome",
+      "os": "Mac OS X",
+      "entryPage": "/Services.html",
+      "currentPage": "/index.html",
+      "exitPage": "/index.html",
+      "timestamp": "2026-07-25T10:17:36.664Z",
+      "lastActive": "2026-07-25T10:35:55.263Z",
+      "sessionDuration": 205,
+      "scrollPct": 100,
+      "pageViews": 7,
+      "clickEvents": [
+        {
+          "label": "Case Studies",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/Services.html",
+          "x": 652,
+          "y": 55,
+          "time": "15:47:53"
+        },
+        {
+          "label": "Book Consultation →",
+          "tagName": "BUTTON",
+          "id": "",
+          "className": "inline-flex items-center justify-center ",
+          "page": "/case-studies.html",
+          "x": 1188,
+          "y": 52,
+          "time": "15:48:19"
+        },
+        {
+          "label": "modalName",
+          "tagName": "INPUT",
+          "id": "modalName",
+          "className": "w-full px-4 py-3 bg-white/5 border borde",
+          "page": "/case-studies.html",
+          "x": 814,
+          "y": 243,
+          "time": "15:48:20"
+        },
+        {
+          "label": "modalPhone",
+          "tagName": "INPUT",
+          "id": "modalPhone",
+          "className": "w-full px-4 py-3 bg-white/5 border borde",
+          "page": "/case-studies.html",
+          "x": 631,
+          "y": 423,
+          "time": "15:48:22"
+        },
+        {
+          "label": "Submit & Book Call",
+          "tagName": "BUTTON",
+          "id": "modalSubmitBtn",
+          "className": "w-full py-3.5 px-6 text-white font-semib",
+          "page": "/case-studies.html",
+          "x": 731,
+          "y": 635,
+          "time": "15:48:26"
+        },
+        {
+          "label": "Home",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/case-studies.html",
+          "x": 437,
+          "y": 50,
+          "time": "15:49:13"
+        },
+        {
+          "label": "Pricing",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/index.html",
+          "x": 746,
+          "y": 59,
+          "time": "15:49:14"
+        },
+        {
+          "label": "Case Studies",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/",
+          "x": 713,
+          "y": 52,
+          "time": "15:52:49"
+        },
+        {
+          "label": "A",
+          "tagName": "A",
+          "id": "",
+          "className": "flex items-center group",
+          "page": "/case-studies.html",
+          "x": 195,
+          "y": 48,
+          "time": "15:55:21"
+        },
+        {
+          "label": "Services",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/index.html",
+          "x": 533,
+          "y": 61,
+          "time": "15:55:22"
+        },
+        {
+          "label": "Case Studies",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/Services.html",
+          "x": 690,
+          "y": 62,
+          "time": "15:55:23"
+        },
+        {
+          "label": "Blog",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/case-studies.html",
+          "x": 790,
+          "y": 63,
+          "time": "15:55:24"
+        },
+        {
+          "label": "Home",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/blog.html",
+          "x": 467,
+          "y": 60,
+          "time": "15:55:25"
+        },
+        {
+          "label": "A",
+          "tagName": "A",
+          "id": "",
+          "className": "flex items-center group",
+          "page": "/index.html",
+          "x": 245,
+          "y": 50,
+          "time": "15:55:26"
+        },
+        {
+          "label": "A",
+          "tagName": "A",
+          "id": "",
+          "className": "flex items-center group",
+          "page": "/index.html",
+          "x": 277,
+          "y": 56,
+          "time": "15:55:41"
+        },
+        {
+          "label": "A",
+          "tagName": "A",
+          "id": "",
+          "className": "flex items-center group",
+          "page": "/index.html",
+          "x": 203,
+          "y": 65,
+          "time": "15:56:15"
+        },
+        {
+          "label": "Blog",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/index.html",
+          "x": 774,
+          "y": 47,
+          "time": "15:57:55"
+        },
+        {
+          "label": "Case Studies",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/blog.html",
+          "x": 636,
+          "y": 57,
+          "time": "15:57:56"
+        },
+        {
+          "label": "Services",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/case-studies.html",
+          "x": 574,
+          "y": 54,
+          "time": "15:57:57"
+        },
+        {
+          "label": "About",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/Services.html",
+          "x": 847,
+          "y": 57,
+          "time": "15:57:58"
+        },
+        {
+          "label": "Explore Solution",
+          "tagName": "BUTTON",
+          "id": "",
+          "className": "w-full py-3 rounded-xl border border-pri",
+          "page": "/",
+          "x": 249,
+          "y": 196,
+          "time": "15:59:44"
+        },
+        {
+          "label": "close",
+          "tagName": "BUTTON",
+          "id": "",
+          "className": "absolute top-4 right-4 text-gray-400 hov",
+          "page": "/",
+          "x": 913,
+          "y": 101,
+          "time": "15:59:46"
+        },
+        {
+          "label": "A",
+          "tagName": "A",
+          "id": "",
+          "className": "inline-block h-10 mb-6 hover:opacity-90 ",
+          "page": "/",
+          "x": 149,
+          "y": 443,
+          "time": "16:00:44"
+        },
+        {
+          "label": "Case Studies",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/index.html",
+          "x": 662,
+          "y": 42,
+          "time": "16:00:49"
+        },
+        {
+          "label": "Case Studies",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/blog.html",
+          "x": 692,
+          "y": 49,
+          "time": "16:00:52"
+        },
+        {
+          "label": "Blog",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/case-studies.html",
+          "x": 779,
+          "y": 48,
+          "time": "16:00:50"
+        },
+        {
+          "label": "Book Free AI Consultation →",
+          "tagName": "BUTTON",
+          "id": "",
+          "className": "px-8 py-4 primary-gradient text-white fo",
+          "page": "/case-studies.html",
+          "x": 680,
+          "y": 422,
+          "time": "16:00:55"
+        },
+        {
+          "label": "close",
+          "tagName": "BUTTON",
+          "id": "",
+          "className": "absolute top-4 right-4 text-gray-400 hov",
+          "page": "/case-studies.html",
+          "x": 904,
+          "y": 112,
+          "time": "16:00:56"
+        },
+        {
+          "label": "Blog",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/case-studies.html",
+          "x": 768,
+          "y": 48,
+          "time": "16:00:59"
+        },
+        {
+          "label": "Home",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/blog.html",
+          "x": 462,
+          "y": 56,
+          "time": "16:01:03"
+        },
+        {
+          "label": "A",
+          "tagName": "A",
+          "id": "",
+          "className": "flex items-center group",
+          "page": "/index.html",
+          "x": 243,
+          "y": 42,
+          "time": "16:01:03"
+        },
+        {
+          "label": "A",
+          "tagName": "A",
+          "id": "",
+          "className": "flex items-center group",
+          "page": "/index.html",
+          "x": 251,
+          "y": 62,
+          "time": "16:03:12"
+        },
+        {
+          "label": "Services",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/index.html",
+          "x": 556,
+          "y": 61,
+          "time": "16:03:15"
+        },
+        {
+          "label": "Case Studies",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/Services.html",
+          "x": 671,
+          "y": 52,
+          "time": "16:03:17"
+        },
+        {
+          "label": "Blog",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/case-studies.html",
+          "x": 781,
+          "y": 53,
+          "time": "16:03:18"
+        },
+        {
+          "label": "About",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/blog.html",
+          "x": 856,
+          "y": 58,
+          "time": "16:03:19"
+        },
+        {
+          "label": "Case Studies",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/About.html",
+          "x": 681,
+          "y": 61,
+          "time": "16:03:20"
+        },
+        {
+          "label": "Home",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/case-studies.html",
+          "x": 485,
+          "y": 60,
+          "time": "16:03:21"
+        },
+        {
+          "label": "Case Studies",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/index.html",
+          "x": 688,
+          "y": 60,
+          "time": "16:03:21"
+        },
+        {
+          "label": "About",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/case-studies.html",
+          "x": 850,
+          "y": 53,
+          "time": "16:03:22"
+        },
+        {
+          "label": "Home",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/About.html",
+          "x": 480,
+          "y": 59,
+          "time": "16:04:16"
+        },
+        {
+          "label": "A",
+          "tagName": "A",
+          "id": "",
+          "className": "flex items-center group",
+          "page": "/index.html",
+          "x": 225,
+          "y": 36,
+          "time": "16:04:40"
+        },
+        {
+          "label": "A",
+          "tagName": "A",
+          "id": "",
+          "className": "flex items-center group",
+          "page": "/index.html",
+          "x": 226,
+          "y": 40,
+          "time": "16:05:47"
+        }
+      ],
+      "userJourney": [
+        "/Services.html",
+        "/case-studies.html",
+        "/index.html",
+        "/Price.html",
+        "/",
+        "/blog.html",
+        "/About.html"
+      ]
+    },
+    {
+      "sessionId": "sess_p92l8hdycir",
+      "ip": "106.192.194.37",
+      "email": "Guest Visitor",
+      "location": "🇮🇳 National (New Delhi, National Capital Territory of Delhi)",
+      "isNational": true,
+      "city": "New Delhi",
+      "country": "India",
+      "isp": "Bharti Airtel",
+      "isBot": false,
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+      "device": "Desktop",
+      "browser": "Chrome",
+      "os": "Mac OS X",
+      "entryPage": "/",
+      "currentPage": "/",
+      "exitPage": "/",
+      "timestamp": "2026-07-25T10:37:31.887Z",
+      "lastActive": "2026-07-25T10:44:04.224Z",
+      "sessionDuration": 393,
+      "scrollPct": 100,
+      "pageViews": 1,
+      "clickEvents": [
+        {
+          "label": "Explore Solution",
+          "tagName": "BUTTON",
+          "id": "",
+          "className": "w-full py-3 rounded-xl border border-pri",
+          "page": "/",
+          "x": 266,
+          "y": 545,
+          "time": "16:07:38"
+        },
+        {
+          "label": "close",
+          "tagName": "BUTTON",
+          "id": "",
+          "className": "absolute top-4 right-4 text-gray-400 hov",
+          "page": "/",
+          "x": 905,
+          "y": 107,
+          "time": "16:07:39"
+        },
+        {
+          "label": "contactName",
+          "tagName": "INPUT",
+          "id": "contactName",
+          "className": "w-full bg-surface-container border borde",
+          "page": "/",
+          "x": 761,
+          "y": 338,
+          "time": "16:09:19"
+        }
+      ],
+      "userJourney": [
+        "/"
+      ]
+    }
+  ],
+  "leads": [
+    {
+      "name": "Aman Sharma",
+      "email": "amansharma@gmail.com",
+      "phone": "+91 9876000000",
+      "budget": "₹25,000 - ₹50,000",
+      "message": "I need WhatsApp bot and lead scraping system",
+      "ip": "106.219.235.109",
+      "location": "New Delhi, India",
+      "isBot": false,
+      "timestamp": "2026-07-25T09:19:29.763Z",
+      "source": "Hero Form",
+      "status": "New",
+      "aiScore": 88,
+      "assignedTo": "Aman",
+      "notes": ""
+    },
+    {
+      "name": "Himanshu Pathak",
+      "email": "himanshu.data.acc@gmail.com",
+      "phone": "8588050920",
+      "budget": "₹50k - ₹1.5L",
+      "message": " l",
+      "ip": "106.219.235.109",
+      "location": "New Delhi, India",
+      "isBot": false,
+      "timestamp": "2026-07-25T09:22:11.451Z",
+      "source": "Modal Form",
+      "status": "New",
+      "aiScore": 66,
+      "assignedTo": "Aman",
+      "notes": ""
+    },
+    {
+      "name": "Himanshu Pathak",
+      "email": "himanshu.data.acc@gmail.com",
+      "phone": "8588050920",
+      "budget": "₹50k - ₹1.5L",
+      "message": "zkk",
+      "ip": "106.192.194.37",
+      "location": "New Delhi, India",
+      "isBot": false,
+      "timestamp": "2026-07-25T10:18:30.363Z",
+      "source": "Modal Form",
+      "status": "New",
+      "aiScore": 80,
+      "assignedTo": "Aman",
+      "notes": ""
+    }
+  ],
+  "cms": {
+    "brandName": "Smartfiq",
+    "heroTitle": "Automate Your <span class=\"lava-gradient-text\">Operations</span> &amp; Cut Manual Workload by 80%",
+    "heroSubtitle": "We build intelligent AI voice agents, WhatsApp automations, and custom CRM systems that work 24/7 to nurture leads, answer support, and scale revenue.",
+    "heroCtaText": "Book Free AI Consultation",
+    "heroCtaLink": "#contactModal",
+    "aboutTitle": "Empowering Teams to Focus on Growth, Not Busywork",
+    "aboutContent": "We specialize in visual interfaces, backend automation pipelines, and custom AI agents designed to unlock exponential growth.",
+    "footerText": "© 2026 Smartfiq. All Rights Reserved. Smart Intelligence. Faster Growth.",
+    "contactEmail": "smartfiqagency@gmail.com",
+    "contactPhone": "+91 7678188047",
+    "contactAddress": "New Delhi, India",
+    "whatsappNumber": "917678188047",
+    "consultEmail": "smartfiqagency@gmail.com"
+  },
+  "services": [
+    {
+      "id": 1,
+      "name": "Website Development",
+      "desc": "Modern, responsive, high-converting websites tailored for your brand.",
+      "price": "Starting at ₹14,999 / $199",
+      "icon": "language",
+      "features": [
+        "Responsive Design",
+        "SEO Optimized",
+        "High Conversion UI"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "WhatsApp Chatbot Setup",
+      "desc": "Automated 24/7 AI-driven customer support & lead capture on WhatsApp.",
+      "price": "Starting at ₹9,999 / $129",
+      "icon": "chat",
+      "features": [
+        "24/7 AI Support",
+        "Instant Lead Capture",
+        "Custom Conversation Flows"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Bulk WhatsApp Marketing Solutions",
+      "desc": "Reach 1000+ potential clients simultaneously with targeted campaigns.",
+      "price": "Starting at ₹4,999 / $69",
+      "icon": "campaign",
+      "features": [
+        "Targeted Broadcasts",
+        "High Open Rates",
+        "Analytics & Tracking"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Logo & Brand Identity Design",
+      "desc": "High-impact logo design & visual identity to stand out from competitors.",
+      "price": "Starting at ₹3,499 / $49",
+      "icon": "palette",
+      "features": [
+        "Custom Logo Design",
+        "Brand Guidelines",
+        "Social Media Assets"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Digital Marketing & SEO",
+      "desc": "Rank higher on Google, boost traffic, and scale your online visibility.",
+      "price": "Starting at ₹11,999/mo / $150/mo",
+      "icon": "trending_up",
+      "features": [
+        "Google Search Ranking",
+        "Content Strategy",
+        "Traffic Growth"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "AI Voice & Call Agents for Business",
+      "desc": "Smart automated AI voice callers for inbound customer queries and outbound lead calls.",
+      "price": "Starting at ₹19,999 / $249",
+      "icon": "record_voice_over",
+      "features": [
+        "Inbound & Outbound Calls",
+        "Humanlike Tone",
+        "CRM Sync & Reminders"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Custom CRM Systems",
+      "desc": "Streamline your lead management, client tracking, and sales pipelines.",
+      "price": "Starting at ₹24,999 / $299",
+      "icon": "grid_view",
+      "features": [
+        "Lead Pipeline Management",
+        "Client Tracking",
+        "Automated Follow-ups"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Gym Management System",
+      "desc": "Complete software for member attendance, subscriptions, and automated reminders.",
+      "price": "Starting at ₹14,999 / $199",
+      "icon": "fitness_center",
+      "features": [
+        "Member Attendance",
+        "Subscription Tracking",
+        "Automated Reminders"
+      ]
+    }
+  ],
+  "portfolio": [],
+  "blogs": [
+    {
+      "id": 1,
+      "title": "What is AI Automation and How Can It Grow Your Business?",
+      "category": "AI Automation",
+      "status": "Published",
+      "date": "2026-07-10",
+      "readTime": "6 mins",
+      "summary": "A beginner-friendly breakdown of what AI automation actually means, the business problems it solves, and how companies typically start.",
+      "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuDmeTgRa_-U6aA6_WtKs62LYrax3kgEdlSWWYya0QlVrtx6Meemrepa58Gg8ylms30H004BXZ7QJ3o31YNe8AMs2Zzzk510e75FdQXBA7nNWS6yFvQsERAHKgmlqqN-nKJvxvulP7JHCSAmS__lJUbEZr2k7HJUWQSWbg4XBbfooZO7wuBB8uKSxgNCrU1wJu2xqknszqE_ZSsBjNJ2s1fKRYWG4A-Uo92DuKgXXCrxfhjbKIZ8G5L5iA"
+    },
+    {
+      "id": 2,
+      "title": "WhatsApp Automation for Small Businesses",
+      "category": "Messaging Automation",
+      "status": "Published",
+      "date": "2026-07-11",
+      "readTime": "5 mins",
+      "summary": "How small businesses use WhatsApp bots to handle orders, support, and lead capture without hiring extra staff.",
+      "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuDlnmZrQBQ6r4bLrUFJZ4yi_bVKqAjkwfpJYlPg3f3CkRj1oQzUTXOuDhO_AXGVc78KX_4kVBWMT7xejWSD2Gg0dF1fZZJktvKbKACTkYXsrgL_3fKMf07bh0-GGQ-8uK41hN88ZwHlbKc0TGIytkqvVyYnmCxvxAshhvH-dN3uZay7jKdjUtficQkSLKXhWiwbhFs-lwxTeUlf0xJidGx89BN3KKP5PgHBFaCzGK4ZfF-M4xc30XY4Pg"
+    },
+    {
+      "id": 3,
+      "title": "AI Chatbots vs Human Support",
+      "category": "Customer Support",
+      "status": "Published",
+      "date": "2026-07-12",
+      "readTime": "7 mins",
+      "summary": "Where chatbots outperform human agents, where they don't, and how to build a hybrid support model that works.",
+      "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuBNTV6_AVEf00BwdABjxoOW_o5OzSEibEwcFcwmRV-ZUgkf0fIuHWMLkU2BZ_YCOmCE4ufiruoItWPHUhFbfZsAS1yN-sGbLdXSzbmXVyHLa06W9-aqB_leN3gWCOCLbvyzbkeynUOuEN3D-xmdA9C89x_uEdS1DRmrTjU8LhAHl7o-5VB_lkL9cV4gyiw8M-IfO1m5rMjvvZlIzHgMRVHv-6P3YIRbhcKb9858KoGM2TGt1q-jg6h_hQ"
+    },
+    {
+      "id": 4,
+      "title": "How AI Voice Agents Are Changing Customer Service",
+      "category": "Voice AI",
+      "status": "Published",
+      "date": "2026-07-13",
+      "readTime": "6 mins",
+      "summary": "A look at how AI-driven phone agents are handling calls, bookings, and follow-ups at a fraction of call-center cost.",
+      "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuCDqQOJR5ptc9fY0HiDc-GcA5CvU0Fa0aUVudTHXu0EEZeI3gl_E95qaX705iwrDCezyBM7wD8fSOf-r33-yFDJ38lNGgJVavU9zfx8CgU0ThJtUUMNDml2UtrfQZobgs9lF59c_AoSddqoyNjpfDBdZ6NwIlyXGZp3ETYOGyBy6RX6VdqZjPXWy8dA_xY5to7MFDUDeCqQCFNHmSKCGVzlg9vgobmutFPBP0R7hFNv0qb1IDPO2qCGqw"
+    },
+    {
+      "id": 5,
+      "title": "Top Business Processes You Should Automate in 2026",
+      "category": "Business Automation",
+      "status": "Published",
+      "date": "2026-07-14",
+      "readTime": "8 mins",
+      "summary": "A practical checklist of the highest-ROI processes (lead follow-up, data entry, scheduling, reporting) worth automating first.",
+      "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuAmBuzV5ivYyRPvXVEWXKXFR7nq7KGxZJyz44yK4BUXsrPowyybwsAHAoTmx1FXEqBxIJfCeXh2jk0M9lar7Qo-5yFgz136ql9g0qyi-Igy-8sMO2sULZC4iwAob2CBs1cUAIszhbqSyfBJe0jWlkuLVDfn95c1EuSAWJlp6o8oqFAro76w4z1tM8DrsgFoCRypbCL806xriU7Sop-7k8ikkzrTRjbzxtQk4lg7MRH9vp8Bvq3aw9U5Ww"
+    }
+  ],
+  "appointments": [
+    {
+      "id": 1,
+      "clientName": "Amit Singh",
+      "service": "CRM Integration",
+      "date": "2026-07-16",
+      "time": "11:00 AM",
+      "status": "Confirmed"
+    },
+    {
+      "id": 2,
+      "clientName": "Priya Sharma",
+      "service": "AI Agent Consultation",
+      "date": "2026-07-17",
+      "time": "03:30 PM",
+      "status": "Pending"
+    }
+  ],
+  "proposals": [
+    {
+      "id": 1,
+      "client": "TechCo India",
+      "project": "AI Automation Core Framework",
+      "amount": "₹1,50,000",
+      "status": "Accepted"
+    },
+    {
+      "id": 2,
+      "client": "BrandsIn Retail",
+      "project": "WhatsApp Broadcast Setup",
+      "amount": "₹40,000",
+      "status": "Sent"
+    }
+  ],
+  "invoices": [
+    {
+      "id": 101,
+      "client": "TechCo India",
+      "project": "AI Automation Core Framework",
+      "amount": "₹1,50,000",
+      "status": "Paid",
+      "date": "2026-07-12"
+    },
+    {
+      "id": 102,
+      "client": "BrandsIn Retail",
+      "project": "WhatsApp Broadcast Setup",
+      "amount": "₹40,000",
+      "status": "Pending",
+      "date": "2026-07-14"
+    }
+  ],
+  "team": [
+    {
+      "id": 1,
+      "name": "Aman Verma",
+      "role": "Sales Lead",
+      "revenue": "₹3,40,000",
+      "leads": 24,
+      "attendance": "98%",
+      "kpi": "4.8/5"
+    },
+    {
+      "id": 2,
+      "name": "Priya Iyer",
+      "role": "Solutions Architect",
+      "revenue": "₹4,50,000",
+      "leads": 18,
+      "attendance": "95%",
+      "kpi": "4.9/5"
+    }
+  ],
+  "agencyTeam": [
+    {
+      "id": 1,
+      "name": "Himanshu Pathak",
+      "role": "Founder & Principal AI Architect",
+      "bio": "Specializes in enterprise LLM orchestration, vector databases, and high-frequency workflow automation using n8n and Python.",
+      "image": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400",
+      "linkedin": "https://www.linkedin.com/company/smartfiq/"
+    },
+    {
+      "id": 2,
+      "name": "Aman Verma",
+      "role": "Head of Solutions & Voice AI",
+      "bio": "Pioneers natural conversational Voice AI agents and Meta WhatsApp Business API integrations for retail and real estate enterprises.",
+      "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400",
+      "linkedin": "https://www.linkedin.com/company/smartfiq/"
+    },
+    {
+      "id": 3,
+      "name": "Priya Iyer",
+      "role": "Lead Data & BI Engineer",
+      "bio": "Expert in automated ETL pipelines, DAX modeling, and executive Looker Studio dashboards for real-time revenue tracking.",
+      "image": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400",
+      "linkedin": "https://www.linkedin.com/company/smartfiq/"
+    }
+  ],
+  "caseStudies": [
+    {
+      "id": 1,
+      "client": "E-Commerce Retail Co",
+      "title": "Automated WhatsApp Support Scaling to 50k MAU",
+      "metrics": "85% Resolution Cut",
+      "challenge": "Client was overwhelmed with over 2,000 daily order status and return inquiries causing support delays and missed sales.",
+      "solution": "Built a custom WhatsApp Business API bot connected to Shopify API & OpenAI function calling, automating order tracking and Instant FAQs with zero human agent intervention.",
+      "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600",
+      "featured": true
+    },
+    {
+      "id": 2,
+      "client": "Real Estate Group",
+      "title": "Lead Extraction & Email Enrichment Agent",
+      "metrics": "140+ Meetings Monthly",
+      "challenge": "Manual property lead qualification was taking 4+ hours per agent daily, leading to cold response rates.",
+      "solution": "Architected an automated n8n workflow using webhooks, Google Maps enrichment, and Voice AI agent follow-ups, qualification scores, and direct Calendly scheduling.",
+      "image": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=600",
+      "featured": true
+    },
+    {
+      "id": 3,
+      "client": "Enterprise Logistics",
+      "title": "Automated Data Modeling & Executive BI Dashboard",
+      "metrics": "$120k Saved Annually",
+      "challenge": "Data scattered across multi-channel sales reports caused delayed financial decision-making.",
+      "solution": "Engineered automated ETL pipelines and Looker Studio DAX dashboards providing real-time revenue forecasting and operational bottleneck alerts.",
+      "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600",
+      "featured": true
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "username": "smartfiq",
+      "password": "Smartfiq#Sec2026!Admin",
+      "name": "Super Admin",
+      "roleTitle": "Lead Architect & Owner",
+      "isSuperAdmin": true,
+      "permissions": [
+        "all"
+      ]
+    },
+    {
+      "id": 2,
+      "username": "testuser",
+      "password": "testuser123",
+      "name": "Himanshu Pathak",
+      "roleTitle": "Guest Analyst",
+      "isSuperAdmin": false,
+      "permissions": [
+        "analytics"
+      ]
+    }
+  ],
+  "securityLogs": [
+    {
+      "id": 1,
+      "event": "Successful Login",
+      "user": "smartfiq",
+      "ip": "127.0.0.1",
+      "time": "2026-07-14T15:23:54.626Z"
+    },
+    {
+      "id": 2,
+      "event": "Dashboard Initialized",
+      "user": "smartfiq",
+      "ip": "127.0.0.1",
+      "time": "2026-07-14T15:23:54.626Z"
+    }
+  ],
+  "apiKeys": [
+    {
+      "id": 1,
+      "name": "OpenAI API Key",
+      "key": "sk-proj-...8aFd",
+      "status": "Connected"
+    },
+    {
+      "id": 2,
+      "name": "Meta WhatsApp Token",
+      "key": "EAAGb...99ZA",
+      "status": "Connected"
+    },
+    {
+      "id": 3,
+      "name": "Resend API Key",
+      "key": "re_12...xyZ4",
+      "status": "Connected"
+    }
+  ],
+  "settings": {
+    "brandName": "SmartFiQ",
+    "supportEmail": "smartfiqagency@gmail.com",
+    "supportPhone": "+91 7678188047",
+    "theme": "Midnight Dark",
+    "maintenanceMode": false
+  },
+  "legalCms": {
+    "privacyPolicy": {
+      "lastUpdated": "July 25, 2026",
+      "sections": [
+        {
+          "icon": "database",
+          "title": "1. Information We Collect",
+          "content": "We collect information directly provided by enterprise clients, website visitors, and authorized API integrators: Account & Contact Information (Name, work email, phone number, company name), API & Integration Telemetry (Log data, webhook requests, timestamp meta), and Device & Analytics Meta."
+        },
+        {
+          "icon": "shield",
+          "title": "2. AI Processing Safeguards & Model Training",
+          "content": "SmartFiQ connects to enterprise-tier Large Language Model (LLM) providers under strict Zero Data Retention (ZDR) and Non-Training Service Level Agreements. Your proprietary business records, client chat logs, and vector embeddings are NEVER submitted to public LLM datasets for model retraining."
+        },
+        {
+          "icon": "gavel",
+          "title": "3. GDPR & International Privacy Compliance",
+          "content": "We comply with global privacy frameworks including GDPR (General Data Protection Regulation) and Indian DPDP Act. Users retain Right to Access, Right to Erasure (Forget Me within 30 days), and TLS 1.3 AES-256 data encryption in transit and at rest."
+        },
+        {
+          "icon": "schedule",
+          "title": "4. Data Retention & Third-Party Vendors",
+          "content": "We retain client logs only for the minimum operational timeframe required to maintain workflow state and analytics accuracy. We do not sell, rent, or monetize your business data to third-party ad networks or brokers."
+        },
+        {
+          "icon": "mail",
+          "title": "5. Contact Privacy Officer",
+          "content": "For privacy inquiries, data deletion requests, or security audits, contact our Data Governance Officer at smartfiqagency@gmail.com."
+        }
+      ]
+    },
+    "termsOfService": {
+      "lastUpdated": "July 25, 2026",
+      "sections": [
+        {
+          "icon": "rule",
+          "title": "1. Acceptable Use Policy",
+          "content": "By accessing SmartFiQ platforms and API endpoints, clients agree to adhere to strict ethical and legal usage criteria. Clients must not use WhatsApp broadcast tools or AI voice agents to transmit unsolicited spam, deceptive phishing attempts, or illegal content."
+        },
+        {
+          "icon": "copyright",
+          "title": "2. Intellectual Property Rights",
+          "content": "SmartFiQ retains all rights, titles, and ownership over underlying software frameworks, AI prompt architectures, custom CRM code, and proprietary algorithms. Clients retain 100% ownership over their business data, customer records, and generated assets."
+        },
+        {
+          "icon": "speed",
+          "title": "3. Service Availability, Rate Limits & SLAs",
+          "content": "We strive to maintain 99.9% operational uptime across our AI gateway servers. Standard API tiers enforce dynamic request-per-minute rate limits."
+        },
+        {
+          "icon": "shield_alert",
+          "title": "4. Limitation of Liability",
+          "content": "SmartFiQ AI Solutions shall not be held liable for indirect, incidental, or consequential damages resulting from third-party API downtime (e.g., Meta/WhatsApp API outages, OpenAI model latency, or external CRM service disruptions) beyond our direct control."
+        },
+        {
+          "icon": "contact_support",
+          "title": "5. Inquiries & Legal Notices",
+          "content": "Questions regarding these Terms or enterprise SLA contracts should be directed to smartfiqagency@gmail.com."
+        }
+      ]
+    },
+    "faqs": [
+      {
+        "id": 1,
+        "question": "How quickly can SmartFiQ deploy AI agents for my business?",
+        "answer": "Standard WhatsApp AI agents and lead-qualification workflows can be deployed within 48 to 72 hours. Custom LLM integrations with legacy ERP/CRMs typically take 5 to 7 business days including sandboxed testing.",
+        "category": "automation"
+      },
+      {
+        "id": 2,
+        "question": "Do I need an official Meta WhatsApp Business API account?",
+        "answer": "Yes! We assist in setting up official Meta WhatsApp Cloud API credentials with Green Tick verification support. This guarantees 100% compliance with zero risk of phone number blocking compared to unofficial scrapers.",
+        "category": "whatsapp"
+      },
+      {
+        "id": 3,
+        "question": "Is my enterprise customer data safe from public LLM training?",
+        "answer": "Absolutely. All SmartFiQ pipelines operate under Zero Data Retention (ZDR) enterprise agreements. Your chat transcripts, vector embeddings, and customer details are NEVER used to retrain public models.",
+        "category": "security"
+      },
+      {
+        "id": 4,
+        "question": "Can SmartFiQ sync leads directly to HubSpot, Zoho, or Google Sheets?",
+        "answer": "Yes! We build automated bidirectional webhooks that sync leads, appointment bookings, and conversation scores directly to your preferred CRM, Google Sheet, or custom database in real-time.",
+        "category": "automation"
+      },
+      {
+        "id": 5,
+        "question": "What pricing options are available for ongoing support?",
+        "answer": "We offer Starter, Professional, and Enterprise packages. You can choose transparent monthly subscriptions or project-based custom contracts.",
+        "category": "billing"
+      },
+      {
+        "id": 6,
+        "question": "What happens if an AI bot encounters a complex customer query?",
+        "answer": "SmartFiQ bots feature smooth Human-in-the-Loop (HITL) handoff triggers. If a query falls outside defined confidence thresholds, the bot seamlessly hands off the conversation to a human support agent without breaking the chat session.",
+        "category": "security"
+      }
+    ]
+  }
+}

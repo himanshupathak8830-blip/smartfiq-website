@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Our Story | SmartFiQ AI Automation</title>
+  <meta name="description" content="Discover why SmartFiQ was built for non-technical founders to automate business workflows without tech friction." />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+  <style>
+    body { background-color: #0A0A0A; color: #e5e2e1; font-family: 'Inter', sans-serif; }
+    .lava-gradient-text {
+      background: linear-gradient(45deg, #ffb5a0, #ff5625);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .glass-panel {
+      background: rgba(26, 26, 26, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  </style>
+</head>
+<body class="bg-[#0A0A0A] text-[#E5E2E1] selection:bg-[#ff5625] selection:text-white">
+
+  <!-- Site Header Navbar -->
+  <div id="site-header"></div>
+
+  <main class="pt-36 pb-24 relative overflow-hidden">
+    <!-- Lava background blur effect -->
+    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#ff5625]/10 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
+
+    <section class="max-w-4xl mx-auto px-6">
+      <!-- Tagline & Heading -->
+      <div class="text-center mb-16">
+        <span class="px-4 py-1.5 rounded-full bg-[#1C1B1B] border border-[#ff5625]/30 text-[#ff5625] text-xs font-semibold tracking-wider uppercase inline-block mb-4">
+          THE ORIGIN OF SMARTFIQ
+        </span>
+        <h1 class="font-['Montserrat'] text-4xl md:text-6xl font-extrabold mb-6 leading-tight text-white">
+          Built for <span class="lava-gradient-text">Non-Technical Founders</span> Who Want to Scale Fast.
+        </h1>
+        <p class="text-[#E7BDB2] text-lg leading-relaxed max-w-2xl mx-auto">
+          We built Smartfiq to eliminate the technical friction holding non-technical business owners back from high-speed digital growth.
+        </p>
+      </div>
+
+      <!-- Story Narrative Box -->
+      <div class="glass-panel rounded-3xl p-8 md:p-12 mb-12 space-y-8 border-t border-[#ff5625]/20">
+        
+        <!-- Chapter 1 -->
+        <div class="flex gap-6 items-start">
+          <div class="w-12 h-12 rounded-2xl bg-[#ff5625]/20 flex items-center justify-center text-[#ff5625] flex-shrink-0 mt-1">
+            <span class="material-symbols-outlined text-2xl">running_with_errors</span>
+          </div>
+          <div>
+            <h3 class="font-['Montserrat'] text-2xl font-bold mb-3 text-white">The Problem We Couldn't Ignore</h3>
+            <p class="text-gray-300 leading-relaxed text-sm md:text-base">
+              Every day, brilliant business owners with non-technical backgrounds struggle with digital execution. When they try to automate their business or generate leads online, they get lost in tech jargon. They end up hiring 5 different vendors or freelancers—one for WhatsApp bots, one for lead generation, another for data analytics, and someone else for AI integration. It’s chaotic, expensive, and frustrating.
+            </p>
+          </div>
+        </div>
+
+        <!-- Chapter 2 -->
+        <div class="flex gap-6 items-start border-t border-white/5 pt-8">
+          <div class="w-12 h-12 rounded-2xl bg-[#ff5625]/20 flex items-center justify-center text-[#ff5625] flex-shrink-0 mt-1">
+            <span class="material-symbols-outlined text-2xl">hub</span>
+          </div>
+          <div>
+            <h3 class="font-['Montserrat'] text-2xl font-bold mb-3 text-white">Our Solution: One Single Tech Partner</h3>
+            <p class="text-gray-300 leading-relaxed text-sm md:text-base">
+              We asked ourselves: <i>Why should a business owner have to wander from door to door just to get simple, powerful tech working for them?</i> That’s why we launched <strong>Smartfiq</strong>. We handle everything end-to-end. From building custom AI agents and n8n workflow automations to setting up lead-scraping pipelines and decision-ready dashboards—we build and maintain it all.
+            </p>
+          </div>
+        </div>
+
+        <!-- Chapter 3 -->
+        <div class="flex gap-6 items-start border-t border-white/5 pt-8">
+          <div class="w-12 h-12 rounded-2xl bg-[#ff5625]/20 flex items-center justify-center text-[#ff5625] flex-shrink-0 mt-1">
+            <span class="material-symbols-outlined text-2xl">rocket_launch</span>
+          </div>
+          <div>
+            <h3 class="font-['Montserrat'] text-2xl font-bold mb-3 text-white">Focus on Your Business. We’ll Handle the AI.</h3>
+            <p class="text-gray-300 leading-relaxed text-sm md:text-base">
+              You don't need to learn code or manage complex AI pipelines. With Smartfiq as your growth engine, you bring the business vision, and we deliver plug-and-play AI solutions tailored specifically to your operational needs.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- CTA Box -->
+      <div class="text-center glass-panel p-10 rounded-3xl border border-[#ff5625]/30">
+        <h3 class="font-['Montserrat'] text-2xl font-bold mb-4 text-white">Ready to Automate Your Business Without the Tech Headache?</h3>
+        <p class="text-[#E7BDB2] mb-6 text-sm md:text-base">Let's build your end-to-end AI automation stack together.</p>
+        <button onclick="openContactModal()" class="inline-flex items-center gap-2 bg-gradient-to-r from-[#ff5625] to-[#920703] text-white px-8 py-4 rounded-xl font-semibold hover:opacity-90 transition-opacity cursor-pointer shadow-[0_0_20px_rgba(255,86,37,0.4)]">
+          Book Your Free AI Audit
+          <span class="material-symbols-outlined text-xl">arrow_forward</span>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Contact Modal Container -->
+  <div id="site-modal"></div>
+
+  <!-- Site Footer -->
+  <div id="site-footer"></div>
+
+  <script src="components.js"></script>
+</body>
+</html>

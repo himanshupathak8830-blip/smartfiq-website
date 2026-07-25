@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Terms of Service | SmartFiQ AI Automation</title>
+    <link rel="icon" type="image/png" href="logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <style>
+        @keyframes headerSlideDown {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -20px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        .animate-header-slide-down {
+            animation: headerSlideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .font-plus-jakarta {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: #0A0A0A;
+            color: #e5e2e1;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: rgba(26, 26, 26, 0.65);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .primary-gradient {
+            background: linear-gradient(45deg, #ff5625, #920703);
+        }
+
+        .lava-bg-blur {
+            filter: blur(90px);
+            opacity: 0.15;
+            z-index: -1;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+    </style>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ffb5a0",
+                        "primary-container": "#ff5625",
+                        "surface": "#131313",
+                        "on-surface": "#e5e2e1",
+                        "on-surface-variant": "#e7bdb2",
+                        "background": "#0A0A0A"
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="font-body-md text-body-md">
+    <!-- Top Navigation Header -->
+    <div id="site-header"></div>
+
+    <main class="relative pt-32 pb-24 overflow-hidden min-h-screen">
+        <!-- Atmospheric Lava Background Glows -->
+        <div class="absolute top-0 left-0 w-[500px] h-[500px] bg-[#ff5625] rounded-full lava-bg-blur pointer-events-none"></div>
+        <div class="absolute top-1/2 right-0 w-[400px] h-[400px] bg-[#920703] rounded-full lava-bg-blur pointer-events-none"></div>
+
+        <div class="max-w-[1000px] mx-auto px-6">
+            <!-- Header Banner -->
+            <div class="mb-12 text-center md:text-left">
+                <span class="bg-[#ff5625]/20 text-[#ff5625] border border-[#ff5625]/30 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest inline-block mb-4">
+                    Master Service Agreement
+                </span>
+                <h1 class="text-3xl md:text-5xl font-extrabold text-white mb-4">Terms of Service</h1>
+                <p class="text-[#E7BDB2] text-sm md:text-base max-w-2xl">
+                    These Terms govern the deployment of SmartFiQ AI automation pipelines, WhatsApp Business API connections, and custom software integrations.
+                </p>
+                <p class="text-xs text-gray-500 mt-2">Effective Date: July 25, 2026</p>
+            </div>
+
+            <!-- Terms Sections Glass Container -->
+            <div class="glass-card rounded-3xl p-8 md:p-12 border border-white/10 space-y-10 text-sm leading-relaxed text-[#e5e2e1]">
+                
+                <section>
+                    <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[#ff5625]">rule</span> 1. Acceptable Use Policy
+                    </h2>
+                    <p class="mb-3">By accessing SmartFiQ platforms and API endpoints, clients agree to adhere to strict ethical and legal usage criteria:</p>
+                    <ul class="list-disc pl-6 space-y-2 text-[#E7BDB2]">
+                        <li>Clients must not use WhatsApp broadcast tools or AI voice agents to transmit unsolicited spam, deceptive phishing attempts, or illegal content.</li>
+                        <li>All WhatsApp messaging campaigns must comply with Meta’s Commerce and Business Messaging Policies, including prior opt-in consent for end consumers.</li>
+                        <li>Attempting to reverse-engineer, prompt-inject, or bypass security sandboxes of SmartFiQ AI agents is strictly prohibited.</li>
+                    </ul>
+                </section>
+
+                <hr class="border-white/10" />
+
+                <section>
+                    <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[#ff5625]">copyright</span> 2. Intellectual Property Rights
+                    </h2>
+                    <p class="mb-3">
+                        SmartFiQ retains all rights, titles, and ownership over underlying software frameworks, AI prompt architectures, custom CRM code, and proprietary algorithms.
+                    </p>
+                    <p class="text-[#E7BDB2]">
+                        Clients retain 100% ownership over their business data, customer records, workflow inputs, and generated business assets resulting from authorized platform use.
+                    </p>
+                </section>
+
+                <hr class="border-white/10" />
+
+                <section>
+                    <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[#ff5625]">speed</span> 3. Service Availability, Rate Limits & SLAs
+                    </h2>
+                    <p class="mb-3">We strive to maintain 99.9% operational uptime across our AI gateway servers:</p>
+                    <ul class="list-disc pl-6 space-y-2 text-[#E7BDB2]">
+                        <li><strong class="text-white">API Rate Limits:</strong> To prevent infrastructure overload, standard API tiers enforce dynamic request-per-minute rate limits. Exceeding limits will return standard HTTP 429 status codes.</li>
+                        <li><strong class="text-white">Scheduled Maintenance:</strong> Infrastructure updates are performed during off-peak hours with at least 24 hours prior notice to enterprise account admins.</li>
+                    </ul>
+                </section>
+
+                <hr class="border-white/10" />
+
+                <section>
+                    <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[#ff5625]">shield_alert</span> 4. Limitation of Liability
+                    </h2>
+                    <p class="text-[#E7BDB2]">
+                        SmartFiQ AI Solutions shall not be held liable for indirect, incidental, or consequential damages resulting from third-party API downtime (e.g., Meta/WhatsApp API outages, OpenAI model latency, or external CRM service disruptions) beyond our direct control.
+                    </p>
+                </section>
+
+                <hr class="border-white/10" />
+
+                <section>
+                    <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[#ff5625]">contact_support</span> 5. Inquiries & Legal Notices
+                    </h2>
+                    <p class="text-[#E7BDB2]">
+                        Questions regarding these Terms or enterprise SLA contracts should be directed to <a href="mailto:smartfiqagency@gmail.com" class="text-[#ffb5a0] underline">smartfiqagency@gmail.com</a>.
+                    </p>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Popup -->
+    <div id="site-modal"></div>
+
+    <!-- Footer -->
+    <div id="site-footer"></div>
+
+    <!-- Dynamic Legal Loader Script -->
+    <script>
+        async function loadTermsOfService() {
+            try {
+                const res = await fetch('/api/legal');
+                const data = await res.json();
+                if (data && data.termsOfService) {
+                    renderTermsContent(data.termsOfService);
+                }
+            } catch (err) {
+                console.warn('Using default Terms view:', err);
+            }
+        }
+
+        function renderTermsContent(terms) {
+            if (terms.lastUpdated) {
+                const dateEl = document.querySelector('.text-xs.text-gray-500');
+                if (dateEl) dateEl.innerText = 'Effective Date: ' + terms.lastUpdated;
+            }
+            if (terms.sections && terms.sections.length > 0) {
+                const container = document.querySelector('.glass-card.rounded-3xl');
+                if (!container) return;
+                container.innerHTML = terms.sections.map((sec, idx) => `
+                    <section>
+                        <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[#ff5625]">${sec.icon || 'rule'}</span> ${sec.title}
+                        </h2>
+                        <p class="text-[#E7BDB2] text-sm leading-relaxed">${sec.content}</p>
+                    </section>
+                    ${idx < terms.sections.length - 1 ? '<hr class="border-white/10 my-6" />' : ''}
+                `).join('');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadTermsOfService);
+    </script>
+
+    <!-- Components Script -->
+    <script src="components.js"></script>
+</body>
+
+</html>

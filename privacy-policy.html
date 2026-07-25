@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Privacy Policy | SmartFiQ AI Automation</title>
+    <link rel="icon" type="image/png" href="logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <style>
+        @keyframes headerSlideDown {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -20px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        .animate-header-slide-down {
+            animation: headerSlideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .font-plus-jakarta {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: #0A0A0A;
+            color: #e5e2e1;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: rgba(26, 26, 26, 0.65);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .primary-gradient {
+            background: linear-gradient(45deg, #ff5625, #920703);
+        }
+
+        .lava-bg-blur {
+            filter: blur(90px);
+            opacity: 0.15;
+            z-index: -1;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+    </style>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ffb5a0",
+                        "primary-container": "#ff5625",
+                        "surface": "#131313",
+                        "on-surface": "#e5e2e1",
+                        "on-surface-variant": "#e7bdb2",
+                        "background": "#0A0A0A"
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="font-body-md text-body-md">
+    <!-- Top Navigation Header -->
+    <div id="site-header"></div>
+
+    <main class="relative pt-32 pb-24 overflow-hidden min-h-screen">
+        <!-- Atmospheric Lava Background Glows -->
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-[#ff5625] rounded-full lava-bg-blur pointer-events-none"></div>
+        <div class="absolute top-1/2 left-0 w-[400px] h-[400px] bg-[#920703] rounded-full lava-bg-blur pointer-events-none"></div>
+
+        <div class="max-w-[1000px] mx-auto px-6">
+            <!-- Header Banner -->
+            <div class="mb-12 text-center md:text-left">
+                <span class="bg-[#ff5625]/20 text-[#ff5625] border border-[#ff5625]/30 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest inline-block mb-4">
+                    Legal Documentation
+                </span>
+                <h1 class="text-3xl md:text-5xl font-extrabold text-white mb-4">Privacy Policy</h1>
+                <p class="text-[#E7BDB2] text-sm md:text-base max-w-2xl">
+                    At SmartFiQ AI Solutions, safeguarding customer data, API telemetry, and conversational intelligence is foundational to our enterprise architecture.
+                </p>
+                <p class="text-xs text-gray-500 mt-2">Last Updated: July 25, 2026</p>
+            </div>
+
+            <!-- Policy Sections Glass Container -->
+            <div class="glass-card rounded-3xl p-8 md:p-12 border border-white/10 space-y-10 text-sm leading-relaxed text-[#e5e2e1]">
+                
+                <section>
+                    <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[#ff5625]">database</span> 1. Information We Collect
+                    </h2>
+                    <p class="mb-3">We collect information directly provided by enterprise clients, website visitors, and authorized API integrators:</p>
+                    <ul class="list-disc pl-6 space-y-2 text-[#E7BDB2]">
+                        <li><strong class="text-white">Account & Contact Information:</strong> Name, work email address, phone number, company name, and billing details provided during consultation booking or subscription.</li>
+                        <li><strong class="text-white">API & Integration Telemetry:</strong> Log data, webhook requests, timestamp meta, and conversation payloads routed through WhatsApp Business API or AI Voice Agent triggers.</li>
+                        <li><strong class="text-white">Device & Analytics Meta:</strong> Anonymized IP addresses, browser fingerprint, session duration, and page view navigation to optimize platform speed and security.</li>
+                    </ul>
+                </section>
+
+                <hr class="border-white/10" />
+
+                <section>
+                    <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[#ff5625]">shield</span> 2. AI Processing Safeguards & Model Training
+                    </h2>
+                    <p class="mb-4">
+                        SmartFiQ connects to enterprise-tier Large Language Model (LLM) providers under strict Zero Data Retention (ZDR) and Non-Training Service Level Agreements:
+                    </p>
+                    <div class="bg-[#0A0A0A]/80 border-l-4 border-[#ff5625] p-5 rounded-r-xl space-y-2">
+                        <h4 class="font-bold text-[#ffb5a0]">Zero Training Policy:</h4>
+                        <p class="text-xs text-[#E7BDB2]">
+                            Your proprietary business records, client chat logs, and vector database embeddings are NEVER submitted to public LLM datasets for model retraining. Your data remains strictly isolated to your tenant sandbox.
+                        </p>
+                    </div>
+                </section>
+
+                <hr class="border-white/10" />
+
+                <section>
+                    <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[#ff5625]">gavel</span> 3. GDPR & International Privacy Compliance
+                    </h2>
+                    <p class="mb-3">We comply with global privacy frameworks including GDPR (General Data Protection Regulation) and Indian DPDP Act:</p>
+                    <ul class="list-disc pl-6 space-y-2 text-[#E7BDB2]">
+                        <li><strong class="text-white">Right to Access:</strong> You may request a complete export of your stored leads, chat logs, or analytics history at any time.</li>
+                        <li><strong class="text-white">Right to Erasure (Forget Me):</strong> Upon request, all data associated with your organization will be permanently deleted from our primary servers and backups within 30 days.</li>
+                        <li><strong class="text-white">Data Encryption:</strong> All data in transit is protected using TLS 1.3 AES-256 encryption, and data at rest is encrypted using FIPS 140-2 validated cryptographic keys.</li>
+                    </ul>
+                </section>
+
+                <hr class="border-white/10" />
+
+                <section>
+                    <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[#ff5625]">schedule</span> 4. Data Retention & Third-Party Vendors
+                    </h2>
+                    <p class="mb-3">
+                        We retain client logs only for the minimum operational timeframe required to maintain workflow state and analytics accuracy. We do not sell, rent, or monetize your business data to third-party ad networks or brokers.
+                    </p>
+                </section>
+
+                <hr class="border-white/10" />
+
+                <section>
+                    <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[#ff5625]">mail</span> 5. Contact Privacy Officer
+                    </h2>
+                    <p>
+                        For privacy inquiries, data deletion requests, or security audits, contact our Data Governance Officer at:
+                    </p>
+                    <div class="mt-4 p-4 bg-white/5 border border-white/10 rounded-xl inline-block">
+                        <p class="font-bold text-white">SmartFiQ Data Governance Officer</p>
+                        <p class="text-xs text-[#ffb5a0] mt-1">Email: <a href="mailto:smartfiqagency@gmail.com" class="underline">smartfiqagency@gmail.com</a></p>
+                        <p class="text-xs text-[#E7BDB2]">New Delhi, India</p>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Popup -->
+    <div id="site-modal"></div>
+
+    <!-- Footer -->
+    <div id="site-footer"></div>
+
+    <!-- Dynamic Legal Loader Script -->
+    <script>
+        async function loadPrivacyPolicy() {
+            try {
+                const res = await fetch('/api/legal');
+                const data = await res.json();
+                if (data && data.privacyPolicy) {
+                    renderPrivacyContent(data.privacyPolicy);
+                }
+            } catch (err) {
+                console.warn('Using default Privacy Policy view:', err);
+            }
+        }
+
+        function renderPrivacyContent(privacy) {
+            if (privacy.lastUpdated) {
+                const dateEl = document.querySelector('.text-xs.text-gray-500');
+                if (dateEl) dateEl.innerText = 'Last Updated: ' + privacy.lastUpdated;
+            }
+            if (privacy.sections && privacy.sections.length > 0) {
+                const container = document.querySelector('.glass-card.rounded-3xl');
+                if (!container) return;
+                container.innerHTML = privacy.sections.map((sec, idx) => `
+                    <section>
+                        <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[#ff5625]">${sec.icon || 'shield'}</span> ${sec.title}
+                        </h2>
+                        <p class="text-[#E7BDB2] text-sm leading-relaxed">${sec.content}</p>
+                    </section>
+                    ${idx < privacy.sections.length - 1 ? '<hr class="border-white/10 my-6" />' : ''}
+                `).join('');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadPrivacyPolicy);
+    </script>
+
+    <!-- Components Script -->
+    <script src="components.js"></script>
+</body>
+
+</html>
