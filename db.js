@@ -27,11 +27,20 @@ function getSeedData() {
     { device: 'Tablet', deviceModel: 'iPad Pro', os: 'iOS 17', browser: 'Mobile Safari', ua: 'Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1' }
   ];
 
+  const mockBots = [
+    { name: 'Googlebot Indexer', category: 'Search Engine Crawler', ua: 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)' },
+    { name: 'Google Lighthouse Audit', category: 'Performance Audit Bot', ua: 'Mozilla/5.0 (Linux; Android 11; Chrome-Lighthouse) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36' },
+    { name: 'Bingbot Search Crawler', category: 'Search Engine Crawler', ua: 'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)' },
+    { name: 'WhatsApp Link Previewer', category: 'Messaging Previewer', ua: 'WhatsApp/2.23.20.76 A' },
+    { name: 'Ahrefs SEO Crawler', category: 'SEO Analytics Bot', ua: 'Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)' }
+  ];
+
   // Seed Visitors
   for (let i = 0; i < 45; i++) {
     const timestamp = new Date(Date.now() - Math.floor(Math.random() * 7 * 24 * 60 * 60 * 1000)).toISOString();
     const ip = `${103 + Math.floor(Math.random()*100)}.${Math.floor(Math.random()*200)}.${Math.floor(Math.random()*254)}.${Math.floor(Math.random()*254)}`;
-    const isBot = Math.random() < 0.05; // 5% real bot test traffic
+    const isBot = (i % 9 === 0); // ~5 explicit bot sessions
+    const bObj = isBot ? mockBots[i % mockBots.length] : null;
     const location = mockCities[Math.floor(Math.random()*mockCities.length)];
     const isp = mockISPs[Math.floor(Math.random()*mockISPs.length)];
     const email = isBot ? 'Guest' : mockEmails[Math.floor(Math.random()*mockEmails.length)];
@@ -44,13 +53,15 @@ function getSeedData() {
       location,
       isp,
       isBot,
+      botName: isBot ? bObj.name : null,
+      botCategory: isBot ? bObj.category : null,
       timestamp,
       lastActive: timestamp,
-      userAgent: isBot ? 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)' : dObj.ua,
+      userAgent: isBot ? bObj.ua : dObj.ua,
       device: isBot ? 'Desktop' : dObj.device,
-      deviceModel: isBot ? 'Googlebot Server' : dObj.deviceModel,
-      browser: isBot ? 'Googlebot' : dObj.browser,
-      os: isBot ? 'Linux' : dObj.os,
+      deviceModel: isBot ? bObj.name : dObj.deviceModel,
+      browser: isBot ? bObj.name : dObj.browser,
+      os: isBot ? 'Cloud Server' : dObj.os,
       entryPage: i % 3 === 0 ? '/services' : (i % 2 === 0 ? '/about' : '/'),
       currentPage: i % 4 === 0 ? '/contact' : '/services',
       exitPage: i % 3 === 0 ? '/contact' : (i % 2 === 0 ? '/services' : '/'),

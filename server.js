@@ -172,13 +172,41 @@ app.use(express.static(__dirname));
 
 // ==================== REST APIS ====================
 
+function identifyBotType(uaString) {
+  if (!uaString) return null;
+  const ua = uaString.toLowerCase();
+  
+  if (ua.includes('googlebot')) return { isBot: true, botName: 'Googlebot Indexer', botCategory: 'Search Engine Crawler', icon: 'smart_toy' };
+  if (ua.includes('bingbot')) return { isBot: true, botName: 'Bingbot Search Crawler', botCategory: 'Search Engine Crawler', icon: 'smart_toy' };
+  if (ua.includes('yandexbot') || ua.includes('yandex')) return { isBot: true, botName: 'Yandex Web Crawler', botCategory: 'Search Engine Crawler', icon: 'smart_toy' };
+  if (ua.includes('lighthouse') || ua.includes('chrome-lighthouse') || ua.includes('pagespeed')) return { isBot: true, botName: 'Google Lighthouse Audit', botCategory: 'Performance Audit Bot', icon: 'speed' };
+  if (ua.includes('ahrefsbot')) return { isBot: true, botName: 'Ahrefs SEO Crawler', botCategory: 'SEO Analytics Bot', icon: 'analytics' };
+  if (ua.includes('semrushbot')) return { isBot: true, botName: 'SEMrush Spider', botCategory: 'SEO Analytics Bot', icon: 'analytics' };
+  if (ua.includes('facebookexternalhit') || ua.includes('facebot')) return { isBot: true, botName: 'Facebook Link Inspector', botCategory: 'Social Media Bot', icon: 'share' };
+  if (ua.includes('whatsapp')) return { isBot: true, botName: 'WhatsApp Link Previewer', botCategory: 'Messaging Previewer', icon: 'chat' };
+  if (ua.includes('twitterbot')) return { isBot: true, botName: 'Twitter/X Crawler', botCategory: 'Social Media Bot', icon: 'share' };
+  if (ua.includes('duckduckbot')) return { isBot: true, botName: 'DuckDuckGo Bot', botCategory: 'Search Engine Crawler', icon: 'smart_toy' };
+  if (ua.includes('bot') || ua.includes('crawler') || ua.includes('spider') || ua.includes('robot') || ua.includes('crawling')) return { isBot: true, botName: 'Automated Web Spider', botCategory: 'Generic Crawler', icon: 'robot' };
+  
+  return null;
+}
+
 function parseDeviceDetails(uaString) {
   if (!uaString) {
-    return { device: 'Desktop', deviceModel: 'Windows PC', os: 'Windows 11', browser: 'Chrome' };
+    return { isBot: false, botName: null, botCategory: null, device: 'Desktop', deviceModel: 'Windows PC', os: 'Windows 11', browser: 'Chrome' };
   }
-  const isBot = /bot|googlebot|crawler|spider|robot|crawling|lighthouse/i.test(uaString);
-  if (isBot) {
-    return { device: 'Desktop', deviceModel: 'Googlebot Crawler', os: 'Linux Server', browser: 'Googlebot' };
+
+  const botObj = identifyBotType(uaString);
+  if (botObj) {
+    return {
+      isBot: true,
+      botName: botObj.botName,
+      botCategory: botObj.botCategory,
+      device: 'Desktop',
+      deviceModel: botObj.botName,
+      os: 'Cloud Server',
+      browser: botObj.botName
+    };
   }
 
   const isMobile = /mobile|iphone|ipod|android.*mobile|blackberry|opera mini|windows phone/i.test(uaString);
@@ -218,7 +246,7 @@ function parseDeviceDetails(uaString) {
     else deviceModel = 'Windows PC';
   }
 
-  return { device: deviceType, deviceModel, os, browser };
+  return { isBot: false, botName: null, botCategory: null, device: deviceType, deviceModel, os, browser };
 }
 
 // Track visitor moment (page views, clicks, scrolls, durations, entry/exit)
@@ -227,7 +255,6 @@ app.post('/api/track', async (req, res) => {
     const { sessionId, email, referrer, landingPage, entryPage, currentPage, exitPage, scrollPercentage, clickEvent, allClicks, pageViews, sessionDuration } = req.body;
     const ip = await resolveRealClientIp(req);
     const uaString = req.headers['user-agent'] || '';
-    const isBot = /bot|googlebot|crawler|spider|robot|crawling|lighthouse/i.test(uaString);
     const devInfo = parseDeviceDetails(uaString);
 
     const geo = await getGeoLocation(ip);
@@ -263,7 +290,9 @@ app.post('/api/track', async (req, res) => {
         city: geo.city,
         country: geo.country,
         isp: geo.isp,
-        isBot,
+        isBot: devInfo.isBot,
+        botName: devInfo.botName,
+        botCategory: devInfo.botCategory,
         userAgent: uaString,
         device: devInfo.device,
         deviceModel: devInfo.deviceModel,

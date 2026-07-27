@@ -234,7 +234,7 @@
           </div>
 
           <!-- Visitor Stats Summary -->
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
             <div class="glass-card p-4 rounded-2xl border border-slate-100">
               <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Total Recorded Sessions</div>
               <div id="vis-stat-total" class="text-xl font-extrabold text-slate-800 mt-1">0</div>
@@ -242,6 +242,10 @@
             <div class="glass-card p-4 rounded-2xl border border-slate-100">
               <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Human Traffic Ratio</div>
               <div id="vis-stat-human" class="text-xl font-extrabold text-green-600 mt-1">0%</div>
+            </div>
+            <div class="glass-card p-4 rounded-2xl border border-slate-100">
+              <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Detected Bot Crawlers</div>
+              <div id="vis-stat-bots" class="text-xl font-extrabold text-rose-600 mt-1">0 Bots</div>
             </div>
             <div class="glass-card p-4 rounded-2xl border border-slate-100">
               <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Top Device Breakdown</div>
@@ -258,6 +262,7 @@
             <div class="flex items-center gap-1.5 text-xs">
               <button onclick="setVisitorFilter('all')" id="visFilter-all" class="px-3.5 py-1.5 rounded-xl font-bold bg-white text-slate-800 shadow-sm transition-all">All Traffic</button>
               <button onclick="setVisitorFilter('human')" id="visFilter-human" class="px-3.5 py-1.5 rounded-xl font-semibold text-slate-500 hover:text-slate-800 transition-all">👤 Humans Only</button>
+              <button onclick="setVisitorFilter('bot')" id="visFilter-bot" class="px-3.5 py-1.5 rounded-xl font-semibold text-slate-500 hover:text-slate-800 transition-all">🤖 Bots &amp; Crawlers</button>
               <button onclick="setVisitorFilter('national')" id="visFilter-national" class="px-3.5 py-1.5 rounded-xl font-semibold text-slate-500 hover:text-slate-800 transition-all">🇮🇳 National (India)</button>
               <button onclick="setVisitorFilter('international')" id="visFilter-international" class="px-3.5 py-1.5 rounded-xl font-semibold text-slate-500 hover:text-slate-800 transition-all">🌐 International</button>
             </div>
@@ -1170,6 +1175,20 @@
               </div>
             </div>
           </div>
+
+          <!-- Bot Crawlers Analytics Breakdown -->
+          <div class="glass-card rounded-2xl p-6 shadow-sm">
+            <div class="flex justify-between items-center mb-4">
+              <div>
+                <h5 class="text-xs font-bold text-slate-800 uppercase tracking-widest">Identified Bot Crawlers &amp; Web Spiders</h5>
+                <p class="text-[10px] text-slate-400">Real-time classification of search engine bots, lighthouse audits &amp; social previewers</p>
+              </div>
+              <span id="analytics-bot-badge" class="px-2.5 py-1 bg-rose-50 text-rose-600 font-bold text-[10px] rounded-full border border-rose-200">0 Identified Bots</span>
+            </div>
+            <div id="analyticsBotList" class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <!-- Bot items rendered dynamically -->
+            </div>
+          </div>
         </section>
 
         <!-- 25. AI BUSINESS INTEL -->
@@ -1512,12 +1531,43 @@
     // ==================== DASHBOARD & REALTIME LOGIC ====================
     let charts = {};
 
+    function renderBotAnalyticsCard(visitors) {
+      const container = document.getElementById('analyticsBotList');
+      const badge = document.getElementById('analytics-bot-badge');
+      if (!container) return;
+
+      const botSessions = (visitors || rawVisitorsCache || []).filter(v => v.isBot);
+      if (badge) badge.textContent = `${botSessions.length} Identified Bots`;
+
+      if (botSessions.length === 0) {
+        container.innerHTML = `<div class="col-span-3 py-6 text-center text-slate-400 text-xs font-semibold">No automated bot or crawler sessions detected recently</div>`;
+        return;
+      }
+
+      container.innerHTML = botSessions.slice(0, 9).map(b => `
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-base">smart_toy</span>
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="text-xs font-bold text-slate-800 truncate">${b.botName || 'Web Crawler'}</div>
+            <div class="text-[10px] text-slate-400 flex items-center gap-2">
+              <span class="font-medium text-rose-600">${b.botCategory || 'Search Engine Bot'}</span>
+              <span>•</span>
+              <span>${getRelativeTime(b.timestamp)}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
     async function loadAnalyticsCharts() {
       try {
         const chartsRes = await fetch('/api/charts');
         if (chartsRes.ok) {
           const chartData = await chartsRes.json();
           renderCharts(chartData);
+          renderBotAnalyticsCard(rawVisitorsCache);
           return;
         }
       } catch (err) {}
@@ -1527,6 +1577,7 @@
         leads: [4, 7, 12, 15, 18, 22, 28],
         locations: { labels: ['Mumbai', 'Delhi', 'Bangalore', 'Pune'], counts: [45, 32, 28, 18] }
       });
+      renderBotAnalyticsCard(rawVisitorsCache);
     }
 
     async function initDashboard() {
@@ -1588,7 +1639,7 @@
 
     function setVisitorFilter(filterType) {
       currentVisitorFilter = filterType;
-      ['all', 'human', 'national', 'international'].forEach(t => {
+      ['all', 'human', 'bot', 'national', 'international'].forEach(t => {
         const btn = document.getElementById(`visFilter-${t}`);
         if (btn) {
           if (t === filterType) {
@@ -1623,7 +1674,7 @@
     }
 
     function formatSecs(sec) {
-      if (!sec || sec <= 0) return '1s';
+      if (!sec) return '0s';
       if (sec < 60) return `${sec}s`;
       const m = Math.floor(sec / 60);
       const s = sec % 60;
@@ -1634,7 +1685,7 @@
       if (!ts) return 'Just now';
       try {
         const d = new Date(ts);
-        if (isNaN(d.getTime())) return ts;
+        if (isNaN(d.getTime())) return 'Just now';
         return d.toLocaleString('en-IN', {
           day: '2-digit',
           month: 'short',
@@ -1644,7 +1695,7 @@
           hour12: true
         });
       } catch (e) {
-        return ts || 'Just now';
+        return 'Just now';
       }
     }
 
@@ -1655,7 +1706,7 @@
         if (isNaN(d.getTime())) return '';
         const now = new Date();
         const diffMs = now - d;
-        const diffMins = Math.floor(diffMs / 60000);
+        const diffMins = Math.floor(diffMs / (1000 * 60));
         if (diffMins < 1) return 'Just now';
         if (diffMins < 60) return `${diffMins}m ago`;
         const diffHours = Math.floor(diffMins / 60);
@@ -1770,22 +1821,27 @@
       // Update Visitor KPI Stat Summary Cards
       const totalVis = visitors.length;
       const humanVis = visitors.filter(v => !v.isBot).length;
+      const botVis = visitors.filter(v => v.isBot).length;
       const humanPct = totalVis > 0 ? Math.round((humanVis / totalVis) * 100) : 0;
       
       const mobileCount = visitors.filter(v => v.device === 'Mobile').length;
-      const desktopCount = visitors.filter(v => v.device === 'Desktop').length;
+      const desktopCount = visitors.filter(v => v.device === 'Desktop' && !v.isBot).length;
       const topDevice = mobileCount > desktopCount ? `Mobile (${Math.round(mobileCount/totalVis*100)}%)` : `Desktop (${Math.round(desktopCount/totalVis*100)}%)`;
 
       const avgScroll = totalVis > 0 ? Math.round(visitors.reduce((acc, v) => acc + (v.scrollPct || 0), 0) / totalVis) : 0;
 
       if (document.getElementById('vis-stat-total')) document.getElementById('vis-stat-total').textContent = totalVis;
       if (document.getElementById('vis-stat-human')) document.getElementById('vis-stat-human').textContent = `${humanPct}% Human`;
+      if (document.getElementById('vis-stat-bots')) document.getElementById('vis-stat-bots').textContent = `${botVis} Bots (${100 - humanPct}%)`;
       if (document.getElementById('vis-stat-device')) document.getElementById('vis-stat-device').textContent = topDevice;
       if (document.getElementById('vis-stat-scroll')) document.getElementById('vis-stat-scroll').textContent = `${avgScroll}%`;
+
+      renderBotAnalyticsCard(visitors);
 
       // Apply Filter
       let filtered = visitors;
       if (currentVisitorFilter === 'human') filtered = visitors.filter(v => !v.isBot);
+      if (currentVisitorFilter === 'bot') filtered = visitors.filter(v => v.isBot);
       if (currentVisitorFilter === 'national') filtered = visitors.filter(v => v.isNational || (v.location && v.location.includes('National')));
       if (currentVisitorFilter === 'international') filtered = visitors.filter(v => (!v.isNational && v.location && !v.location.includes('National')));
 
@@ -1802,29 +1858,38 @@
           ? v.userJourney.map(p => `<span class="px-2 py-0.5 bg-blue-50 text-blue-600 font-mono rounded text-[10px] font-semibold">${p}</span>`).join(' <span class="text-slate-300">→</span> ')
           : '<span class="text-slate-400 font-mono text-[10px]">/</span>';
 
-        const deviceIcon = v.device === 'Mobile' ? 'smartphone' : (v.device === 'Tablet' ? 'tablet_mac' : 'desktop_windows');
-        const deviceDisplay = v.deviceModel || (v.device === 'Mobile' ? 'iPhone / Mobile' : (v.device === 'Tablet' ? 'iPad Pro' : 'Windows PC'));
-
         const isNational = v.isNational !== undefined ? v.isNational : (v.location && v.location.includes('National'));
-        const locationBadge = isNational
+        
+        let locationBadge = isNational
           ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200/60 inline-flex items-center gap-1">🇮🇳 National (${v.city || 'India'})</span>`
           : `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200/60 inline-flex items-center gap-1">🌐 International (${v.country || 'Global'})</span>`;
 
+        let deviceIcon = v.device === 'Mobile' ? 'smartphone' : (v.device === 'Tablet' ? 'tablet_mac' : 'desktop_windows');
+        let deviceDisplay = v.deviceModel || (v.device === 'Mobile' ? 'iPhone / Mobile' : (v.device === 'Tablet' ? 'iPad Pro' : 'Windows PC'));
+        let sessionTitle = v.email || 'Guest Visitor';
+
+        if (v.isBot) {
+          locationBadge = `<span class="px-2.5 py-0.5 rounded-md text-[10px] font-extrabold bg-rose-50 text-rose-700 border border-rose-200/80 inline-flex items-center gap-1">🤖 ${v.botName || 'Web Crawler'}</span>`;
+          deviceIcon = 'smart_toy';
+          deviceDisplay = v.botName || 'Automated Crawler';
+          sessionTitle = `🤖 ${v.botName || 'Crawler Bot'}`;
+        }
+
         tr.innerHTML = `
           <td class="px-6 py-4">
-            <div class="font-bold text-slate-800 text-xs">${v.email || 'Guest Visitor'}</div>
+            <div class="font-bold text-slate-800 text-xs">${sessionTitle}</div>
             <div class="text-[10px] text-slate-400 font-mono">${v.sessionId ? 'Session: ' + v.sessionId.substring(0, 12) : 'Active Session'}</div>
           </td>
           <td class="px-6 py-4">
             <div class="mb-1">${locationBadge}</div>
-            <div class="text-[10px] text-slate-500 font-semibold">${cleanISPName(v.isp)}</div>
+            <div class="text-[10px] ${v.isBot ? 'text-rose-600 font-bold' : 'text-slate-500 font-semibold'}">${v.isBot ? (v.botCategory || 'Bot Traffic') : cleanISPName(v.isp)}</div>
           </td>
           <td class="px-6 py-4">
-            <div class="flex items-center gap-1.5 font-semibold text-slate-700">
-              <span class="material-symbols-outlined text-sm text-slate-500">${deviceIcon}</span>
+            <div class="flex items-center gap-1.5 font-semibold ${v.isBot ? 'text-rose-700' : 'text-slate-700'}">
+              <span class="material-symbols-outlined text-sm ${v.isBot ? 'text-rose-500' : 'text-slate-500'}">${deviceIcon}</span>
               <span>${deviceDisplay}</span>
             </div>
-            <div class="text-[10px] text-slate-400">${v.browser || 'Chrome'} (${v.os || 'Windows 11'})</div>
+            <div class="text-[10px] text-slate-400">${v.browser || 'Bot'} (${v.os || 'Cloud Server'})</div>
           </td>
           <td class="px-6 py-4">
             <div class="text-xs font-semibold text-slate-700">Entry: <span class="font-mono text-blue-600">${v.entryPage || '/'}</span></div>
