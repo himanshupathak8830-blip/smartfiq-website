@@ -532,7 +532,7 @@ async function submitInlineLead(e) {
 
 async function loadCmsData() {
     try {
-        const cmsRes = await fetch('/api/cms');
+        const cmsRes = await fetch(`/api/cms?t=${Date.now()}`, { cache: 'no-store' });
         if (!cmsRes.ok) throw new Error('Failed to fetch CMS');
         const cms = await cmsRes.json();
 

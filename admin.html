@@ -2097,7 +2097,7 @@
     async function loadCMSEditor() {
       let cms = {};
       try {
-        const res = await fetch('/api/cms');
+        const res = await fetch(`/api/cms?t=${Date.now()}`, { cache: 'no-store' });
         if (res.ok) {
           cms = await res.json();
           localStorage.setItem('smartfiq_cms', JSON.stringify(cms));
@@ -2110,26 +2110,35 @@
         if (stored) cms = JSON.parse(stored);
       }
 
-      document.getElementById('cmsHeroTitle').value = cms.heroTitle || '';
-      document.getElementById('cmsHeroSubtitle').value = cms.heroSubtitle || '';
-      document.getElementById('cmsContactEmail').value = cms.contactEmail || cms.consultEmail || cms.supportEmail || '';
-      document.getElementById('cmsContactPhone').value = cms.contactPhone || '';
-      document.getElementById('cmsWhatsappNumber').value = cms.whatsappNumber || '';
-      document.getElementById('cmsFooterText').value = cms.footerText || '';
+      if (cms) {
+        if (cms.heroTitle !== undefined) document.getElementById('cmsHeroTitle').value = cms.heroTitle;
+        if (cms.heroSubtitle !== undefined) document.getElementById('cmsHeroSubtitle').value = cms.heroSubtitle;
+        const email = cms.contactEmail || cms.consultEmail || cms.supportEmail;
+        if (email !== undefined) document.getElementById('cmsContactEmail').value = email;
+        if (cms.contactPhone !== undefined) document.getElementById('cmsContactPhone').value = cms.contactPhone;
+        if (cms.whatsappNumber !== undefined) document.getElementById('cmsWhatsappNumber').value = cms.whatsappNumber;
+        if (cms.footerText !== undefined) document.getElementById('cmsFooterText').value = cms.footerText;
+      }
     }
 
     async function saveCMS() {
       const restoreBtn = setButtonLoading('btnSaveCMS', 'Saving Changes...');
       const email = document.getElementById('cmsContactEmail').value.trim();
+      const phone = document.getElementById('cmsContactPhone').value.trim();
+      const whatsapp = document.getElementById('cmsWhatsappNumber').value.trim();
+      const title = document.getElementById('cmsHeroTitle').value.trim();
+      const subtitle = document.getElementById('cmsHeroSubtitle').value.trim();
+      const footer = document.getElementById('cmsFooterText').value.trim();
+
       const payload = {
-        heroTitle: document.getElementById('cmsHeroTitle').value.trim(),
-        heroSubtitle: document.getElementById('cmsHeroSubtitle').value.trim(),
+        heroTitle: title,
+        heroSubtitle: subtitle,
         contactEmail: email,
         consultEmail: email,
         supportEmail: email,
-        contactPhone: document.getElementById('cmsContactPhone').value.trim(),
-        whatsappNumber: document.getElementById('cmsWhatsappNumber').value.trim(),
-        footerText: document.getElementById('cmsFooterText').value.trim()
+        contactPhone: phone,
+        whatsappNumber: whatsapp,
+        footerText: footer
       };
 
       try {
@@ -2139,7 +2148,8 @@
           body: JSON.stringify(payload)
         });
         const data = await res.json();
-        localStorage.setItem('smartfiq_cms', JSON.stringify(data.cms || payload));
+        const finalCms = (data && data.cms) ? data.cms : payload;
+        localStorage.setItem('smartfiq_cms', JSON.stringify(finalCms));
       } catch (err) {
         console.warn('API save error, saving to LocalStorage directly', err);
         const stored = JSON.parse(localStorage.getItem('smartfiq_cms') || '{}');
@@ -2147,7 +2157,7 @@
         localStorage.setItem('smartfiq_cms', JSON.stringify(updated));
       } finally {
         restoreBtn();
-        showAdminSaveSuccess('Save hogya! Website CMS updated successfully.', 'btnSaveCMS');
+        showAdminSaveSuccess('Save hogya! Phone, Email & CMS updated instantly.', 'btnSaveCMS');
       }
     }
 

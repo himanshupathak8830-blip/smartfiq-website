@@ -172,6 +172,14 @@ app.use(express.static(__dirname));
 
 // ==================== REST APIS ====================
 
+// Disable HTTP Caching on all API endpoints so CMS & CRM updates take effect immediately on 1st click
+app.use('/api', (req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  next();
+});
+
 function identifyBotType(uaString) {
   if (!uaString) return null;
   const ua = uaString.toLowerCase();
