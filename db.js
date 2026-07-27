@@ -284,6 +284,10 @@ function writeDb(data) {
   global.smartfiq_in_memory_db = data;
   try {
     fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
+    const repoDbPath = path.join(__dirname, 'db.json');
+    if (DB_FILE !== repoDbPath) {
+      try { fs.writeFileSync(repoDbPath, JSON.stringify(data, null, 2)); } catch (e) {}
+    }
   } catch (err) {
     console.warn('DB File write warning (memory persisted):', err.message);
   }

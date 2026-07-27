@@ -553,6 +553,8 @@ function applyCmsToPage(cms) {
     if (!cms) return;
     const email = cms.contactEmail || cms.consultEmail || cms.supportEmail || 'smartfiqagency@gmail.com';
     const phone = cms.contactPhone || cms.phone || '+91 7678188047';
+    const whatsappRaw = (cms.whatsappNumber || cms.contactPhone || '7678188047').replace(/\D/g, '');
+    const cleanWa = whatsappRaw.length === 10 ? '91' + whatsappRaw : whatsappRaw;
 
     if (document.getElementById('hero-title') && cms.heroTitle) {
         document.getElementById('hero-title').innerHTML = cms.heroTitle;
@@ -564,21 +566,24 @@ function applyCmsToPage(cms) {
         document.getElementById('footer-copyright').textContent = cms.footerText;
     }
 
-    const emailEls = document.querySelectorAll('#cms-email, .cms-email');
+    // Email targets across all pages
+    const emailEls = document.querySelectorAll('#cms-email, .cms-email, a[href^="mailto:"]');
     emailEls.forEach(el => {
         el.textContent = email;
         if (el.tagName === 'A') el.href = `mailto:${email}`;
     });
 
-    const phoneEls = document.querySelectorAll('#cms-phone, .cms-phone');
+    // Phone targets across all pages
+    const phoneEls = document.querySelectorAll('#cms-phone, .cms-phone, a[href^="tel:"]');
     phoneEls.forEach(el => {
         el.textContent = phone;
         if (el.tagName === 'A') el.href = `tel:${phone.replace(/\s+/g, '')}`;
     });
 
+    // WhatsApp links across all pages
     const whatsappLinks = document.querySelectorAll('a[href*="wa.me"]');
     whatsappLinks.forEach(link => {
-        link.href = `https://wa.me/${cms.whatsappNumber || '917678188047'}?text=Hi%20SmartFiQ,%20I%20would%20like%20to%20know%20more%20about%20your%20services!`;
+        link.href = `https://wa.me/${cleanWa}?text=Hi%20SmartFiQ,%20I%20would%20like%20to%20know%20more%20about%20your%20services!`;
     });
 }
 
