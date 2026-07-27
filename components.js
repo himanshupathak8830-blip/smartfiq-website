@@ -166,9 +166,17 @@
                         <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="privacy-policy.html">Privacy Policy</a></li>
                         <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="terms.html">Terms of Service</a></li>
                         <li>
-                            <button onclick="openContactModal()" class="inline-flex items-center gap-1.5 text-[#ff5625] hover:text-white transition-colors font-bold text-xs uppercase tracking-wider mt-2">
+                            <button onclick="openContactModal()" class="inline-flex items-center gap-1.5 text-[#ff5625] hover:text-white transition-colors font-bold text-xs uppercase tracking-wider mt-1">
                                 <span class="material-symbols-outlined text-sm">support_agent</span> Contact Support
                             </button>
+                        </li>
+                        <li class="pt-3 border-t border-white/10 mt-3">
+                            <p class="text-[11px] text-[#ffb5a0] font-bold mb-1.5 uppercase">Subscribe to AI Insights</p>
+                            <form onsubmit="submitNewsletter(event)" class="flex flex-col gap-2">
+                                <input type="email" required placeholder="Enter work email..." class="w-full px-3 py-2 bg-white/5 border border-white/15 rounded-lg text-white placeholder-gray-500 text-xs focus:outline-none focus:border-[#ff5625]" />
+                                <button type="submit" class="w-full py-2 bg-[#ff5625] hover:bg-[#e04518] text-white font-bold text-xs rounded-lg transition-all">Subscribe</button>
+                            </form>
+                            <div class="newsletter-status hidden text-emerald-400 text-[10px] mt-1 font-semibold">✓ Subscribed successfully!</div>
                         </li>
                     </ul>
                 </div>
@@ -359,13 +367,33 @@ async function submitLeadData(data, statusElementId, submitBtnId) {
     }
 
     try {
-        await fetch('/api/leads', {
+        const res = await fetch('/api/leads', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
+        const resData = await res.json();
+        if (resData && resData.lead) {
+            const stored = JSON.parse(localStorage.getItem('smartfiq_leads') || '[]');
+            stored.unshift(resData.lead);
+            localStorage.setItem('smartfiq_leads', JSON.stringify(stored));
+        }
     } catch (err) {
         console.warn('Local API save warning:', err);
+        const stored = JSON.parse(localStorage.getItem('smartfiq_leads') || '[]');
+        const localLead = {
+            name: data.name || 'Newsletter Subscriber',
+            email: data.email,
+            phone: data.phone || 'N/A',
+            budget: data.budget || 'N/A',
+            message: data.message || 'Subscribed via Website',
+            source: data.source || 'Newsletter',
+            timestamp: new Date().toISOString(),
+            status: 'New',
+            aiScore: 85
+        };
+        stored.unshift(localLead);
+        localStorage.setItem('smartfiq_leads', JSON.stringify(stored));
     }
 
     if (btnEl) {

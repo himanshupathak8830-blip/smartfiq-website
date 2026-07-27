@@ -1614,18 +1614,18 @@
 
     async function loadLeads() {
       let leads = [];
+      let fetchSuccess = false;
       try {
         const leadsRes = await fetch('/api/leads');
         if (leadsRes.ok) {
           leads = await leadsRes.json();
-          if (leads && leads.length > 0) {
-            localStorage.setItem('smartfiq_leads', JSON.stringify(leads));
-          }
+          fetchSuccess = true;
+          localStorage.setItem('smartfiq_leads', JSON.stringify(leads));
         }
       } catch (err) {
         console.error('Failed to load leads:', err);
       }
-      if (!leads || leads.length === 0) {
+      if (!fetchSuccess) {
         const stored = localStorage.getItem('smartfiq_leads');
         if (stored) {
           try { leads = JSON.parse(stored); } catch (e) {}
@@ -1653,18 +1653,18 @@
     }
 
     async function loadVisitors() {
+      let fetchSuccess = false;
       try {
         const visitorsRes = await fetch('/api/visitors');
         if (visitorsRes.ok) {
           rawVisitorsCache = await visitorsRes.json();
-          if (rawVisitorsCache && rawVisitorsCache.length > 0) {
-            localStorage.setItem('smartfiq_visitors', JSON.stringify(rawVisitorsCache));
-          }
+          fetchSuccess = true;
+          localStorage.setItem('smartfiq_visitors', JSON.stringify(rawVisitorsCache));
         }
       } catch (err) {
         console.error('Failed to load visitors:', err);
       }
-      if (!rawVisitorsCache || rawVisitorsCache.length === 0) {
+      if (!fetchSuccess) {
         const stored = localStorage.getItem('smartfiq_visitors');
         if (stored) {
           try { rawVisitorsCache = JSON.parse(stored); } catch (e) {}
@@ -2012,15 +2012,24 @@
 
     async function clearVisitorsLog() {
       if (confirm('Clear all visitor session history?')) {
-        await fetch('/api/visitors', { method: 'DELETE' });
-        initDashboard();
+        rawVisitorsCache = [];
+        localStorage.setItem('smartfiq_visitors', '[]');
+        try {
+          await fetch('/api/visitors', { method: 'DELETE' });
+        } catch (e) {}
+        renderVisitorsTable([]);
+        showAdminSaveSuccess('Visitor sessions cleared!', 'nav-visitors');
       }
     }
 
     async function clearLeadsLog() {
       if (confirm('Clear all leads database inbox?')) {
-        await fetch('/api/leads', { method: 'DELETE' });
-        initDashboard();
+        localStorage.setItem('smartfiq_leads', '[]');
+        try {
+          await fetch('/api/leads', { method: 'DELETE' });
+        } catch (e) {}
+        renderLeadsTable([]);
+        showAdminSaveSuccess('Leads inbox cleared!', 'nav-leads');
       }
     }
 
