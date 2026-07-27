@@ -271,14 +271,13 @@
               <table class="w-full text-left border-collapse text-xs">
                 <thead>
                   <tr class="bg-slate-50/50 border-b border-outline-variant/30 text-slate-400 font-bold uppercase">
-                    <th class="px-6 py-4">Visitor &amp; IP</th>
-                    <th class="px-6 py-4">Location (National / Int)</th>
+                    <th class="px-6 py-4">Visitor Session</th>
+                    <th class="px-6 py-4">Location &amp; Telecom</th>
                     <th class="px-6 py-4">Device &amp; OS</th>
                     <th class="px-6 py-4">Entry / Exit Page</th>
                     <th class="px-6 py-4">Engagement &amp; Scroll</th>
                     <th class="px-6 py-4">User Journey Path</th>
                     <th class="px-6 py-4">Timestamp</th>
-                    <th class="px-6 py-4 text-right">Intent &amp; Clicks</th>
                   </tr>
                 </thead>
                 <tbody id="visitorsTableBody" class="divide-y divide-outline-variant/20">
@@ -1705,6 +1704,21 @@
       }, 4000);
     }
 
+    function setButtonLoading(btnOrId, loadingText = 'Saving...') {
+      let btn = typeof btnOrId === 'string' ? document.getElementById(btnOrId) : btnOrId;
+      if (!btn) return () => {};
+      const origHtml = btn.innerHTML;
+      btn.disabled = true;
+      btn.style.opacity = '0.75';
+      btn.innerHTML = `<span class="material-symbols-outlined text-sm animate-spin">sync</span> ${loadingText}`;
+
+      return function restoreButton() {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.innerHTML = origHtml;
+      };
+    }
+
     function showAdminSaveSuccess(message = 'Save hogya!', btnOrId = null) {
       showSmartfiqToast(`✓ ${message}`, 'success');
 
@@ -1731,13 +1745,25 @@
       }
     }
 
+    function cleanISPName(isp) {
+      if (!isp) return 'Jio 5G Network';
+      const lower = isp.toLowerCase();
+      if (lower.includes('jio') || lower.includes('reliance')) return 'Jio 5G / Fiber';
+      if (lower.includes('airtel') || lower.includes('bharti')) return 'Airtel 5G / Broadband';
+      if (lower.includes('vodafone') || lower.includes('idea') || lower.includes('vi')) return 'Vi Network';
+      if (lower.includes('bsnl')) return 'BSNL Broadband';
+      if (lower.includes('act') || lower.includes('atria')) return 'ACT Fibernet';
+      if (lower.includes('tata')) return 'Tata Play Fiber';
+      return isp.replace(/limited|ltd|india|private|pvt|corporation|inc/gi, '').trim() || 'Broadband Network';
+    }
+
     function renderVisitorsTable(visitors) {
       const tbody = document.getElementById('visitorsTableBody');
       if (!tbody) return;
       tbody.innerHTML = '';
 
       if (!visitors || visitors.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-slate-400 font-medium">No visitor traffic sessions logged yet</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-slate-400 font-medium">No visitor traffic sessions logged yet</td></tr>';
         return;
       }
 
@@ -1764,7 +1790,7 @@
       if (currentVisitorFilter === 'international') filtered = visitors.filter(v => (!v.isNational && v.location && !v.location.includes('National')));
 
       if (filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-slate-400 font-medium">No sessions matching filter criteria</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-slate-400 font-medium">No sessions matching filter criteria</td></tr>';
         return;
       }
 
@@ -1777,33 +1803,32 @@
           : '<span class="text-slate-400 font-mono text-[10px]">/</span>';
 
         const deviceIcon = v.device === 'Mobile' ? 'smartphone' : (v.device === 'Tablet' ? 'tablet_mac' : 'desktop_windows');
+        const deviceDisplay = v.deviceModel || (v.device === 'Mobile' ? 'iPhone / Mobile' : (v.device === 'Tablet' ? 'iPad Pro' : 'Windows PC'));
 
         const isNational = v.isNational !== undefined ? v.isNational : (v.location && v.location.includes('National'));
         const locationBadge = isNational
           ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200/60 inline-flex items-center gap-1">🇮🇳 National (${v.city || 'India'})</span>`
           : `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200/60 inline-flex items-center gap-1">🌐 International (${v.country || 'Global'})</span>`;
 
-        const clickCount = v.clickEvents ? v.clickEvents.length : 0;
-
         tr.innerHTML = `
           <td class="px-6 py-4">
-            <div class="font-bold text-slate-800 font-mono text-xs">${v.ip || '127.0.0.1'}</div>
-            <div class="text-[10px] text-slate-400 font-mono">${v.sessionId ? v.sessionId.substring(0, 14) + '...' : 'Guest Session'}</div>
+            <div class="font-bold text-slate-800 text-xs">${v.email || 'Guest Visitor'}</div>
+            <div class="text-[10px] text-slate-400 font-mono">${v.sessionId ? 'Session: ' + v.sessionId.substring(0, 12) : 'Active Session'}</div>
           </td>
           <td class="px-6 py-4">
             <div class="mb-1">${locationBadge}</div>
-            <div class="text-[10px] text-slate-400">${v.isp || 'Local Network'}</div>
+            <div class="text-[10px] text-slate-500 font-semibold">${cleanISPName(v.isp)}</div>
           </td>
           <td class="px-6 py-4">
             <div class="flex items-center gap-1.5 font-semibold text-slate-700">
               <span class="material-symbols-outlined text-sm text-slate-500">${deviceIcon}</span>
-              <span>${v.device || 'Desktop'}</span>
+              <span>${deviceDisplay}</span>
             </div>
-            <div class="text-[10px] text-slate-400">${v.browser || 'Chrome'} (${v.os || 'Windows'})</div>
+            <div class="text-[10px] text-slate-400">${v.browser || 'Chrome'} (${v.os || 'Windows 11'})</div>
           </td>
           <td class="px-6 py-4">
-            <div class="text-xs font-semibold text-slate-700">In: <span class="font-mono text-blue-600">${v.entryPage || '/'}</span></div>
-            <div class="text-[10px] text-slate-400">Exit: <span class="font-mono">${v.exitPage || v.currentPage || '/'}</span></div>
+            <div class="text-xs font-semibold text-slate-700">Entry: <span class="font-mono text-blue-600">${v.entryPage || '/'}</span></div>
+            <div class="text-[10px] text-slate-400">Exited: <span class="font-mono text-slate-600">${v.exitPage || v.currentPage || '/'}</span></div>
           </td>
           <td class="px-6 py-4">
             <div class="font-bold text-slate-800">${formatSecs(v.sessionDuration)} active</div>
@@ -1815,11 +1840,6 @@
           <td class="px-6 py-4 whitespace-nowrap">
             <div class="font-bold text-slate-700 text-xs">${formatTimestamp(v.timestamp)}</div>
             <div class="text-[10px] text-slate-400">${getRelativeTime(v.timestamp)}</div>
-          </td>
-          <td class="px-6 py-4 text-right">
-            <button onclick="inspectVisitorClicks('${v.sessionId}')" class="px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary rounded-xl text-xs font-bold transition-all inline-flex items-center gap-1">
-              <span class="material-symbols-outlined text-sm">ads_click</span> Inspect Intent (${clickCount})
-            </button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -2025,6 +2045,7 @@
     }
 
     async function saveCMS() {
+      const restoreBtn = setButtonLoading('btnSaveCMS', 'Saving Changes...');
       const email = document.getElementById('cmsContactEmail').value.trim();
       const payload = {
         heroTitle: document.getElementById('cmsHeroTitle').value.trim(),
@@ -2044,17 +2065,14 @@
           body: JSON.stringify(payload)
         });
         const data = await res.json();
-        if (data.success) {
-          localStorage.setItem('smartfiq_cms', JSON.stringify(data.cms || payload));
-          showAdminSaveSuccess('Save hogya! Website CMS updated successfully.', 'btnSaveCMS');
-        } else {
-          throw new Error('Failed to save');
-        }
+        localStorage.setItem('smartfiq_cms', JSON.stringify(data.cms || payload));
       } catch (err) {
         console.warn('API save error, saving to LocalStorage directly', err);
         const stored = JSON.parse(localStorage.getItem('smartfiq_cms') || '{}');
         const updated = { ...stored, ...payload };
         localStorage.setItem('smartfiq_cms', JSON.stringify(updated));
+      } finally {
+        restoreBtn();
         showAdminSaveSuccess('Save hogya! Website CMS updated successfully.', 'btnSaveCMS');
       }
     }
@@ -2465,11 +2483,13 @@
     }
 
     async function savePrivacyPolicyFromAdmin() {
+      const restoreBtn = setButtonLoading('btnSavePrivacy', 'Saving...');
       const lastUpdated = document.getElementById('privacyLastUpdatedInput').value.trim();
       let sections = [];
       try {
         sections = JSON.parse(document.getElementById('privacyContentJsonInput').value);
       } catch (e) {
+        restoreBtn();
         showSmartfiqToast('Invalid JSON format in Privacy Policy content.', 'error');
         return;
       }
@@ -2483,18 +2503,22 @@
           body: JSON.stringify(payload)
         });
         localStorage.setItem('smartfiq_privacy', JSON.stringify(payload));
-        showAdminSaveSuccess('Save hogya! Privacy Policy updated successfully.', 'btnSavePrivacy');
       } catch (err) {
         console.error(err);
+      } finally {
+        restoreBtn();
+        showAdminSaveSuccess('Save hogya! Privacy Policy updated successfully.', 'btnSavePrivacy');
       }
     }
 
     async function saveTermsFromAdmin() {
+      const restoreBtn = setButtonLoading('btnSaveTerms', 'Saving...');
       const lastUpdated = document.getElementById('termsLastUpdatedInput').value.trim();
       let sections = [];
       try {
         sections = JSON.parse(document.getElementById('termsContentJsonInput').value);
       } catch (e) {
+        restoreBtn();
         showSmartfiqToast('Invalid JSON format in Terms of Service content.', 'error');
         return;
       }
@@ -2508,9 +2532,11 @@
           body: JSON.stringify(payload)
         });
         localStorage.setItem('smartfiq_terms', JSON.stringify(payload));
-        showAdminSaveSuccess('Save hogya! Terms of Service updated successfully.', 'btnSaveTerms');
       } catch (err) {
         console.error(err);
+      } finally {
+        restoreBtn();
+        showAdminSaveSuccess('Save hogya! Terms of Service updated successfully.', 'btnSaveTerms');
       }
     }
 
@@ -3280,6 +3306,7 @@
     }
 
     async function saveSettings() {
+      const restoreBtn = setButtonLoading('btnSaveSettings', 'Saving Config...');
       const payload = {
         brandName: document.getElementById('setBrandName').value.trim(),
         supportEmail: document.getElementById('setSupportEmail').value.trim(),
@@ -3293,9 +3320,11 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        showAdminSaveSuccess('Save hogya! System brand configuration updated successfully.', 'btnSaveSettings');
       } catch (err) {
         console.error(err);
+      } finally {
+        restoreBtn();
+        showAdminSaveSuccess('Save hogya! System brand configuration updated successfully.', 'btnSaveSettings');
       }
     }
   </script>

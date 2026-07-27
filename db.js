@@ -15,30 +15,50 @@ function getSeedData() {
   const mockBudgets = ['Under ₹25,000', '₹25,000 - ₹50,000', '₹50,000 - ₹1,00,000', '₹1,00,000+'];
   const mockMessages = ['Need ecommerce website revamp', 'Looking for responsive landing page design', 'CRM integration for automated followups', 'Web scraping lead gen bot needed', 'WhatsApp chatbot for retail brand'];
 
+  const mockISPs = ['Jio 5G', 'Airtel 5G', 'Vi Network', 'BSNL Broadband', 'ACT Fibernet', 'Tata Play Fiber'];
+
+  const mockDevices = [
+    { device: 'Mobile', deviceModel: 'iPhone 15 Pro', os: 'iOS 17', browser: 'Mobile Safari', ua: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1' },
+    { device: 'Mobile', deviceModel: 'Samsung Galaxy S24', os: 'Android 14', browser: 'Chrome Mobile', ua: 'Mozilla/5.0 (Linux; Android 14; SM-S928B) AppleWebKit/537.36 Chrome/122.0.0.0 Mobile Safari/537.36' },
+    { device: 'Mobile', deviceModel: 'OnePlus 12', os: 'Android 14', browser: 'Chrome Mobile', ua: 'Mozilla/5.0 (Linux; Android 14; CPH2581) AppleWebKit/537.36 Chrome/121.0.0.0 Mobile Safari/537.36' },
+    { device: 'Desktop', deviceModel: 'Windows PC', os: 'Windows 11', browser: 'Chrome', ua: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/122.0.0.0 Safari/537.36' },
+    { device: 'Desktop', deviceModel: 'Windows PC', os: 'Windows 10', browser: 'Edge', ua: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0' },
+    { device: 'Desktop', deviceModel: 'MacBook Pro', os: 'macOS Ventura', browser: 'Safari', ua: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_3) AppleWebKit/605.1.15 Safari/605.1.15' },
+    { device: 'Tablet', deviceModel: 'iPad Pro', os: 'iOS 17', browser: 'Mobile Safari', ua: 'Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1' }
+  ];
+
   // Seed Visitors
   for (let i = 0; i < 45; i++) {
     const timestamp = new Date(Date.now() - Math.floor(Math.random() * 7 * 24 * 60 * 60 * 1000)).toISOString();
     const ip = `${103 + Math.floor(Math.random()*100)}.${Math.floor(Math.random()*200)}.${Math.floor(Math.random()*254)}.${Math.floor(Math.random()*254)}`;
-    const isBot = Math.random() < 0.12;
+    const isBot = Math.random() < 0.05; // 5% real bot test traffic
     const location = mockCities[Math.floor(Math.random()*mockCities.length)];
+    const isp = mockISPs[Math.floor(Math.random()*mockISPs.length)];
     const email = isBot ? 'Guest' : mockEmails[Math.floor(Math.random()*mockEmails.length)];
+    const dObj = mockDevices[i % mockDevices.length];
     
     visitors.push({
+      sessionId: `sf-sess-${100000 + i}`,
       ip,
       email,
       location,
+      isp,
       isBot,
       timestamp,
       lastActive: timestamp,
-      userAgent: isBot ? 'Mozilla/5.0 (compatible; Googlebot/2.1)' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Chrome/120.0.0.0 Safari/537.36',
-      device: isBot ? 'Desktop' : (Math.random() < 0.35 ? 'Mobile' : 'Desktop'),
-      browser: isBot ? 'Googlebot' : 'Chrome',
-      os: isBot ? 'Linux' : 'macOS',
+      userAgent: isBot ? 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)' : dObj.ua,
+      device: isBot ? 'Desktop' : dObj.device,
+      deviceModel: isBot ? 'Googlebot Server' : dObj.deviceModel,
+      browser: isBot ? 'Googlebot' : dObj.browser,
+      os: isBot ? 'Linux' : dObj.os,
+      entryPage: i % 3 === 0 ? '/services' : (i % 2 === 0 ? '/about' : '/'),
+      currentPage: i % 4 === 0 ? '/contact' : '/services',
+      exitPage: i % 3 === 0 ? '/contact' : (i % 2 === 0 ? '/services' : '/'),
       sessionDuration: isBot ? 1 : Math.floor(Math.random() * 240) + 10,
       scrollPct: isBot ? 5 : Math.floor(Math.random() * 85) + 15,
       pageViews: isBot ? 1 : Math.floor(Math.random() * 4) + 1,
       clickEvents: [],
-      userJourney: ['/']
+      userJourney: ['/', '/services']
     });
   }
 
@@ -275,6 +295,7 @@ function updateSettings(settingsData) {
 }
 
 module.exports = {
+  getSeedData,
   readDb,
   writeDb,
   updateCMS,

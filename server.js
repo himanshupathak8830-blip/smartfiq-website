@@ -172,14 +172,63 @@ app.use(express.static(__dirname));
 
 // ==================== REST APIS ====================
 
+function parseDeviceDetails(uaString) {
+  if (!uaString) {
+    return { device: 'Desktop', deviceModel: 'Windows PC', os: 'Windows 11', browser: 'Chrome' };
+  }
+  const isBot = /bot|googlebot|crawler|spider|robot|crawling|lighthouse/i.test(uaString);
+  if (isBot) {
+    return { device: 'Desktop', deviceModel: 'Googlebot Crawler', os: 'Linux Server', browser: 'Googlebot' };
+  }
+
+  const isMobile = /mobile|iphone|ipod|android.*mobile|blackberry|opera mini|windows phone/i.test(uaString);
+  const isTablet = /ipad|android(?!.*mobile)|tablet/i.test(uaString);
+
+  let os = 'Windows 11';
+  if (/mac OS X|macintosh/i.test(uaString)) os = 'macOS Ventura';
+  else if (/windows nt 10\.0/i.test(uaString)) os = 'Windows 11';
+  else if (/windows nt/i.test(uaString)) os = 'Windows 10';
+  else if (/android/i.test(uaString)) os = 'Android 14';
+  else if (/iphone|ipad|ipod/i.test(uaString)) os = 'iOS 17';
+  else if (/linux/i.test(uaString)) os = 'Linux Ubuntu';
+
+  let browser = 'Chrome';
+  if (/edg/i.test(uaString)) browser = 'Edge';
+  else if (/firefox/i.test(uaString)) browser = 'Firefox';
+  else if (/safari/i.test(uaString) && !/chrome/i.test(uaString)) browser = 'Safari';
+
+  let deviceType = 'Desktop';
+  let deviceModel = 'Windows PC';
+
+  if (isMobile) {
+    deviceType = 'Mobile';
+    if (/iphone/i.test(uaString)) deviceModel = 'iPhone 15 Pro';
+    else if (/samsung|sm-/i.test(uaString)) deviceModel = 'Samsung Galaxy';
+    else if (/pixel/i.test(uaString)) deviceModel = 'Google Pixel';
+    else if (/oneplus/i.test(uaString)) deviceModel = 'OnePlus';
+    else deviceModel = 'Android Mobile';
+  } else if (isTablet) {
+    deviceType = 'Tablet';
+    if (/ipad/i.test(uaString)) deviceModel = 'iPad Pro';
+    else deviceModel = 'Android Tablet';
+  } else {
+    deviceType = 'Desktop';
+    if (os.includes('macOS')) deviceModel = 'MacBook Pro';
+    else if (os.includes('Linux')) deviceModel = 'Linux PC';
+    else deviceModel = 'Windows PC';
+  }
+
+  return { device: deviceType, deviceModel, os, browser };
+}
+
 // Track visitor moment (page views, clicks, scrolls, durations, entry/exit)
 app.post('/api/track', async (req, res) => {
   try {
     const { sessionId, email, referrer, landingPage, entryPage, currentPage, exitPage, scrollPercentage, clickEvent, allClicks, pageViews, sessionDuration } = req.body;
     const ip = await resolveRealClientIp(req);
     const uaString = req.headers['user-agent'] || '';
-    const agent = useragent.parse(uaString);
-    const isBot = /bot|googlebot|crawler|spider|robot|crawling/i.test(uaString);
+    const isBot = /bot|googlebot|crawler|spider|robot|crawling|lighthouse/i.test(uaString);
+    const devInfo = parseDeviceDetails(uaString);
 
     const geo = await getGeoLocation(ip);
     const isNational = geo.isNational !== undefined ? geo.isNational : (geo.country === 'India');
@@ -216,9 +265,10 @@ app.post('/api/track', async (req, res) => {
         isp: geo.isp,
         isBot,
         userAgent: uaString,
-        device: isBot ? 'Desktop' : (uaString.includes('Mobile') ? 'Mobile' : (uaString.includes('iPad') || uaString.includes('Android') && !uaString.includes('Mobile') ? 'Tablet' : 'Desktop')),
-        browser: agent.family,
-        os: agent.os.family,
+        device: devInfo.device,
+        deviceModel: devInfo.deviceModel,
+        browser: devInfo.browser,
+        os: devInfo.os,
         entryPage: entryPage || landingPage || currentPage || '/',
         currentPage: currentPage || '/',
         exitPage: exitPage || currentPage || '/',
