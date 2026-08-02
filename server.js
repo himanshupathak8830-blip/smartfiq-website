@@ -350,6 +350,29 @@ app.post('/api/track', async (req, res) => {
 
 // Google Apps Script Endpoint from .env
 const GOOGLE_SHEET_URL = process.env.GOOGLE_SHEET_URL || "https://script.google.com/macros/s/AKfycbwL8EqUfiH6Twt4ooj5U3K0H1vNaDlwJuWWXp8beZnCemyOYZQ3B9C-f084Hr3CKBDs/exec";
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "8841778238:AAHOmeQHKc8MiBpOTnov-defOCzBHdIkOI0";
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || "-5570843599";
+
+async function sendTelegramNotification(lead) {
+  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
+  try {
+    const text = `🚨 New Lead Received! (Automate With AK)\n\n` +
+      `👤 Name: ${lead.name}\n` +
+      `📧 Email: ${lead.email || 'N/A'}\n` +
+      `📞 Phone: ${lead.phone || 'N/A'}\n` +
+      `💰 Budget: ${lead.budget || 'N/A'}\n` +
+      `📝 Requirements: ${lead.message || 'N/A'}\n` +
+      `🌐 Source: ${lead.source || 'Website'}\n` +
+      `📍 Location: ${lead.location || 'N/A'}`;
+
+    await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      chat_id: TELEGRAM_CHAT_ID,
+      text: text
+    }, { timeout: 5000 });
+  } catch (err) {
+    console.warn('Telegram notification warning:', err.message);
+  }
+}
 
 // Create a new lead from contact form submission
 app.post('/api/leads', async (req, res) => {
@@ -397,6 +420,9 @@ app.post('/api/leads', async (req, res) => {
     } catch (gErr) {
       console.warn('Google Sheet server forward warning:', gErr.message);
     }
+
+    // Forward lead notification to Telegram Group
+    await sendTelegramNotification(newLead);
 
     res.json({ success: true, lead: newLead });
   } catch (err) {
