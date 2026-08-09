@@ -15,10 +15,10 @@
 
         const navLinks = [
             { name: 'Home', href: 'index.html' },
-            { name: 'Services', href: 'Services.html' },
+            { name: 'Services', href: 'services.html' },
             { name: 'Case Studies', href: 'case-studies.html' },
             { name: 'Blog', href: 'blog.html' },
-            { name: 'About', href: 'About.html' }
+            { name: 'About', href: 'about.html' }
         ];
 
         const desktopNavHTML = navLinks.map(link => {
@@ -144,10 +144,10 @@
                 <div>
                     <h5 class="text-[#ffb5a0] font-bold text-sm uppercase tracking-wider mb-6">Services</h5>
                     <ul class="space-y-3 text-[#E7BDB2] text-sm font-medium">
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="Services.html">AI Automation</a></li>
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="Services.html">WhatsApp Automation</a></li>
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="Services.html">Voice AI Agents</a></li>
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="Services.html">Custom AI Solutions</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="services.html">AI Automation</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="services.html">WhatsApp Automation</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="services.html">Voice AI Agents</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="services.html">Custom AI Solutions</a></li>
                     </ul>
                 </div>
                 <div>
@@ -155,7 +155,7 @@
                     <ul class="space-y-3 text-[#E7BDB2] text-sm font-medium">
                         <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="case-studies.html">Case Studies</a></li>
                         <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="blog.html">Insights &amp; Blogs</a></li>
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="About.html">About Us</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="about.html">About Us</a></li>
                         <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="our-story.html">Our Story</a></li>
                         <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="faq.html">FAQs</a></li>
                     </ul>
@@ -600,21 +600,9 @@ if (!sessionStorage.getItem('sf_entry_page')) {
     sessionStorage.setItem('sf_entry_page', window.location.pathname);
 }
 
-let clientPublicIp = sessionStorage.getItem('sf_client_ip');
+let clientPublicIp = sessionStorage.getItem('sf_client_ip') || '';
 async function getClientPublicIp() {
-    if (clientPublicIp) return clientPublicIp;
-    try {
-        const res = await fetch('https://api.ipify.org?format=json', { signal: AbortSignal.timeout(2000) });
-        if (res.ok) {
-            const data = await res.json();
-            if (data && data.ip) {
-                clientPublicIp = data.ip;
-                sessionStorage.setItem('sf_client_ip', clientPublicIp);
-                return clientPublicIp;
-            }
-        }
-    } catch (e) {}
-    return '';
+    return clientPublicIp;
 }
 
 window.sf_clicksQueue = window.sf_clicksQueue || [];
@@ -675,17 +663,17 @@ async function sendBeaconTelemetry(isUnloading = false, latestClick = null) {
 
         const payloadStr = JSON.stringify(payloadData);
 
+        // Visitor Intel Fix: Use keepalive fetch with sendBeacon fallback to ensure tracking pings complete during page unload without blocking navigation.
         if (isUnloading && navigator.sendBeacon) {
             const blob = new Blob([payloadStr], { type: 'application/json' });
             navigator.sendBeacon('/api/track', blob);
-        } else {
-            fetch('/api/track', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: payloadStr,
-                keepalive: true
-            }).catch(() => {});
         }
+        fetch('/api/track', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: payloadStr,
+            keepalive: true
+        }).catch(() => {});
     } catch (err) {
         console.warn('Telemetry payload failed:', err);
     }

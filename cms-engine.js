@@ -195,9 +195,88 @@
                 console.warn('API delete fallback:', e);
             }
             return true;
+        },
+
+        async loadCMSContent() {
+            // Website CMS Fix: Fetch live CMS configuration from /api/cms and dynamically populate public page DOM elements on page load.
+            try {
+                let cms = null;
+                const res = await fetch(`/api/cms?t=${Date.now()}`);
+                if (res.ok) {
+                    cms = await res.json();
+                    localStorage.setItem('smartfiq_cms', JSON.stringify(cms));
+                } else {
+                    const stored = localStorage.getItem('smartfiq_cms');
+                    if (stored) cms = JSON.parse(stored);
+                }
+
+                if (!cms) return;
+
+                // Inject Hero Title
+                const heroTitleEl = document.getElementById('hero-title') || document.getElementById('heroTitle');
+                if (heroTitleEl && cms.heroTitle) {
+                    heroTitleEl.innerHTML = cms.heroTitle;
+                }
+
+                // Inject Hero Subtitle
+                const heroSubtitleEl = document.getElementById('hero-subtitle') || document.getElementById('heroSubtitle');
+                if (heroSubtitleEl && cms.heroSubtitle) {
+                    heroSubtitleEl.textContent = cms.heroSubtitle;
+                }
+
+                // Inject About Title
+                const aboutTitleEl = document.getElementById('about-title') || document.getElementById('aboutTitle');
+                if (aboutTitleEl && cms.aboutTitle) {
+                    aboutTitleEl.innerHTML = cms.aboutTitle;
+                }
+
+                // Inject About Content
+                const aboutContentEl = document.getElementById('about-content') || document.getElementById('aboutContent');
+                if (aboutContentEl && cms.aboutContent) {
+                    aboutContentEl.textContent = cms.aboutContent;
+                }
+
+                // Inject Contact Email
+                const email = cms.contactEmail || cms.consultEmail || cms.supportEmail;
+                if (email) {
+                    document.querySelectorAll('.cms-contact-email, #contact-email').forEach(el => {
+                        el.textContent = email;
+                        if (el.tagName === 'A') el.href = `mailto:${email}`;
+                    });
+                }
+
+                // Inject Contact Phone
+                if (cms.contactPhone) {
+                    document.querySelectorAll('.cms-contact-phone, #contact-phone').forEach(el => {
+                        el.textContent = cms.contactPhone;
+                        if (el.tagName === 'A') el.href = `tel:${cms.contactPhone.replace(/\s+/g, '')}`;
+                    });
+                }
+
+                // Inject WhatsApp Link
+                if (cms.whatsappNumber) {
+                    document.querySelectorAll('.cms-whatsapp-link, #whatsapp-number').forEach(el => {
+                        if (el.tagName === 'A') el.href = `https://wa.me/${cms.whatsappNumber.replace(/\+/g, '').replace(/\s+/g, '')}`;
+                        else el.textContent = cms.whatsappNumber;
+                    });
+                }
+
+                // Inject Footer Copyright / Text
+                if (cms.footerText) {
+                    const footerTextEl = document.getElementById('footer-copyright') || document.getElementById('cms-footer-text');
+                    if (footerTextEl) footerTextEl.textContent = cms.footerText;
+                }
+            } catch (err) {
+                console.warn('CMS content load error:', err);
+            }
         }
     };
 
-    // Auto init
+    // Auto init and load CMS dynamic content
     window.SmartfiqCMS.init();
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => window.SmartfiqCMS.loadCMSContent());
+    } else {
+        window.SmartfiqCMS.loadCMSContent();
+    }
 })();

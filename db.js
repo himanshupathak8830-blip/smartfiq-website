@@ -1,9 +1,13 @@
 const fs = require('fs');
 const path = require('path');
+const bcrypt = require('bcryptjs');
 
 const DB_FILE = process.env.VERCEL ? path.join('/tmp', 'db.json') : path.join(__dirname, 'db.json');
 
-// Get default initial seeded database for all 25 modules
+// In-memory debounced disk write timer
+let writeTimeout = null;
+
+// Get default initial seeded database for all modules
 function getSeedData() {
   const visitors = [];
   const leads = [];
@@ -39,7 +43,7 @@ function getSeedData() {
   for (let i = 0; i < 45; i++) {
     const timestamp = new Date(Date.now() - Math.floor(Math.random() * 7 * 24 * 60 * 60 * 1000)).toISOString();
     const ip = `${103 + Math.floor(Math.random()*100)}.${Math.floor(Math.random()*200)}.${Math.floor(Math.random()*254)}.${Math.floor(Math.random()*254)}`;
-    const isBot = (i % 9 === 0); // ~5 explicit bot sessions
+    const isBot = (i % 9 === 0);
     const bObj = isBot ? mockBots[i % mockBots.length] : null;
     const location = mockCities[Math.floor(Math.random()*mockCities.length)];
     const isp = mockISPs[Math.floor(Math.random()*mockISPs.length)];
@@ -81,16 +85,16 @@ function getSeedData() {
     const budget = mockBudgets[i % mockBudgets.length];
     const message = mockMessages[i % mockMessages.length];
     const ip = `${112 + i * 11}.${50 + i * 15}.48.92`;
-    const location = 'Bangalore, India';
 
     leads.push({
+      id: i + 1,
       name,
       email,
       phone: `+91 98765 ${10000 + i*132}`,
       budget,
       message,
       ip,
-      location,
+      location: 'Bangalore, India',
       isBot: false,
       timestamp,
       source: i % 2 === 0 ? 'Hero Form' : 'Popup Modal',
@@ -131,18 +135,18 @@ function getSeedData() {
 
   // Seed Portfolio
   const portfolio = [
-    { id: 1, title: '93% Lead Response Time Cut', desc: 'Automated WhatsApp AI Agent integrated with Hubspot CRM.', category: 'WhatsApp AI', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDmeTgRa_-U6aA6_WtKs62LYrax3kgEdlSWWYya0QlVrtx6Meemrepa58Gg8ylms30H004BXZ7QJ3o31YNe8AMs2Zzzk510e75FdQXBA7nNWS6yFvQsERAHKgmlqqN-nKJvxvulP7JHCSAmS__lJUbEZr2k7HJUWQSWbg4XBbfooZO7wuBB8uKSxgNCrU1wJu2xqknszqE_ZSsBjNJ2s1fKRYWG4A-Uo92DuKgXXCrxfhjbKIZ8G5L5iA' },
-    { id: 2, title: '80% Tickets Resolved Instantly', desc: 'Instagram Conversational DM workflow for support ticket automation.', category: 'Social Automation', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDlnmZrQBQ6r4bLrUFJZ4yi_bVKqAjkwfpJYlPg3f3CkRj1oQzUTXOuDhO_AXGVc78KX_4kVBWMT7xejWSD2Gg0dF1fZZJktvKbKACTkYXsrgL_3fKMf07bh0-GGQ-8uK41hN88ZwHlbKc0TGIytkqvVyYnmCxvxAshhvH-dN3uZay7jKdjUtficQkSLKXhWiwbhFs-lwxTeUlf0xJidGx89BN3KKP5PgHBFaCzGK4ZfF-M4xc30XY4Pg' },
-    { id: 3, title: '140+ Meetings Booked Monthly', desc: 'AI Voice Agent connected to Calendly and automated Gmail followups.', category: 'Voice AI', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBNTV6_AVEf00BwdABjxoOW_o5OzSEibEwcFcwmRV-ZUgkf0fIuHWMLkU2BZ_YCOmCE4ufiruoItWPHUhFbfZsAS1yN-sGbLdXSzbmXVyHLa06W9-aqB_leN3gWCOCLbvyzbkeynUOuEN3D-xmdA9C89x_uEdS1DRmrTjU8LhAHl7o-5VB_lkL9cV4gyiw8M-IfO1m5rMjvvZlIzHgMRVHv-6P3YIRbhcKb9858KoGM2TGt1q-jg6h_hQ' }
+    { id: 1, title: '93% Lead Response Time Cut', desc: 'Automated WhatsApp AI Agent integrated with Hubspot CRM.', category: 'WhatsApp AI', image: 'https://images.unsplash.com/photo-1577563908411-5077b6dc7624?q=80&w=600' },
+    { id: 2, title: '80% Tickets Resolved Instantly', desc: 'Instagram Conversational DM workflow for support ticket automation.', category: 'Social Automation', image: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?q=80&w=600' },
+    { id: 3, title: '140+ Meetings Booked Monthly', desc: 'AI Voice Agent connected to Calendly and automated Gmail followups.', category: 'Voice AI', image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=600' }
   ];
 
   // Seed Blogs
   const blogs = [
-    { id: 1, title: 'What is AI Automation and How Can It Grow Your Business?', category: 'AI Automation', status: 'Published', date: '2026-07-10', readTime: '6 mins', summary: 'A beginner-friendly breakdown of what AI automation actually means, the business problems it solves, and how companies typically start.', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDmeTgRa_-U6aA6_WtKs62LYrax3kgEdlSWWYya0QlVrtx6Meemrepa58Gg8ylms30H004BXZ7QJ3o31YNe8AMs2Zzzk510e75FdQXBA7nNWS6yFvQsERAHKgmlqqN-nKJvxvulP7JHCSAmS__lJUbEZr2k7HJUWQSWbg4XBbfooZO7wuBB8uKSxgNCrU1wJu2xqknszqE_ZSsBjNJ2s1fKRYWG4A-Uo92DuKgXXCrxfhjbKIZ8G5L5iA' },
-    { id: 2, title: 'WhatsApp Automation for Small Businesses', category: 'Messaging Automation', status: 'Published', date: '2026-07-11', readTime: '5 mins', summary: 'How small businesses use WhatsApp bots to handle orders, support, and lead capture without hiring extra staff.', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDlnmZrQBQ6r4bLrUFJZ4yi_bVKqAjkwfpJYlPg3f3CkRj1oQzUTXOuDhO_AXGVc78KX_4kVBWMT7xejWSD2Gg0dF1fZZJktvKbKACTkYXsrgL_3fKMf07bh0-GGQ-8uK41hN88ZwHlbKc0TGIytkqvVyYnmCxvxAshhvH-dN3uZay7jKdjUtficQkSLKXhWiwbhFs-lwxTeUlf0xJidGx89BN3KKP5PgHBFaCzGK4ZfF-M4xc30XY4Pg' },
-    { id: 3, title: 'AI Chatbots vs Human Support', category: 'Customer Support', status: 'Published', date: '2026-07-12', readTime: '7 mins', summary: 'Where chatbots outperform human agents, where they don\'t, and how to build a hybrid support model that works.', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBNTV6_AVEf00BwdABjxoOW_o5OzSEibEwcFcwmRV-ZUgkf0fIuHWMLkU2BZ_YCOmCE4ufiruoItWPHUhFbfZsAS1yN-sGbLdXSzbmXVyHLa06W9-aqB_leN3gWCOCLbvyzbkeynUOuEN3D-xmdA9C89x_uEdS1DRmrTjU8LhAHl7o-5VB_lkL9cV4gyiw8M-IfO1m5rMjvvZlIzHgMRVHv-6P3YIRbhcKb9858KoGM2TGt1q-jg6h_hQ' },
-    { id: 4, title: 'How AI Voice Agents Are Changing Customer Service', category: 'Voice AI', status: 'Published', date: '2026-07-13', readTime: '6 mins', summary: 'A look at how AI-driven phone agents are handling calls, bookings, and follow-ups at a fraction of call-center cost.', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCDqQOJR5ptc9fY0HiDc-GcA5CvU0Fa0aUVudTHXu0EEZeI3gl_E95qaX705iwrDCezyBM7wD8fSOf-r33-yFDJ38lNGgJVavU9zfx8CgU0ThJtUUMNDml2UtrfQZobgs9lF59c_AoSddqoyNjpfDBdZ6NwIlyXGZp3ETYOGyBy6RX6VdqZjPXWy8dA_xY5to7MFDUDeCqQCFNHmSKCGVzlg9vgobmutFPBP0R7hFNv0qb1IDPO2qCGqw' },
-    { id: 5, title: 'Top Business Processes You Should Automate in 2026', category: 'Business Automation', status: 'Published', date: '2026-07-14', readTime: '8 mins', summary: 'A practical checklist of the highest-ROI processes (lead follow-up, data entry, scheduling, reporting) worth automating first.', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAmBuzV5ivYyRPvXVEWXKXFR7nq7KGxZJyz44yK4BUXsrPowyybwsAHAoTmx1FXEqBxIJfCeXh2jk0M9lar7Qo-5yFgz136ql9g0qyi-Igy-8sMO2sULZC4iwAob2CBs1cUAIszhbqSyfBJe0jWlkuLVDfn95c1EuSAWJlp6o8oqFAro76w4z1tM8DrsgFoCRypbCL806xriU7Sop-7k8ikkzrTRjbzxtQk4lg7MRH9vp8Bvq3aw9U5Ww' }
+    { id: 1, title: 'What is AI Automation? A Complete Guide for Businesses (2026)', category: 'AI Automation', status: 'Published', date: '2026-07-10', readTime: '6 mins', summary: 'A beginner-friendly breakdown of what AI automation actually means, the business problems it solves, and how companies typically start.', image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600' },
+    { id: 2, title: 'How WhatsApp Automation Works: Complete Guide for Businesses', category: 'Messaging Automation', status: 'Published', date: '2026-07-11', readTime: '5 mins', summary: 'How small businesses use WhatsApp bots to handle orders, support, and lead capture without hiring extra staff.', image: 'https://images.unsplash.com/photo-1577563908411-5077b6dc7624?q=80&w=600' },
+    { id: 3, title: 'AI Chatbots vs Human Support: Which Is Right for Your Business?', category: 'Customer Support', status: 'Published', date: '2026-07-12', readTime: '7 mins', summary: 'Where chatbots outperform human agents, where they don\'t, and how to build a hybrid support model that works.', image: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?q=80&w=600' },
+    { id: 4, title: 'AI Voice Agents Explained: Automating Sales & Support Calls', category: 'Voice AI', status: 'Published', date: '2026-07-13', readTime: '6 mins', summary: 'A look at how AI-driven phone agents are handling calls, bookings, and follow-ups at a fraction of call-center cost.', image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=600' },
+    { id: 5, title: 'Top 10 Business Processes You Should Automate with AI in 2026', category: 'Business Automation', status: 'Published', date: '2026-07-14', readTime: '8 mins', summary: 'A practical checklist of the highest-ROI processes (lead follow-up, data entry, scheduling, reporting) worth automating first.', image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=600' }
   ];
 
   // Seed Appointments
@@ -191,12 +195,12 @@ function getSeedData() {
     maintenanceMode: false
   };
 
-  // Seed Users
+  // Seed Users with Bcrypt Hashed Passwords
   const users = [
     {
       id: 1,
       username: 'smartfiq',
-      password: 'Smartfiq#Sec2026!Admin',
+      password: bcrypt.hashSync('Smartfiq#Sec2026!Admin', 10),
       name: 'Super Admin',
       roleTitle: 'Lead Architect & Owner',
       isSuperAdmin: true,
@@ -205,7 +209,7 @@ function getSeedData() {
     {
       id: 2,
       username: 'testuser',
-      password: 'testuser123',
+      password: bcrypt.hashSync('testuser123', 10),
       name: 'Himanshu Pathak',
       roleTitle: 'Guest Analyst',
       isSuperAdmin: false,
@@ -270,27 +274,60 @@ function readDb() {
   }
 
   const db = global.smartfiq_in_memory_db;
+  
+  // Seed data fallbacks if database or individual keys are empty/uninitialized
   const seeds = getSeedData();
-  if (!db.visitors) db.visitors = seeds.visitors;
-  if (!db.leads) db.leads = seeds.leads;
-  if (!db.services) db.services = seeds.services;
-  if (!db.users) db.users = seeds.users;
-  if (!db.cms) db.cms = seeds.cms;
+  if (!db.visitors || db.visitors.length === 0) db.visitors = seeds.visitors;
+  if (!db.leads || db.leads.length === 0) db.leads = seeds.leads;
+  if (!db.services || db.services.length === 0) db.services = seeds.services;
+  if (!db.users || db.users.length === 0) db.users = seeds.users;
+  if (!db.cms || Object.keys(db.cms).length === 0) db.cms = seeds.cms;
+  if (!db.blogs || db.blogs.length === 0) db.blogs = seeds.blogs;
+  if (!db.appointments) db.appointments = seeds.appointments || [];
+  if (!db.proposals) db.proposals = seeds.proposals || [];
+  if (!db.invoices) db.invoices = seeds.invoices || [];
+  if (!db.team) db.team = seeds.team || [];
+  if (!db.securityLogs) db.securityLogs = seeds.securityLogs || [];
+  if (!db.apiKeys) db.apiKeys = seeds.apiKeys || [];
+  if (!db.settings) db.settings = seeds.settings || {};
 
   return db;
 }
 
-function writeDb(data) {
-  global.smartfiq_in_memory_db = data;
+// Write to disk with debouncing and visitor pruning (max 2000 sessions)
+function flushDbToDisk(data) {
   try {
-    fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
+    const jsonStr = JSON.stringify(data, null, 2);
+    fs.writeFileSync(DB_FILE, jsonStr);
     const repoDbPath = path.join(__dirname, 'db.json');
     if (DB_FILE !== repoDbPath) {
-      try { fs.writeFileSync(repoDbPath, JSON.stringify(data, null, 2)); } catch (e) {}
+      try { fs.writeFileSync(repoDbPath, jsonStr); } catch (e) {}
     }
   } catch (err) {
     console.warn('DB File write warning (memory persisted):', err.message);
   }
+}
+
+function writeDb(data) {
+  // Prune visitors array at 2000 max size
+  if (data.visitors && data.visitors.length > 2000) {
+    data.visitors = data.visitors.slice(-2000);
+  }
+
+  global.smartfiq_in_memory_db = data;
+
+  // Invalidate stats & charts cache on write
+  if (global.smartfiq_invalidate_cache) {
+    global.smartfiq_invalidate_cache();
+  }
+
+  // Debounced disk write (500ms)
+  if (writeTimeout) clearTimeout(writeTimeout);
+  writeTimeout = setTimeout(() => {
+    flushDbToDisk(data);
+    writeTimeout = null;
+  }, 500);
+
   return true;
 }
 
