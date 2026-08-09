@@ -212,16 +212,25 @@
 
                 if (!cms) return;
 
-                // Inject Hero Title
+                // Inject Hero Title safely without triggering font size jumps or gradient glitches
                 const heroTitleEl = document.getElementById('hero-title') || document.getElementById('heroTitle');
-                if (heroTitleEl && cms.heroTitle) {
-                    heroTitleEl.innerHTML = cms.heroTitle;
+                if (heroTitleEl && cms.heroTitle && cms.heroTitle.trim() !== '') {
+                    const cleanTitle = cms.heroTitle.trim();
+                    if (cleanTitle !== heroTitleEl.textContent.trim()) {
+                        if (!cleanTitle.includes('primary-gradient')) {
+                            heroTitleEl.innerHTML = cleanTitle.replace(/(Operations|Workload|Efficiency|AI)/gi, '<span class="text-transparent bg-clip-text primary-gradient">$1</span>');
+                        } else {
+                            heroTitleEl.innerHTML = cleanTitle;
+                        }
+                    }
                 }
 
                 // Inject Hero Subtitle
                 const heroSubtitleEl = document.getElementById('hero-subtitle') || document.getElementById('heroSubtitle');
-                if (heroSubtitleEl && cms.heroSubtitle) {
-                    heroSubtitleEl.textContent = cms.heroSubtitle;
+                if (heroSubtitleEl && cms.heroSubtitle && cms.heroSubtitle.trim() !== '') {
+                    if (cms.heroSubtitle.trim() !== heroSubtitleEl.textContent.trim()) {
+                        heroSubtitleEl.textContent = cms.heroSubtitle;
+                    }
                 }
 
                 // Inject About Title

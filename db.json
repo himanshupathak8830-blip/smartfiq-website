@@ -1,6 +1,100 @@
 {
   "visitors": [
     {
+      "sessionId": "sess_mqa6hofeoxr",
+      "ip": "122.162.145.202",
+      "email": "Guest Visitor",
+      "location": "🇮🇳 National (New Delhi, National Capital Territory of Delhi)",
+      "isNational": true,
+      "city": "New Delhi",
+      "country": "India",
+      "isp": "Bharti Airtel Ltd.",
+      "isBot": false,
+      "botName": "",
+      "botCategory": "",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+      "device": "Desktop",
+      "deviceModel": "MacBook Pro",
+      "browser": "Chrome",
+      "os": "macOS Ventura",
+      "entryPage": "/",
+      "currentPage": "/blog.html",
+      "exitPage": "/index.html",
+      "timestamp": "2026-08-09T13:09:04.226Z",
+      "lastActive": "2026-08-09T13:14:51.006Z",
+      "sessionDuration": 169,
+      "scrollPct": 82,
+      "pageViews": 4,
+      "clickEvents": [
+        {
+          "label": "Services",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/",
+          "x": 506,
+          "y": 58,
+          "time": "18:39:04"
+        },
+        {
+          "label": "Blog",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/Services.html",
+          "x": 700,
+          "y": 55,
+          "time": "18:39:08"
+        },
+        {
+          "label": "Home",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/blog.html",
+          "x": 389,
+          "y": 45,
+          "time": "18:39:13"
+        },
+        {
+          "label": "A",
+          "tagName": "A",
+          "id": "",
+          "className": "flex items-center group",
+          "page": "/index.html",
+          "x": 129,
+          "y": 42,
+          "time": "18:39:42"
+        },
+        {
+          "label": "A",
+          "tagName": "A",
+          "id": "",
+          "className": "flex items-center group",
+          "page": "/index.html",
+          "x": 250,
+          "y": 61,
+          "time": "18:40:17"
+        },
+        {
+          "label": "Blog",
+          "tagName": "A",
+          "id": "",
+          "className": "relative py-1 text-[15px] font-medium tr",
+          "page": "/index.html",
+          "x": 794,
+          "y": 51,
+          "time": "18:42:00"
+        }
+      ],
+      "userJourney": [
+        "/",
+        "/Services.html",
+        "/blog.html",
+        "/index.html"
+      ]
+    },
+    {
       "sessionId": "sess_1ciysnryyhm",
       "ip": "122.162.145.202",
       "email": "Guest Visitor",
@@ -21,9 +115,9 @@
       "currentPage": "/index.html",
       "exitPage": "/index.html",
       "timestamp": "2026-08-09T12:54:17.386Z",
-      "lastActive": "2026-08-09T13:06:05.414Z",
-      "sessionDuration": 726,
-      "scrollPct": 11,
+      "lastActive": "2026-08-09T13:14:05.817Z",
+      "sessionDuration": 1206,
+      "scrollPct": 12,
       "pageViews": 1,
       "clickEvents": [
         {
