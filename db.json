@@ -21,8 +21,8 @@
       "currentPage": "/index.html",
       "exitPage": "/index.html",
       "timestamp": "2026-08-09T12:54:17.386Z",
-      "lastActive": "2026-08-09T12:55:23.433Z",
-      "sessionDuration": 84,
+      "lastActive": "2026-08-09T13:06:05.414Z",
+      "sessionDuration": 726,
       "scrollPct": 11,
       "pageViews": 1,
       "clickEvents": [
@@ -1424,7 +1424,7 @@
   "services": [
     {
       "id": 1,
-      "name": "Website Development m",
+      "name": "Website Development",
       "desc": "Modern, responsive, high-converting websites tailored for your brand.",
       "price": "Starting at ₹14,999 / $199",
       "icon": "language",
