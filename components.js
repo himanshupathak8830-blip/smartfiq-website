@@ -5,8 +5,8 @@
 
 (function () {
     // Determine active page name from URL
-    const currentPath = window.location.pathname.split('/').pop() || 'index.html';
-    const activePage = (currentPath === '' || currentPath === '/') ? 'index.html' : currentPath;
+    const rawPath = window.location.pathname.toLowerCase().replace(/\/$/, '') || '/';
+    const activeSegment = rawPath.split('/').pop().replace('.html', '') || 'index';
 
     // --- 1. HEADER COMPONENT ---
     function renderHeader() {
@@ -14,15 +14,15 @@
         const headerContainer = document.getElementById('site-header') || document.getElementById('smartfiq-header-container');
 
         const navLinks = [
-            { name: 'Home', href: 'index.html' },
-            { name: 'Services', href: 'services.html' },
-            { name: 'Case Studies', href: 'case-studies.html' },
-            { name: 'Blog', href: 'blog.html' },
-            { name: 'About', href: 'about.html' }
+            { name: 'Home', href: '/index.html', targetKey: 'index' },
+            { name: 'Services', href: '/services.html', targetKey: 'services' },
+            { name: 'Case Studies', href: '/case-studies.html', targetKey: 'case-studies' },
+            { name: 'Blog', href: '/blog.html', targetKey: 'blog' },
+            { name: 'About', href: '/about.html', targetKey: 'about' }
         ];
 
         const desktopNavHTML = navLinks.map(link => {
-            const isActive = activePage.toLowerCase() === link.href.toLowerCase();
+            const isActive = activeSegment === link.targetKey || (activeSegment === '' && link.targetKey === 'index');
             const textClass = isActive ? 'text-[#FF6B3D]' : 'text-[#B8B8B8] hover:text-[#FF6B3D]';
             const lineClass = isActive ? 'w-full' : 'w-0 group-hover:w-full';
             return `
@@ -34,7 +34,7 @@
         }).join('');
 
         const mobileNavHTML = navLinks.map(link => {
-            const isActive = activePage.toLowerCase() === link.href.toLowerCase();
+            const isActive = activeSegment === link.targetKey || (activeSegment === '' && link.targetKey === 'index');
             const textClass = isActive ? 'text-[#FF6B3D]' : 'text-[#B8B8B8] hover:text-[#FF6B3D]';
             return `
                 <a href="${link.href}" onclick="toggleSmartfiqMobileMenu()" class="${textClass} font-medium text-[16px] tracking-[0.2px] py-2 border-b border-white/5 transition-colors">${link.name}</a>
@@ -144,27 +144,27 @@
                 <div>
                     <h5 class="text-[#ffb5a0] font-bold text-sm uppercase tracking-wider mb-6">Services</h5>
                     <ul class="space-y-3 text-[#E7BDB2] text-sm font-medium">
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="services.html">AI Automation</a></li>
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="services.html">WhatsApp Automation</a></li>
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="services.html">Voice AI Agents</a></li>
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="services.html">Custom AI Solutions</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/services.html">AI Automation</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/services.html">WhatsApp Automation</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/services.html">Voice AI Agents</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/services.html">Custom AI Solutions</a></li>
                     </ul>
                 </div>
                 <div>
                     <h5 class="text-[#ffb5a0] font-bold text-sm uppercase tracking-wider mb-6">Resources</h5>
                     <ul class="space-y-3 text-[#E7BDB2] text-sm font-medium">
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="case-studies.html">Case Studies</a></li>
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="blog.html">Insights &amp; Blogs</a></li>
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="about.html">About Us</a></li>
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="our-story.html">Our Story</a></li>
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="faq.html">FAQs</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/case-studies.html">Case Studies</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/blog.html">Insights &amp; Blogs</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/about.html">About Us</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/our-story.html">Our Story</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/faq.html">FAQs</a></li>
                     </ul>
                 </div>
                 <div>
                     <h5 class="text-[#ffb5a0] font-bold text-sm uppercase tracking-wider mb-6">Legal &amp; Support</h5>
                     <ul class="space-y-3 text-[#E7BDB2] text-sm font-medium">
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="privacy-policy.html">Privacy Policy</a></li>
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="terms.html">Terms of Service</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/privacy-policy.html">Privacy Policy</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/terms.html">Terms of Service</a></li>
                         <li>
                             <button onclick="openContactModal()" class="inline-flex items-center gap-1.5 text-[#ff5625] hover:text-white transition-colors font-bold text-xs uppercase tracking-wider mt-1">
                                 <span class="material-symbols-outlined text-sm">support_agent</span> Contact Support
