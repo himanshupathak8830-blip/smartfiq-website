@@ -116,12 +116,22 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Session Persistence Settings (No repeated login prompts)
-SESSION_COOKIE_AGE = 2592000  # 30 Days persistence
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.smartfiq.website',
+    'https://smartfiq.website',
+    'https://*.vercel.app',
+    'http://127.0.0.1:8000',
+    'http://localhost:8000'
+]
+
+# Session Persistence Settings (1-Year Login Persistence, No Repeated Prompts)
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 31536000  # 1 Year persistence
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_NAME = 'sf_admin_sessionid'
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [str(BASE_DIR), str(BASE_DIR / 'static')]

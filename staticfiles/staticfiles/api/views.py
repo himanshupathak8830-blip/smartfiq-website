@@ -12,7 +12,7 @@ from services.models import Service
 from blog.models import Post
 from case_studies.models import CaseStudy
 from portfolio.models import PortfolioItem
-from core.views import send_telegram_alert
+from core.views import send_telegram_alert, send_google_sheet_lead
 
 JWT_SECRET = os.getenv('JWT_SECRET', 'SmartFiQ_JWT_Secret_Key_2026_Production_Secure_X9!')
 
@@ -220,6 +220,7 @@ def leads_api(request, lead_id=None):
             )
 
             send_telegram_alert(name, email, phone, budget, message)
+            send_google_sheet_lead(name, email, phone, budget, message)
 
             return JsonResponse({
                 "success": True,
@@ -288,14 +289,14 @@ def stats_api(request):
         bot_visitors = Visitor.objects.filter(is_bot=True).count()
         human_visitors = Visitor.objects.filter(is_bot=False).count()
     except Exception:
-        leads_count = 42
-        visitors_count = 1250
-        daily_visitors = 128
-        monthly_visitors = 3450
-        india_visitors = 1120
-        international_visitors = 130
-        bot_visitors = 15
-        human_visitors = 1235
+        leads_count = 0
+        visitors_count = 0
+        daily_visitors = 0
+        monthly_visitors = 0
+        india_visitors = 0
+        international_visitors = 0
+        bot_visitors = 0
+        human_visitors = 0
 
     return JsonResponse({
         "leadsCount": leads_count,
@@ -305,10 +306,10 @@ def stats_api(request):
         "monthlyVisitors": monthly_visitors,
         "indiaVisitors": india_visitors,
         "internationalVisitors": international_visitors,
-        "revenue": "₹5,20,000",
-        "ticketsResolved": "93%",
-        "leadsChange": "+24%",
-        "revenueChange": "+18%",
+        "revenue": "₹0",
+        "ticketsResolved": "100%",
+        "leadsChange": "0%",
+        "revenueChange": "0%",
         "systemHealth": "Operational (PostgreSQL 17)",
         "visitorsCount": visitors_count
     })
@@ -328,19 +329,19 @@ def charts_api(request):
         bot_visitors = Visitor.objects.filter(is_bot=True).count()
         human_visitors = Visitor.objects.filter(is_bot=False).count()
     except Exception:
-        leads_count = 5
-        visitors_count = 12
-        daily_visitors = 8
-        monthly_visitors = 45
-        india_visitors = 10
-        international_visitors = 2
-        bot_visitors = 2
-        human_visitors = 10
+        leads_count = 0
+        visitors_count = 0
+        daily_visitors = 0
+        monthly_visitors = 0
+        india_visitors = 0
+        international_visitors = 0
+        bot_visitors = 0
+        human_visitors = 0
 
     now = timezone.now()
     dates = [(now - datetime.timedelta(days=i)).strftime('%b %d') for i in range(6, -1, -1)]
-    visitors_by_day = [max(1, (visitors_count + i * 3) % 15) for i in range(7)]
-    leads_by_day = [max(0, (leads_count + i) % 5) for i in range(7)]
+    visitors_by_day = [Visitor.objects.filter(last_active__date=(now - datetime.timedelta(days=i)).date()).count() if hasattr(Visitor, 'objects') else 0 for i in range(6, -1, -1)]
+    leads_by_day = [Lead.objects.filter(created_at__date=(now - datetime.timedelta(days=i)).date()).count() if hasattr(Lead, 'objects') else 0 for i in range(6, -1, -1)]
 
     return JsonResponse({
         "labels": dates,

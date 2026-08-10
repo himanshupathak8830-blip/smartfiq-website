@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block meta_title %}Our Story — The SmartFiQ Journey{% endblock %}
+
+{% block content %}
+<section class="py-16 px-4 max-w-5xl mx-auto">
+    <div class="text-center mb-12">
+        <span class="text-[#ff5625] text-xs font-semibold uppercase tracking-wider">Our Story</span>
+        <h1 class="font-['Montserrat'] text-4xl md:text-5xl font-extrabold text-white mt-2">From a Student's Idea to a Technology Business</h1>
+    </div>
+
+    <!-- Team Members Section -->
+    <div class="mb-16">
+        <div class="text-center mb-10">
+            <h2 class="font-['Montserrat'] text-3xl font-extrabold text-white">Meet the SmartFiQ Core Team</h2>
+            <p class="text-gray-400 text-sm mt-2">Engineers, analysts, and automation architects driving business growth.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+            {% for member in team_members %}
+            <div class="glass-panel rounded-3xl p-6 flex flex-col justify-between hover:border-[#ff5625]/50 transition-all">
+                <div>
+                    <div class="flex items-center gap-4 mb-4">
+                        {% if member.linkedin %}
+                        <a href="{{ member.linkedin }}" target="_blank" rel="noopener noreferrer">
+                            <img src="{{ member.profile_image }}" alt="{{ member.name }}" class="w-16 h-16 rounded-full object-cover border-2 border-[#ff5625]/50 hover:scale-105 transition-transform" />
+                        </a>
+                        {% else %}
+                        <img src="{{ member.profile_image }}" alt="{{ member.name }}" class="w-16 h-16 rounded-full object-cover border-2 border-[#ff5625]/50" />
+                        {% endif %}
+                        <div>
+                            {% if member.linkedin %}
+                            <a href="{{ member.linkedin }}" target="_blank" rel="noopener noreferrer" class="text-white font-bold text-lg hover:text-[#ff5625] transition-colors flex items-center gap-1.5">
+                                {{ member.name }}
+                                <svg class="w-4 h-4 text-[#0077b5] inline" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+                            </a>
+                            {% else %}
+                            <h3 class="text-white font-bold text-lg">{{ member.name }}</h3>
+                            {% endif %}
+                            <span class="text-[#ff5625] text-xs font-medium">{{ member.role }}</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 text-xs leading-relaxed mb-4">{{ member.bio }}</p>
+                </div>
+                <div class="flex flex-wrap gap-1.5 pt-3 border-t border-white/10">
+                    {% for skill in member.skills %}
+                    <span class="px-2 py-1 bg-white/5 rounded text-[11px] text-gray-300">{{ skill }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
