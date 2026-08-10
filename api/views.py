@@ -303,7 +303,9 @@ def case_studies_api(request):
         "client": cs.client_name,
         "problem": cs.problem,
         "solution": cs.solution,
-        "results": cs.results
+        "results": cs.results,
+        "image": cs.featured_image,
+        "featured": True
     } for cs in items]
     return JsonResponse(data, safe=False)
 
