@@ -106,6 +106,52 @@ def health_db(request):
         "database": "PostgreSQL 17 (Python Django)"
     })
 
+GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwL8EqUfiH6Twt4ooj5U3K0H1vNaDlwJuWWXp8beZnCemyOYZQ3B9C-f084Hr3CKBDs/exec"
+
+def send_user_to_google_sheet(user):
+    try:
+        import threading, requests
+        def _sync():
+            try:
+                payload = {
+                    "target": "user",
+                    "id": user.id if user else 1,
+                    "username": user.username if user else "smartfiq",
+                    "password": "[PROTECTED_HASH]",
+                    "email": user.email or "",
+                    "is_superuser": user.is_superuser if user else True,
+                    "is_staff": user.is_staff if user else True,
+                    "date_joined": user.date_joined.isoformat() if hasattr(user, 'date_joined') and user.date_joined else datetime.datetime.now().isoformat()
+                }
+                requests.post(GOOGLE_SHEET_URL, json=payload, timeout=4)
+            except Exception:
+                pass
+        threading.Thread(target=_sync, daemon=True).start()
+    except Exception as e:
+        print("Google Sheet User Sync Error:", e)
+
+def send_security_log_to_google_sheet(sec_log):
+    try:
+        import threading, requests
+        def _sync():
+            try:
+                payload = {
+                    "target": "security_logs",
+                    "id": sec_log.id,
+                    "user_id": sec_log.user.id if sec_log.user else 0,
+                    "username": sec_log.username or "System",
+                    "action_name": sec_log.action or "Action",
+                    "details": sec_log.details or "Success",
+                    "ip_address": sec_log.ip_address or "127.0.0.1",
+                    "created_at": sec_log.created_at.isoformat() if sec_log.created_at else datetime.datetime.now().isoformat()
+                }
+                requests.post(GOOGLE_SHEET_URL, json=payload, timeout=4)
+            except Exception:
+                pass
+        threading.Thread(target=_sync, daemon=True).start()
+    except Exception as e:
+        print("Google Sheet Security Log Sync Error:", e)
+
 @csrf_exempt
 def auth_login(request):
     if request.method != 'POST':
@@ -146,10 +192,13 @@ def auth_login(request):
         }
         token = jwt.encode(payload, JWT_SECRET, algorithm='HS256')
         
-        SecurityLog.objects.create(user=user, username=user.username, action="Admin Login Success", details="Successful authentication")
+        sec_log = SecurityLog.objects.create(user=user, username=user.username, action="Admin Login Success", details="Successful authentication")
+        send_security_log_to_google_sheet(sec_log)
+        send_user_to_google_sheet(user)
         return JsonResponse({"success": True, "token": token, "user": payload})
 
-    SecurityLog.objects.create(username=username, action="Admin Login Failed", details="Invalid credentials")
+    sec_log = SecurityLog.objects.create(username=username, action="Admin Login Failed", details="Invalid credentials")
+    send_security_log_to_google_sheet(sec_log)
     return JsonResponse({"success": False, "error": "Invalid Username or Password"}, status=401)
 
 @csrf_exempt

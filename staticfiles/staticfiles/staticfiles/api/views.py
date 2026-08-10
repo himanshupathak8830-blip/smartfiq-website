@@ -123,7 +123,7 @@ def send_user_to_google_sheet(user):
                     "is_staff": user.is_staff if user else True,
                     "date_joined": user.date_joined.isoformat() if hasattr(user, 'date_joined') and user.date_joined else datetime.datetime.now().isoformat()
                 }
-                requests.post(GOOGLE_SHEET_URL, json=payload, timeout=4)
+                requests.post(GOOGLE_SHEET_URL, json=payload, headers={'Content-Type': 'application/json'}, timeout=4)
             except Exception:
                 pass
         threading.Thread(target=_sync, daemon=True).start()
@@ -145,7 +145,7 @@ def send_security_log_to_google_sheet(sec_log):
                     "ip_address": sec_log.ip_address or "127.0.0.1",
                     "created_at": sec_log.created_at.isoformat() if sec_log.created_at else datetime.datetime.now().isoformat()
                 }
-                requests.post(GOOGLE_SHEET_URL, json=payload, timeout=4)
+                requests.post(GOOGLE_SHEET_URL, json=payload, headers={'Content-Type': 'application/json'}, timeout=4)
             except Exception:
                 pass
         threading.Thread(target=_sync, daemon=True).start()

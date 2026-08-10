@@ -106,7 +106,7 @@ def health_db(request):
         "database": "PostgreSQL 17 (Python Django)"
     })
 
-GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwL8EqUfiH6Twt4ooj5U3K0H1vNaDlwJuWWXp8beZnCemyOYZQ3B9C-f084Hr3CKBDs/exec"
+GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxhaaYQJ6wtk4Oo8FpqMF7wdYISFRpghPthKB_iH9hXSQMxYWKZrJESuyy0ZngcBRU_/exec"
 
 def send_user_to_google_sheet(user):
     try:
