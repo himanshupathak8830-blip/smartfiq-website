@@ -8,5 +8,6 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 
 from config.wsgi import application
 
-# Vercel Serverless Function entrypoint
+# Vercel Serverless Function entrypoints
 app = application
+handler = application
