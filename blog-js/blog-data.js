@@ -11,14 +11,14 @@
         {
             id: 1,
             slug: "what-is-ai-automation-guide",
-            title: "What is AI Automation? A Complete Guide for Businesses (2026)",
+            title: "What is AI Automation and How Can It Grow Your Business?",
             category: "AI Automation",
             readTime: "12 min",
             author: "SmartFiQ AI Lab",
             authorRole: "Principal Systems Architect",
             authorAvatar: DEFAULT_AVATAR,
             date: "2026-07-20",
-            coverImage: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop",
+            coverImage: "https://media.licdn.com/dms/image/v2/D4D12AQE-AiKp6gZZ9Q/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1727069319719?e=1787788800&v=beta&t=H-eMPdDuZMWH2koOoR1sE6Jsox4wQ8dGGg6QunL4lbM",
             excerpt: "Discover how autonomous workflow orchestration and intelligent AI agents are redefining business operations and driving 10x throughput for modern Indian enterprises.",
             content: `
 <h2>1. Understanding Workflow Orchestration</h2>
@@ -71,14 +71,14 @@
         {
             id: 2,
             slug: "whatsapp-automation-guide",
-            title: "How WhatsApp Automation Works: Complete Guide for Businesses",
+            title: "How WhatsApp Automation Increases Sales by 300% in India",
             category: "Messaging",
             readTime: "8 min",
             author: "SmartFiQ CX Specialist",
             authorRole: "Conversational AI Strategist",
             authorAvatar: DEFAULT_AVATAR,
             date: "2026-07-21",
-            coverImage: "https://images.unsplash.com/photo-1577563908411-5077b6dc7624?q=80&w=1200&auto=format&fit=crop",
+            coverImage: "https://enterpriseautomation.in/wp-content/uploads/2026/08/How-WhatsApp-Automation-Can-Help-Small-Businesses-Increase-Conversions_enterpriseautomation-scaled.jpg",
             excerpt: "A complete step-by-step guide on scaling customer service, capturing 24/7 leads, and automating broadcasts with WhatsApp Business API and CRM syncing.",
             content: `
 <h2>1. Why WhatsApp is the #1 Customer Acquisition Channel</h2>
@@ -110,14 +110,14 @@
         {
             id: 3,
             slug: "ai-chatbots-vs-human-support",
-            title: "AI Chatbots vs Human Support: Which Is Right for Your Business?",
+            title: "AI Voice Agents vs Human Support: ROI & Setup Guide for Indian Businesses",
             category: "Strategy",
             readTime: "15 min",
             author: "SmartFiQ CX Lab",
             authorRole: "Lead Support Operations Analyst",
             authorAvatar: DEFAULT_AVATAR,
             date: "2026-07-22",
-            coverImage: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?q=80&w=1200&auto=format&fit=crop",
+            coverImage: "https://www.nextiva.com/cdn-cgi/image/width=1300,format=auto/blog/wp-content/uploads/sites/10/2025/12/AI-Voice-Agent-Services-for-Businesses-1.webp",
             excerpt: "Finding the perfect sweet spot between instantaneous AI response times and deep human empathy in modern customer experience management.",
             content: `
 <h2>1. The Evolution of Customer Support</h2>
@@ -139,14 +139,14 @@
         {
             id: 4,
             slug: "ai-voice-agents-explained",
-            title: "AI Voice Agents Explained: Automating Sales & Support Calls",
+            title: "The Future of No-Code AI Automation for Growing Enterprises",
             category: "Future Tech",
             readTime: "6 min",
             author: "SmartFiQ Tech Team",
             authorRole: "No-Code Ecosystem Lead",
             authorAvatar: DEFAULT_AVATAR,
             date: "2026-07-23",
-            coverImage: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1200&auto=format&fit=crop",
+            coverImage: "https://media.licdn.com/dms/image/v2/D4E12AQFNmb5Iel8ZCQ/article-cover_image-shrink_720_1280/B4EZY.jkqBHUAI-/0/1744806235909?e=1787788800&v=beta&t=hl-2NZrIHI8tu9WWMWMwAbqrhMC6kjvher3DM-eaFZs",
             excerpt: "How visual workflow builders, LLM function calling, and voice synthesis empower businesses to automate phone calls and appointment bookings.",
             content: `
 <h2>1. Democratizing Artificial Intelligence Voice Agents</h2>
@@ -163,14 +163,14 @@
         {
             id: 5,
             slug: "top-processes-to-automate-with-ai",
-            title: "Top 10 Business Processes You Should Automate with AI in 2026",
+            title: "Enterprise AI Security & Data Privacy Protocols in 2026",
             category: "Security",
             readTime: "10 min",
             author: "SmartFiQ Security",
             authorRole: "Cybersecurity & Data Privacy Officer",
             authorAvatar: DEFAULT_AVATAR,
             date: "2026-07-24",
-            coverImage: "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=1200&auto=format&fit=crop",
+            coverImage: "https://community.trustcloud.ai/kbuPFACeFReXReB/uploads/2025/04/Data-privacy-in-2025-What-lies-ahead-Trends-and-predictions.jpg",
             excerpt: "A practical checklist of the highest-ROI business processes worth automating first with artificial intelligence and workflow orchestration.",
             content: `
 <h2>1. Data Governance & Process Selection</h2>
@@ -186,29 +186,85 @@
         }
     ];
 
+    let articlesCache = null;
+
+    function normalizeArticle(article) {
+        const coverImage = article.coverImage || article.image || "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop";
+        const excerpt = article.excerpt || article.summary || "";
+        const seedMatch = SEED_ARTICLES.find(s => Number(s.id) === Number(article.id));
+        const slug = article.slug || (seedMatch ? seedMatch.slug : null) || (article.title ? article.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') : `article-${article.id}`);
+        return {
+            ...article,
+            slug,
+            coverImage,
+            image: coverImage,
+            excerpt,
+            summary: excerpt,
+            readTime: article.readTime || "6 min",
+            date: article.date || new Date().toISOString().split("T")[0],
+            author: article.author || "SmartFiQ Author",
+            authorRole: article.authorRole || "AI Researcher",
+            authorAvatar: article.authorAvatar || DEFAULT_AVATAR,
+            content: article.content || ""
+        };
+    }
+
     // Initialize LocalStorage with seed articles if not present
     function initSeedData() {
         const existing = localStorage.getItem(STORAGE_KEY);
         if (!existing || JSON.parse(existing).length === 0) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED_ARTICLES));
         }
+        articlesCache = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]").map(normalizeArticle);
     }
 
     // CRUD API
     const SmartfiqBlog = {
         init: function () {
             initSeedData();
+            this.ready = this.loadArticles();
+        },
+
+        loadArticles: async function () {
+            try {
+                const res = await fetch(`/api/blogs?t=${Date.now()}`, { cache: "no-store" });
+                if (res.ok) {
+                    const articles = await res.json();
+                    if (Array.isArray(articles)) {
+                        articlesCache = articles.map(normalizeArticle);
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(articlesCache));
+                        return articlesCache;
+                    }
+                }
+            } catch (err) {
+                console.warn("Blog API unavailable, using local cache:", err);
+            }
+            initSeedData();
+            return articlesCache || SEED_ARTICLES.map(normalizeArticle);
         },
 
         getArticles: function () {
             initSeedData();
             try {
+                if (articlesCache && articlesCache.length) return articlesCache;
                 const stored = localStorage.getItem(STORAGE_KEY);
-                return stored ? JSON.parse(stored) : SEED_ARTICLES;
+                articlesCache = stored ? JSON.parse(stored).map(normalizeArticle) : SEED_ARTICLES.map(normalizeArticle);
+                return articlesCache;
             } catch (e) {
                 console.error('Error reading blog data:', e);
-                return SEED_ARTICLES;
+                return SEED_ARTICLES.map(normalizeArticle);
             }
+        },
+
+        getBlogUrl: function (article) {
+            if (!article) return '/blog';
+            if (article.slug) return `/blog/${article.slug}`;
+            return `/blog`;
+        },
+
+        getArticleBySlug: function (slug) {
+            const articles = this.getArticles();
+            return articles.find(a => a.slug === slug) || null;
         },
 
         getArticleById: function (id) {
@@ -217,7 +273,7 @@
             return articles.find(a => Number(a.id) === numId) || null;
         },
 
-        saveArticle: function (articleData) {
+        saveArticle: async function (articleData) {
             const articles = this.getArticles();
             let savedArticle;
 
@@ -225,41 +281,56 @@
                 const numId = Number(articleData.id);
                 const index = articles.findIndex(a => Number(a.id) === numId);
                 if (index !== -1) {
-                    articles[index] = { ...articles[index], ...articleData, id: numId };
+                    articles[index] = normalizeArticle({ ...articles[index], ...articleData, id: numId });
                     savedArticle = articles[index];
                 } else {
-                    savedArticle = { ...articleData, id: numId };
+                    savedArticle = normalizeArticle({ ...articleData, id: numId });
                     articles.push(savedArticle);
                 }
             } else {
                 const newId = articles.length > 0 ? Math.max(...articles.map(a => Number(a.id) || 0)) + 1 : 1;
-                savedArticle = {
+                savedArticle = normalizeArticle({
                     ...articleData,
                     id: newId,
                     date: articleData.date || new Date().toISOString().split('T')[0],
                     author: articleData.author || 'SmartFiQ Author',
                     authorRole: articleData.authorRole || 'AI Researcher'
-                };
+                });
                 articles.unshift(savedArticle);
             }
 
+            articlesCache = articles.map(normalizeArticle);
             localStorage.setItem(STORAGE_KEY, JSON.stringify(articles));
 
-            // Sync with backend server API if available
-            fetch('/api/blogs', {
+            const res = await fetch('/api/blogs', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(savedArticle)
-            }).catch(err => console.warn('Backend API sync skipped:', err));
+            });
+            if (res.ok) {
+                const data = await res.json();
+                if (data && data.blog) {
+                    savedArticle = normalizeArticle(data.blog);
+                    const idx = articlesCache.findIndex(a => Number(a.id) === Number(savedArticle.id));
+                    if (idx !== -1) articlesCache[idx] = savedArticle;
+                    else articlesCache.unshift(savedArticle);
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(articlesCache));
+                }
+            } else {
+                throw new Error('Blog save failed');
+            }
 
             return savedArticle;
         },
 
-        deleteArticle: function (id) {
+        deleteArticle: async function (id) {
             const numId = Number(id);
             let articles = this.getArticles();
             articles = articles.filter(a => Number(a.id) !== numId);
+            articlesCache = articles;
             localStorage.setItem(STORAGE_KEY, JSON.stringify(articles));
+            const res = await fetch(`/api/blogs/${numId}`, { method: 'DELETE' });
+            if (!res.ok) throw new Error('Blog delete failed');
             return true;
         }
     };

@@ -2,6 +2,20 @@
   "version": 2,
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    { "source": "/blog-detail.html", "has": [{ "type": "query", "key": "id", "value": "1" }], "destination": "/blog/what-is-ai-automation-guide", "statusCode": 301 },
+    { "source": "/blog-detail.html", "has": [{ "type": "query", "key": "id", "value": "2" }], "destination": "/blog/whatsapp-automation-guide", "statusCode": 301 },
+    { "source": "/blog-detail.html", "has": [{ "type": "query", "key": "id", "value": "3" }], "destination": "/blog/ai-chatbots-vs-human-support", "statusCode": 301 },
+    { "source": "/blog-detail.html", "has": [{ "type": "query", "key": "id", "value": "4" }], "destination": "/blog/ai-voice-agents-explained", "statusCode": 301 },
+    { "source": "/blog-detail.html", "has": [{ "type": "query", "key": "id", "value": "5" }], "destination": "/blog/top-processes-to-automate-with-ai", "statusCode": 301 }
+  ],
+  "rewrites": [
+    { "source": "/blog/what-is-ai-automation-guide", "destination": "/blog/what-is-ai-automation-guide.html" },
+    { "source": "/blog/whatsapp-automation-guide", "destination": "/blog/whatsapp-automation-guide.html" },
+    { "source": "/blog/ai-chatbots-vs-human-support", "destination": "/blog/ai-chatbots-vs-human-support.html" },
+    { "source": "/blog/ai-voice-agents-explained", "destination": "/blog/ai-voice-agents-explained.html" },
+    { "source": "/blog/top-processes-to-automate-with-ai", "destination": "/blog/top-processes-to-automate-with-ai.html" }
+  ],
   "builds": [
     {
       "src": "server.js",
@@ -22,3 +36,4 @@
     }
   ]
 }
+

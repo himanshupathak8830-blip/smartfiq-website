@@ -14,11 +14,11 @@
         const headerContainer = document.getElementById('site-header') || document.getElementById('smartfiq-header-container');
 
         const navLinks = [
-            { name: 'Home', href: '/index.html', targetKey: 'index' },
-            { name: 'Services', href: '/services.html', targetKey: 'services' },
-            { name: 'Case Studies', href: '/case-studies.html', targetKey: 'case-studies' },
-            { name: 'Blog', href: '/blog.html', targetKey: 'blog' },
-            { name: 'About', href: '/about.html', targetKey: 'about' }
+            { name: 'Home', href: '/', targetKey: 'index' },
+            { name: 'Services', href: '/services', targetKey: 'services' },
+            { name: 'Case Studies', href: '/case-studies', targetKey: 'case-studies' },
+            { name: 'Blog', href: '/blog', targetKey: 'blog' },
+            { name: 'About', href: '/about-smartfiq', targetKey: 'about-smartfiq' }
         ];
 
         const desktopNavHTML = navLinks.map(link => {
@@ -47,8 +47,8 @@
                 class="fixed top-[20px] left-1/2 -translate-x-1/2 z-[100] w-[calc(100%-2rem)] max-w-[1180px] h-[64px] rounded-full bg-[rgba(15,15,18,0.75)] backdrop-blur-[20px] border border-[rgba(255,255,255,0.12)] shadow-[0_12px_40px_rgba(0,0,0,0.35)] transition-all duration-300 ease-in-out font-plus-jakarta">
                 <div class="w-full h-full px-6 flex items-center justify-between relative">
                     <!-- LEFT: Transparent Logo -->
-                    <a href="index.html" class="flex items-center group">
-                        <img src="logo-transparent.png" alt="SmartFiQ Logo" class="h-8 md:h-9 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
+                    <a href="/" class="flex items-center group">
+                        <img src="/smartfiq-ai-automation-logo.png" alt="SmartFiQ Logo" class="h-8 md:h-9 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
                     </a>
 
                     <!-- CENTER: Navigation Links -->
@@ -105,8 +105,8 @@
         <footer class="w-full pt-16 pb-8 bg-[#0E0E0E] border-t border-white/10 font-plus-jakarta">
             <div class="grid grid-cols-1 md:grid-cols-5 gap-10 px-6 max-w-[1280px] mx-auto">
                 <div class="col-span-1 md:col-span-2">
-                    <a href="index.html" class="inline-block h-10 mb-6 hover:opacity-90 transition-opacity">
-                        <img alt="SMARTFIQ Logo" class="h-full w-auto object-contain" src="logo-transparent.png" />
+                    <a href="/" class="inline-block h-10 mb-6 hover:opacity-90 transition-opacity">
+                        <img alt="SMARTFIQ Logo" class="h-full w-auto object-contain" src="/smartfiq-ai-automation-logo.png" />
                     </a>
                     <p class="text-[#E7BDB2] text-sm max-w-xs mb-6 leading-relaxed">
                         Empowering businesses through cutting-edge AI, WhatsApp automations, and intelligent voice agents. Built for the modern enterprise.
@@ -155,7 +155,7 @@
                     <ul class="space-y-3 text-[#E7BDB2] text-sm font-medium">
                         <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/case-studies.html">Case Studies</a></li>
                         <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/blog.html">Insights &amp; Blogs</a></li>
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/about.html">About Us</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/about-smartfiq.html">About Us</a></li>
                         <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/our-story.html">Our Story</a></li>
                         <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/faq.html">FAQs</a></li>
                     </ul>
@@ -556,11 +556,13 @@ function applyCmsToPage(cms) {
     const whatsappRaw = (cms.whatsappNumber || cms.contactPhone || '7678188047').replace(/\D/g, '');
     const cleanWa = whatsappRaw.length === 10 ? '91' + whatsappRaw : whatsappRaw;
 
-    if (document.getElementById('hero-title') && cms.heroTitle) {
-        document.getElementById('hero-title').innerHTML = cms.heroTitle;
+    const heroTitleEl = document.getElementById('hero-title');
+    if (heroTitleEl && cms.heroTitle && heroTitleEl.innerHTML.trim() !== cms.heroTitle.trim()) {
+        heroTitleEl.innerHTML = cms.heroTitle;
     }
-    if (document.getElementById('hero-subtitle') && cms.heroSubtitle) {
-        document.getElementById('hero-subtitle').textContent = cms.heroSubtitle;
+    const heroSubtitleEl = document.getElementById('hero-subtitle');
+    if (heroSubtitleEl && cms.heroSubtitle && heroSubtitleEl.textContent.trim() !== cms.heroSubtitle.trim()) {
+        heroSubtitleEl.textContent = cms.heroSubtitle;
     }
     if (document.getElementById('footer-copyright') && cms.footerText) {
         document.getElementById('footer-copyright').textContent = cms.footerText;

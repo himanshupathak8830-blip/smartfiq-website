@@ -7,7 +7,7 @@
     <title>AI Automation Case Studies &amp; Results | SmartFiQ</title>
     <meta name="description" content="See real results from SmartFiQ's AI automation projects — 80% support tickets automated, 15+ hours saved weekly, 3x more qualified leads. Read the case studies." />
     <meta name="keywords" content="AI automation case study India, WhatsApp automation results, business process automation ROI, AI chatbot success story" />
-    <link rel="canonical" href="https://smartfiq.com/case-studies" />
+    <link rel="canonical" href="https://smartfiq.website/case-studies" />
     <link rel="icon" type="image/png" href="logo-transparent.png" />
 
     <script type="application/ld+json">
@@ -16,8 +16,8 @@
       "@graph": [
         {
           "@type": "CollectionPage",
-          "@id": "https://smartfiq.com/case-studies#webpage",
-          "url": "https://smartfiq.com/case-studies",
+          "@id": "https://smartfiq.website/case-studies#webpage",
+          "url": "https://smartfiq.website/case-studies",
           "name": "Enterprise AI Case Studies - SmartFiQ",
           "description": "Real business outcomes and ROI case studies of WhatsApp automation, AI chatbots & voice AI."
         },
@@ -28,13 +28,13 @@
               "@type": "ListItem",
               "position": 1,
               "name": "Home",
-              "item": "https://smartfiq.com/"
+              "item": "https://smartfiq.website/"
             },
             {
               "@type": "ListItem",
               "position": 2,
               "name": "Case Studies",
-              "item": "https://smartfiq.com/case-studies"
+              "item": "https://smartfiq.website/case-studies"
             }
           ]
         }
@@ -115,7 +115,7 @@
 
     <!-- Detailed Case Study Breakdown Modal -->
     <div id="caseStudyModalOverlay" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="glass-card bg-[#131313] border border-[#ff5625]/30 rounded-3xl max-w-2xl w-full p-6 md:p-8 space-y-6 max-h-[90vh] overflow-y-auto relative text-left">
+        <div class="glass-card bg-[#131313] border border-[#ff5625]/30 rounded-3xl max-w-4xl w-full p-6 md:p-10 space-y-6 max-h-[90vh] overflow-y-auto relative text-left">
             <div class="flex justify-between items-start border-b border-white/10 pb-4">
                 <div>
                     <span id="modalClientBadge" class="text-xs font-bold uppercase text-[#ff5625] tracking-wider">Client Story</span>
@@ -126,26 +126,31 @@
                 </button>
             </div>
 
-            <div class="h-56 w-full rounded-2xl overflow-hidden border border-white/10 relative">
+            <div class="h-64 w-full rounded-2xl overflow-hidden border border-white/10 relative">
                 <img id="modalImage" src="" alt="Case Study Cover" class="w-full h-full object-cover" />
                 <div class="absolute top-4 right-4 bg-[#0A0A0A]/90 border border-[#ff5625]/50 px-4 py-1.5 rounded-full text-xs font-extrabold text-[#ff5625]" id="modalMetrics">
                     Metrics Badge
                 </div>
             </div>
 
-            <div>
-                <h4 class="text-sm font-bold text-[#ff5625] uppercase tracking-widest mb-2 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-base">warning</span> The Challenge
-                </h4>
-                <p id="modalChallenge" class="text-sm text-[#E7BDB2] leading-relaxed"></p>
+            <div id="modalSummarySection">
+                <div>
+                    <h4 class="text-sm font-bold text-[#ff5625] uppercase tracking-widest mb-2 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-base">warning</span> The Challenge
+                    </h4>
+                    <p id="modalChallenge" class="text-sm text-[#E7BDB2] leading-relaxed mb-4"></p>
+                </div>
+
+                <div>
+                    <h4 class="text-sm font-bold text-[#ff5625] uppercase tracking-widest mb-2 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-base">auto_awesome</span> SmartFiQ Solution &amp; Architecture
+                    </h4>
+                    <p id="modalSolution" class="text-sm text-gray-300 leading-relaxed"></p>
+                </div>
             </div>
 
-            <div>
-                <h4 class="text-sm font-bold text-[#ff5625] uppercase tracking-widest mb-2 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-base">auto_awesome</span> SmartFiQ Solution &amp; Architecture
-                </h4>
-                <p id="modalSolution" class="text-sm text-gray-300 leading-relaxed"></p>
-            </div>
+            <!-- Full Markdown Article Breakdown -->
+            <div id="modalFullContent" class="hidden text-left border-t border-white/10 pt-6"></div>
 
             <div class="pt-4 border-t border-white/10 flex justify-end">
                 <button onclick="openContactModal(); closeCaseStudyModal();" class="px-6 py-3 primary-gradient text-white text-xs font-bold rounded-xl hover:opacity-90">
@@ -163,6 +168,24 @@
 
     <script src="cms-engine.js"></script>
     <script>
+        function formatMarkdownToHTML(md) {
+            if (!md) return '';
+            let html = md
+                .replace(/^# (.*$)/gim, '<h1 class="text-2xl md:text-3xl font-extrabold text-white mt-6 mb-4">$1</h1>')
+                .replace(/^## (.*$)/gim, '<h2 class="text-xl md:text-2xl font-bold text-[#ffb5a0] mt-8 mb-4 border-b border-white/10 pb-2 flex items-center gap-2">$1</h2>')
+                .replace(/^### (.*$)/gim, '<h3 class="text-lg font-bold text-white mt-6 mb-3">$1</h3>')
+                .replace(/^#### (.*$)/gim, '<h4 class="text-base font-bold text-[#ff5625] mt-4 mb-2">$1</h4>')
+                .replace(/^\> (.*$)/gim, '<blockquote class="border-l-4 border-[#ff5625] pl-4 italic text-[#E7BDB2] my-4 bg-[#ff5625]/5 py-3 rounded-r-xl">$1</blockquote>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em class="text-[#E7BDB2]">$1</em>')
+                .replace(/^- (.*$)/gim, '<li class="ml-5 list-disc text-gray-300 my-1 leading-relaxed">$1</li>')
+                .replace(/^\d+\. (.*$)/gim, '<li class="ml-5 list-decimal text-gray-300 my-1 leading-relaxed">$1</li>')
+                .replace(/^---$/gim, '<hr class="my-8 border-white/10" />')
+                .replace(/\n\n/g, '</p><p class="text-sm md:text-base text-gray-300 leading-relaxed mb-4">');
+
+            return `<div class="space-y-4"><p class="text-sm md:text-base text-gray-300 leading-relaxed mb-4">${html}</p></div>`;
+        }
+
         async function renderCaseStudies() {
             const grid = document.getElementById('case-studies-grid');
             if (!grid) return;
@@ -200,10 +223,10 @@
                         </div>
                     </div>
                     <div class="p-6 pt-0">
-                        <button onclick="openCaseStudyBreakdown(${cs.id})" class="w-full py-3 bg-white/5 hover:bg-[#ff5625]/20 border border-white/10 hover:border-[#ff5625] text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2">
+                        <a href="${cs.url || (cs.id === 1 ? '/case-studies/whatsapp-automation-guide' : (cs.id === 2 ? '/case-studies/lead-extraction-agent' : '/case-studies/data-modeling-bi-dashboard'))}" class="w-full py-3 bg-white/5 hover:bg-[#ff5625] border border-white/10 hover:border-[#ff5625] text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2">
                             <span>Read Full Breakdown</span>
                             <span class="material-symbols-outlined text-sm">arrow_forward</span>
-                        </button>
+                        </a>
                     </div>
                 </div>
             `).join('');
@@ -220,8 +243,17 @@
             document.getElementById('modalTitle').innerText = cs.title || '';
             document.getElementById('modalImage').src = cs.image || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600';
             document.getElementById('modalMetrics').innerText = cs.metrics || '';
-            document.getElementById('modalChallenge').innerText = cs.challenge || '';
-            document.getElementById('modalSolution').innerText = cs.solution || '';
+
+            if (cs.content) {
+                document.getElementById('modalFullContent').innerHTML = formatMarkdownToHTML(cs.content);
+                document.getElementById('modalFullContent').classList.remove('hidden');
+                document.getElementById('modalSummarySection').classList.add('hidden');
+            } else {
+                document.getElementById('modalChallenge').innerText = cs.challenge || '';
+                document.getElementById('modalSolution').innerText = cs.solution || '';
+                document.getElementById('modalSummarySection').classList.remove('hidden');
+                document.getElementById('modalFullContent').classList.add('hidden');
+            }
 
             document.getElementById('caseStudyModalOverlay').classList.remove('hidden');
         }

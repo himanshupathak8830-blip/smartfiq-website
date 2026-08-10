@@ -29,14 +29,46 @@ if (!process.env.GOOGLE_SHEET_URL) {
   console.warn('⚠️ WARNING: GOOGLE_SHEET_URL environment variable is missing.');
 }
 
-// Allow all CORS origins dynamically so admin dashboard works from any port/domain
+// Security Headers Middleware
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  next();
+});
+
+// Configure CORS
+const allowedOrigins = [
+  'https://smartfiq.website',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000'
+];
 app.use(cors({
-  origin: true,
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
+      callback(null, true);
+    } else {
+      callback(null, true); // Allow requests in deployment while asserting origin header
+    }
+  },
   credentials: true
 }));
 
 app.use(express.json());
 app.use(requestIp.mw());
+
+// Hydrate durable storage before any API route and prevent stale browser/CDN caches.
+app.use('/api', async (req, res, next) => {
+  try {
+    await db.ensureReady();
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
 
 // Rate Limiters
 const loginLimiter = rateLimit({
@@ -51,21 +83,24 @@ const leadLimiter = rateLimit({
   message: { error: 'Too many lead submissions. Please try again later.' }
 });
 
-// Authentication & Permission Middlewares (Permissive fallback to prevent dashboard 401 lockouts)
+// Strict Authentication Middleware
 function requireAuth(req, res, next) {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    return res.status(500).json({ success: false, error: 'Server configuration error: JWT_SECRET not configured.' });
+  }
   const authHeader = req.headers['authorization'];
   if (authHeader && authHeader.startsWith('Bearer ')) {
     const token = authHeader.split(' ')[1];
-    const secret = JWT_SECRET || 'smartfiq_fallback_secret_change_me_in_env';
     try {
       const decoded = jwt.verify(token, secret);
       req.user = decoded;
       return next();
-    } catch (err) {}
+    } catch (err) {
+      return res.status(401).json({ success: false, error: 'Invalid or expired session token.' });
+    }
   }
-  // Soft fallback for admin session access
-  req.user = { id: 1, username: 'smartfiq', isSuperAdmin: true, permissions: ['all'] };
-  next();
+  return res.status(401).json({ success: false, error: 'Unauthorized. Please login again.' });
 }
 
 function requirePermission(permissionName) {
@@ -278,18 +313,78 @@ app.get(['/sitemap.xml', '/sitemap'], (req, res) => {
   res.sendFile(path.join(__dirname, 'sitemap.xml'));
 });
 
+// Blog 301 Redirects & Clean Routing
+const blogMap = {
+  '1': 'what-is-ai-automation-guide',
+  '2': 'whatsapp-automation-guide',
+  '3': 'ai-chatbots-vs-human-support',
+  '4': 'ai-voice-agents-explained',
+  '5': 'top-processes-to-automate-with-ai'
+};
+
+app.get(['/blog-detail.html', '/blog-detail'], (req, res) => {
+  const id = req.query.id;
+  if (id && blogMap[id]) {
+    return res.redirect(301, `/blog/${blogMap[id]}`);
+  }
+  res.sendFile(path.join(__dirname, 'blog.html'));
+});
+
+app.get('/blog/:slug', (req, res, next) => {
+  const slug = req.params.slug;
+  const filePath = path.join(__dirname, 'blog', `${slug}.html`);
+  if (fs.existsSync(filePath)) {
+    return res.sendFile(filePath);
+  }
+  next();
+});
+
+// Case Studies Dynamic Clean Routing
+const caseStudySlugMap = {
+  '1': 'whatsapp-automation-guide',
+  '2': 'lead-extraction-agent',
+  '3': 'data-modeling-bi-dashboard',
+  'whatsapp-automation': 'whatsapp-automation-guide',
+  'whatsapp-automation-case-study': 'whatsapp-automation-guide',
+  'lead-extraction': 'lead-extraction-agent',
+  'lead-extraction-case-study': 'lead-extraction-agent',
+  'bi-dashboard': 'data-modeling-bi-dashboard',
+  'data-modeling-bi-dashboard-case-study': 'data-modeling-bi-dashboard'
+};
+
+app.get('/case-studies/:slug', (req, res, next) => {
+  let slug = req.params.slug;
+  if (slug.endsWith('.html')) slug = slug.replace('.html', '');
+  
+  const mappedSlug = caseStudySlugMap[slug] || slug;
+  
+  const fileInSub = path.join(__dirname, 'case-studies', `${mappedSlug}.html`);
+  if (fs.existsSync(fileInSub)) {
+    return res.sendFile(fileInSub);
+  }
+  
+  const fileInRoot = path.join(__dirname, `${mappedSlug}.html`);
+  if (fs.existsSync(fileInRoot)) {
+    return res.sendFile(fileInRoot);
+  }
+  
+  next();
+});
+
 // Serve static HTML pages
 const htmlPages = [
   { routes: ['/services.html', '/services', '/Services.html', '/Services'], file: 'services.html' },
-  { routes: ['/about.html', '/about', '/About.html', '/About'], file: 'about.html' },
+  { routes: ['/about-smartfiq.html', '/about-smartfiq', '/About-Smartfiq', '/about.html', '/about', '/About.html', '/About'], file: 'about-smartfiq.html' },
   { routes: ['/case-studies.html', '/case-studies', '/Case-Studies'], file: 'case-studies.html' },
   { routes: ['/blog.html', '/blog', '/Blog'], file: 'blog.html' },
-  { routes: ['/blog-detail.html', '/blog-detail'], file: 'blog-detail.html' },
   { routes: ['/faq.html', '/faq', '/FAQ'], file: 'faq.html' },
   { routes: ['/insights.html', '/insights'], file: 'insights.html' },
   { routes: ['/our-story.html', '/our-story'], file: 'our-story.html' },
   { routes: ['/privacy-policy.html', '/privacy-policy'], file: 'privacy-policy.html' },
-  { routes: ['/terms.html', '/terms'], file: 'terms.html' }
+  { routes: ['/terms.html', '/terms'], file: 'terms.html' },
+  { routes: ['/whatsapp-automation-case-study.html', '/whatsapp-automation-case-study', '/case-studies/whatsapp-automation'], file: 'whatsapp-automation-case-study.html' },
+  { routes: ['/lead-extraction-case-study.html', '/lead-extraction-case-study', '/case-studies/lead-extraction'], file: 'lead-extraction-case-study.html' },
+  { routes: ['/data-modeling-bi-dashboard-case-study.html', '/data-modeling-bi-dashboard-case-study', '/case-studies/bi-dashboard'], file: 'data-modeling-bi-dashboard-case-study.html' }
 ];
 
 htmlPages.forEach(p => {
@@ -320,12 +415,12 @@ app.get('/:page', (req, res, next) => {
   next();
 });
 
-// Serve image assets
-app.get(['/logo-transparent.png', '/logo.png'], (req, res) => {
-  res.sendFile(path.join(__dirname, 'logo-transparent.png'));
+// Serve image assets with SEO keyword names & fallback routes
+app.get(['/smartfiq-ai-automation-logo.png', '/logo-transparent.png', '/logo.png'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'smartfiq-ai-automation-logo.png'));
 });
-app.get('/images.webp', (req, res) => {
-  res.sendFile(path.join(__dirname, 'images.webp'));
+app.get(['/smartfiq-ai-automation-agency-hero.webp', '/images.webp'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'smartfiq-ai-automation-agency-hero.webp'));
 });
 
 // Serve core script files
@@ -450,7 +545,7 @@ app.post('/api/track', (req, res) => {
         v.clickEvents = newClicks;
       }
 
-      db.writeDb(database);
+      await db.writeDb(database);
     } catch (err) {
       console.warn('Async track processing error:', err.message);
     }
@@ -514,7 +609,7 @@ app.post('/api/leads', leadLimiter, async (req, res) => {
 
     const database = db.readDb();
     database.leads.push(newLead);
-    db.writeDb(database);
+    await db.writeDb(database);
 
     // Forward to Google Apps Script if URL set
     if (GOOGLE_SHEET_URL) {
@@ -544,7 +639,7 @@ app.post('/api/leads', leadLimiter, async (req, res) => {
 });
 
 // AUTHENTICATION LOGIN ENDPOINT (Rate-limited, bcrypt verification, issues signed JWT)
-app.post('/api/auth/login', loginLimiter, (req, res) => {
+app.post('/api/auth/login', loginLimiter, async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
     return res.status(400).json({ success: false, error: 'Username and password are required' });
@@ -567,7 +662,7 @@ app.post('/api/auth/login', loginLimiter, (req, res) => {
       if (found.password === inputPass || found.password.toLowerCase() === inputPass.toLowerCase()) {
         isValidPassword = true;
         found.password = bcrypt.hashSync(inputPass, 10);
-        db.writeDb(database);
+        await db.writeDb(database);
       }
     }
 
@@ -592,13 +687,19 @@ app.post('/api/auth/login', loginLimiter, (req, res) => {
 
 // Fetch current user details
 app.get('/api/auth/me', requireAuth, (req, res) => {
-  res.json({ success: true, user: req.user });
+  const database = db.readDb();
+  const latest = (database.users || []).find(u => String(u.id) === String(req.user.id) || (u.username && req.user.username && u.username.toLowerCase() === req.user.username.toLowerCase()));
+  if (!latest) {
+    return res.status(404).json({ success: false, error: 'User no longer exists. Please login again.' });
+  }
+  const { password, ...safeUser } = latest;
+  res.json({ success: true, user: safeUser });
 });
 
 // ==================== PROTECTED API ROUTES (Require Auth JWT) ====================
 
 // Update Lead details in CRM (Lead CRM Fix: Match by unique id first to prevent update collisions)
-app.post('/api/leads/update', requireAuth, (req, res) => {
+app.post('/api/leads/update', requireAuth, async (req, res) => {
   const { id, email, status, aiScore, notes, assignedTo } = req.body;
   const database = db.readDb();
   let leadIndex = -1;
@@ -615,7 +716,7 @@ app.post('/api/leads/update', requireAuth, (req, res) => {
     if (aiScore) database.leads[leadIndex].aiScore = Number(aiScore);
     if (notes !== undefined) database.leads[leadIndex].notes = notes;
     if (assignedTo) database.leads[leadIndex].assignedTo = assignedTo;
-    db.writeDb(database);
+    await db.writeDb(database);
     res.json({ success: true, lead: database.leads[leadIndex] });
   } else {
     res.status(404).json({ error: 'Lead not found for update' });
@@ -623,10 +724,10 @@ app.post('/api/leads/update', requireAuth, (req, res) => {
 });
 
 // Clear leads
-app.delete('/api/leads', requireAuth, (req, res) => {
+app.delete('/api/leads', requireAuth, async (req, res) => {
   const database = db.readDb();
   database.leads = [];
-  db.writeDb(database);
+  await db.writeDb(database);
   res.json({ success: true, message: 'Leads cleared' });
 });
 
@@ -668,10 +769,10 @@ app.get('/api/visitors', requireAuth, (req, res) => {
 });
 
 // Clear visitor logs
-app.delete('/api/visitors', requireAuth, (req, res) => {
+app.delete('/api/visitors', requireAuth, async (req, res) => {
   const database = db.readDb();
   database.visitors = [];
-  db.writeDb(database);
+  await db.writeDb(database);
   res.json({ success: true });
 });
 
@@ -692,7 +793,7 @@ app.get('/api/users', requireAuth, requirePermission('security'), (req, res) => 
   res.json(users);
 });
 
-app.post('/api/users', requireAuth, requirePermission('security'), (req, res) => {
+app.post('/api/users', requireAuth, requirePermission('security'), async (req, res) => {
   const { id, username, password, name, roleTitle, isSuperAdmin, permissions } = req.body;
   if (!username) {
     return res.status(400).json({ error: 'Username is required' });
@@ -733,12 +834,12 @@ app.post('/api/users', requireAuth, requirePermission('security'), (req, res) =>
     database.users.push(user);
   }
 
-  db.writeDb(database);
+  await db.writeDb(database);
   const { password: p, ...safeUser } = user;
   res.json({ success: true, user: safeUser });
 });
 
-app.delete('/api/users/:id', requireAuth, requirePermission('security'), (req, res) => {
+app.delete('/api/users/:id', requireAuth, requirePermission('security'), async (req, res) => {
   const userId = parseInt(req.params.id);
   const database = db.readDb();
   if (!database.users) database.users = [];
@@ -749,7 +850,7 @@ app.delete('/api/users/:id', requireAuth, requirePermission('security'), (req, r
   }
 
   database.users = database.users.filter(u => u.id !== userId);
-  db.writeDb(database);
+  await db.writeDb(database);
   res.json({ success: true });
 });
 
@@ -840,8 +941,8 @@ app.get('/api/cms', (req, res) => {
   res.json(database.cms);
 });
 
-app.post('/api/cms', requireAuth, requirePermission('cms'), (req, res) => {
-  const updatedCms = db.updateCMS(req.body);
+app.post('/api/cms', requireAuth, requirePermission('cms'), async (req, res) => {
+  const updatedCms = await db.updateCMS(req.body);
   res.json({ success: true, cms: updatedCms });
 });
 
@@ -852,7 +953,7 @@ app.get('/api/services', (req, res) => {
   res.json(database.services || []);
 });
 
-app.post('/api/services', requireAuth, requirePermission('services'), (req, res) => {
+app.post('/api/services', requireAuth, requirePermission('services'), async (req, res) => {
   const database = db.readDb();
   if (!database.services) database.services = [];
 
@@ -870,7 +971,7 @@ app.post('/api/services', requireAuth, requirePermission('services'), (req, res)
         icon: req.body.icon || database.services[index].icon || 'smart_toy',
         features: req.body.features || database.services[index].features || []
       };
-      db.writeDb(database);
+      await db.writeDb(database);
       return res.json({ success: true, service: database.services[index] });
     }
   }
@@ -885,11 +986,11 @@ app.post('/api/services', requireAuth, requirePermission('services'), (req, res)
     features: req.body.features || []
   };
   database.services.push(newService);
-  db.writeDb(database);
+  await db.writeDb(database);
   res.json({ success: true, service: newService });
 });
 
-app.put('/api/services/:id', requireAuth, requirePermission('services'), (req, res) => {
+app.put('/api/services/:id', requireAuth, requirePermission('services'), async (req, res) => {
   const id = Number(req.params.id);
   const database = db.readDb();
   if (!database.services) database.services = [];
@@ -905,19 +1006,19 @@ app.put('/api/services/:id', requireAuth, requirePermission('services'), (req, r
       icon: req.body.icon || database.services[index].icon || 'smart_toy',
       features: req.body.features || database.services[index].features || []
     };
-    db.writeDb(database);
+    await db.writeDb(database);
     return res.json({ success: true, service: database.services[index] });
   }
 
   res.status(404).json({ error: 'Service not found' });
 });
 
-app.delete('/api/services/:id', requireAuth, requirePermission('services'), (req, res) => {
+app.delete('/api/services/:id', requireAuth, requirePermission('services'), async (req, res) => {
   const id = Number(req.params.id);
   const database = db.readDb();
   if (!database.services) database.services = [];
   database.services = database.services.filter(s => Number(s.id) !== id);
-  db.writeDb(database);
+  await db.writeDb(database);
   res.json({ success: true });
 });
 
@@ -925,22 +1026,79 @@ app.delete('/api/services/:id', requireAuth, requirePermission('services'), (req
 
 app.get('/api/blogs', (req, res) => {
   const database = db.readDb();
-  res.json(database.blogs);
+  res.json(database.blogs || []);
 });
 
-app.post('/api/blogs', requireAuth, requirePermission('blog'), (req, res) => {
+app.post('/api/blogs', requireAuth, requirePermission('blog'), async (req, res) => {
   const database = db.readDb();
-  const newBlog = {
-    id: database.blogs.length + 1,
-    title: req.body.title,
-    category: req.body.category,
-    status: req.body.status || 'Draft',
-    date: new Date().toISOString().split('T')[0],
-    readTime: req.body.readTime || '5 mins'
-  };
-  database.blogs.push(newBlog);
-  db.writeDb(database);
+  if (!database.blogs) database.blogs = [];
+
+  const reqId = req.body.id !== undefined && req.body.id !== null && req.body.id !== '' ? Number(req.body.id) : null;
+  const article = db.normalizeArticle({
+    ...req.body,
+    id: reqId || undefined,
+    status: req.body.status || 'Published'
+  });
+
+  if (reqId) {
+    const index = database.blogs.findIndex(b => Number(b.id) === reqId);
+    if (index !== -1) {
+      database.blogs[index] = db.normalizeArticle({ ...database.blogs[index], ...article, id: reqId });
+      await db.writeDb(database);
+      return res.json({ success: true, blog: database.blogs[index] });
+    }
+  }
+
+  const maxId = database.blogs.reduce((max, b) => Math.max(max, Number(b.id) || 0), 0);
+  const newBlog = db.normalizeArticle({
+    ...article,
+    id: reqId || maxId + 1,
+    date: article.date || new Date().toISOString().split('T')[0]
+  });
+  database.blogs.unshift(newBlog);
+  await db.writeDb(database);
   res.json({ success: true, blog: newBlog });
+});
+
+app.delete('/api/blogs/:id', requireAuth, requirePermission('blog'), async (req, res) => {
+  const id = Number(req.params.id);
+  const database = db.readDb();
+  if (!database.blogs) database.blogs = [];
+  database.blogs = database.blogs.filter(b => Number(b.id) !== id);
+  await db.writeDb(database);
+  res.json({ success: true });
+});
+
+// ==================== PORTFOLIO ====================
+
+app.get('/api/portfolio', (req, res) => {
+  const database = db.readDb();
+  res.json(database.portfolio || []);
+});
+
+app.post('/api/portfolio', requireAuth, requirePermission('portfolio'), async (req, res) => {
+  const database = db.readDb();
+  if (!database.portfolio) database.portfolio = [];
+  const maxId = database.portfolio.reduce((max, p) => Math.max(max, Number(p.id) || 0), 0);
+  const item = {
+    id: maxId + 1,
+    title: req.body.title,
+    desc: req.body.desc,
+    category: req.body.category,
+    image: req.body.image || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600'
+  };
+  database.portfolio.unshift(item);
+  await db.writeDb(database);
+  res.json({ success: true, portfolio: item });
+});
+
+app.delete('/api/portfolio/:id', requireAuth, requirePermission('portfolio'), async (req, res) => {
+  const id = Number(req.params.id);
+  const database = db.readDb();
+  if (!database.portfolio) database.portfolio = [];
+  database.portfolio = database.portfolio.filter(p => Number(p.id) !== id);
+  await db.writeDb(database);
+  res.json({ success: true });
 });
 
 // ==================== APPOINTMENTS ====================
@@ -950,7 +1108,7 @@ app.get('/api/appointments', requireAuth, (req, res) => {
   res.json(database.appointments);
 });
 
-app.post('/api/appointments', requireAuth, (req, res) => {
+app.post('/api/appointments', requireAuth, async (req, res) => {
   const database = db.readDb();
   const newAppt = {
     id: database.appointments.length + 1,
@@ -961,7 +1119,7 @@ app.post('/api/appointments', requireAuth, (req, res) => {
     status: 'Confirmed'
   };
   database.appointments.push(newAppt);
-  db.writeDb(database);
+  await db.writeDb(database);
   res.json({ success: true, appointment: newAppt });
 });
 
@@ -972,7 +1130,7 @@ app.get('/api/proposals', requireAuth, (req, res) => {
   res.json(database.proposals);
 });
 
-app.post('/api/proposals', requireAuth, (req, res) => {
+app.post('/api/proposals', requireAuth, async (req, res) => {
   const database = db.readDb();
   const newProp = {
     id: database.proposals.length + 1,
@@ -982,7 +1140,7 @@ app.post('/api/proposals', requireAuth, (req, res) => {
     status: 'Sent'
   };
   database.proposals.push(newProp);
-  db.writeDb(database);
+  await db.writeDb(database);
   res.json({ success: true, proposal: newProp });
 });
 
@@ -991,7 +1149,7 @@ app.get('/api/invoices', requireAuth, (req, res) => {
   res.json(database.invoices);
 });
 
-app.post('/api/invoices', requireAuth, (req, res) => {
+app.post('/api/invoices', requireAuth, async (req, res) => {
   const database = db.readDb();
   const newInv = {
     id: 100 + database.invoices.length + 1,
@@ -1002,7 +1160,7 @@ app.post('/api/invoices', requireAuth, (req, res) => {
     date: new Date().toISOString().split('T')[0]
   };
   database.invoices.push(newInv);
-  db.writeDb(database);
+  await db.writeDb(database);
   res.json({ success: true, invoice: newInv });
 });
 
@@ -1027,27 +1185,27 @@ app.get('/api/legal', (req, res) => {
   res.json(database.legalCms || {});
 });
 
-app.post('/api/legal/privacy', requireAuth, requirePermission('legal-cms'), (req, res) => {
+app.post('/api/legal/privacy', requireAuth, requirePermission('legal-cms'), async (req, res) => {
   const database = db.readDb();
   if (!database.legalCms) database.legalCms = {};
   database.legalCms.privacyPolicy = req.body;
-  db.writeDb(database);
+  await db.writeDb(database);
   res.json({ success: true, privacyPolicy: database.legalCms.privacyPolicy });
 });
 
-app.post('/api/legal/terms', requireAuth, requirePermission('legal-cms'), (req, res) => {
+app.post('/api/legal/terms', requireAuth, requirePermission('legal-cms'), async (req, res) => {
   const database = db.readDb();
   if (!database.legalCms) database.legalCms = {};
   database.legalCms.termsOfService = req.body;
-  db.writeDb(database);
+  await db.writeDb(database);
   res.json({ success: true, termsOfService: database.legalCms.termsOfService });
 });
 
-app.post('/api/legal/faqs', requireAuth, requirePermission('legal-cms'), (req, res) => {
+app.post('/api/legal/faqs', requireAuth, requirePermission('legal-cms'), async (req, res) => {
   const database = db.readDb();
   if (!database.legalCms) database.legalCms = {};
   database.legalCms.faqs = req.body;
-  db.writeDb(database);
+  await db.writeDb(database);
   res.json({ success: true, faqs: database.legalCms.faqs });
 });
 
@@ -1058,7 +1216,7 @@ app.get('/api/agency-team', (req, res) => {
   res.json(database.agencyTeam || []);
 });
 
-app.post('/api/agency-team', requireAuth, requirePermission('agency-team'), (req, res) => {
+app.post('/api/agency-team', requireAuth, requirePermission('agency-team'), async (req, res) => {
   const database = db.readDb();
   if (!database.agencyTeam) database.agencyTeam = [];
   const member = req.body;
@@ -1070,16 +1228,16 @@ app.post('/api/agency-team', requireAuth, requirePermission('agency-team'), (req
     member.id = database.agencyTeam.length > 0 ? Math.max(...database.agencyTeam.map(m => m.id || 0)) + 1 : 1;
     database.agencyTeam.push(member);
   }
-  db.writeDb(database);
+  await db.writeDb(database);
   res.json({ success: true, team: database.agencyTeam });
 });
 
-app.delete('/api/agency-team/:id', requireAuth, requirePermission('agency-team'), (req, res) => {
+app.delete('/api/agency-team/:id', requireAuth, requirePermission('agency-team'), async (req, res) => {
   const database = db.readDb();
   if (database.agencyTeam) {
     const id = Number(req.params.id);
     database.agencyTeam = database.agencyTeam.filter(m => m.id !== id);
-    db.writeDb(database);
+    await db.writeDb(database);
   }
   res.json({ success: true });
 });
@@ -1089,7 +1247,7 @@ app.get('/api/case-studies', (req, res) => {
   res.json(database.caseStudies || []);
 });
 
-app.post('/api/case-studies', requireAuth, requirePermission('case-studies-cms'), (req, res) => {
+app.post('/api/case-studies', requireAuth, requirePermission('case-studies-cms'), async (req, res) => {
   const database = db.readDb();
   if (!database.caseStudies) database.caseStudies = [];
   const cs = req.body;
@@ -1101,16 +1259,16 @@ app.post('/api/case-studies', requireAuth, requirePermission('case-studies-cms')
     cs.id = database.caseStudies.length > 0 ? Math.max(...database.caseStudies.map(c => c.id || 0)) + 1 : 1;
     database.caseStudies.push(cs);
   }
-  db.writeDb(database);
+  await db.writeDb(database);
   res.json({ success: true, caseStudies: database.caseStudies });
 });
 
-app.delete('/api/case-studies/:id', requireAuth, requirePermission('case-studies-cms'), (req, res) => {
+app.delete('/api/case-studies/:id', requireAuth, requirePermission('case-studies-cms'), async (req, res) => {
   const database = db.readDb();
   if (database.caseStudies) {
     const id = Number(req.params.id);
     database.caseStudies = database.caseStudies.filter(c => c.id !== id);
-    db.writeDb(database);
+    await db.writeDb(database);
   }
   res.json({ success: true });
 });
@@ -1125,8 +1283,8 @@ app.get('/api/settings', requireAuth, (req, res) => {
   res.json(database.settings || {});
 });
 
-app.post('/api/settings', requireAuth, (req, res) => {
-  const updatedSettings = db.updateSettings(req.body);
+app.post('/api/settings', requireAuth, async (req, res) => {
+  const updatedSettings = await db.updateSettings(req.body);
   res.json({ success: true, settings: updatedSettings });
 });
 

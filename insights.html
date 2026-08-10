@@ -7,7 +7,7 @@
     <title>AI &amp; Tech Insights | SmartFiQ Automation Agency</title>
     <meta name="description" content="Read in-depth technical analysis, AI research, and workflow automation guides from SmartFiQ's engineering team." />
     <meta name="keywords" content="AI tech insights, automation articles, SmartFiQ research" />
-    <link rel="canonical" href="https://smartfiq.com/insights" />
+    <link rel="canonical" href="https://smartfiq.website/insights" />
     <link rel="icon" type="image/png" href="logo-transparent.png" />
 
     <script type="application/ld+json">
@@ -15,9 +15,9 @@
       "@context": "https://schema.org",
       "@graph": [
         {
-          "@type": "CollectionPage",
-          "@id": "https://smartfiq.com/insights#webpage",
-          "url": "https://smartfiq.com/insights",
+          "@type": "WebPage",
+          "@id": "https://smartfiq.website/insights#webpage",
+          "url": "https://smartfiq.website/insights",
           "name": "AI & Tech Insights - SmartFiQ",
           "description": "In-depth engineering research, technical breakdowns & automation playbooks."
         }
@@ -226,6 +226,12 @@
                 return;
             }
 
+            const getUrl = item => {
+                if (!item) return '/blog';
+                if (item.slug && item.slug !== 'undefined') return `/blog/${item.slug}`;
+                return (window.SmartfiqBlog && window.SmartfiqBlog.getBlogUrl) ? window.SmartfiqBlog.getBlogUrl(item) : `/blog`;
+            };
+
             const a1 = articles[0];
             const a2 = articles[1] || articles[0];
             const rest = articles.slice(2);
@@ -242,7 +248,7 @@
                                     ${a1.category}
                                 </span>
                                 <h2 class="text-2xl md:text-4xl font-extrabold mb-3 text-white group-hover:text-[#ffb5a0] transition-colors">
-                                    <a href="blog-detail.html?id=${a1.id}">${a1.title}</a>
+                                    <a href="${getUrl(a1)}">${a1.title}</a>
                                 </h2>
                                 <p class="text-[#E7BDB2] text-sm line-clamp-2 max-w-xl mb-6">
                                     ${a1.excerpt}
@@ -252,7 +258,7 @@
                                         <span class="material-symbols-outlined text-[#ff5625] text-sm">schedule</span>
                                         <span class="text-[#E7BDB2] text-xs font-semibold">${a1.readTime}</span>
                                     </div>
-                                    <a class="text-[#ff5625] font-bold text-xs uppercase tracking-wider flex items-center gap-2 group/link hover:underline" href="blog-detail.html?id=${a1.id}">
+                                    <a class="text-[#ff5625] font-bold text-xs uppercase tracking-wider flex items-center gap-2 group/link hover:underline" href="${getUrl(a1)}">
                                         Read Article 
                                         <span class="material-symbols-outlined group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
                                     </a>
@@ -269,11 +275,11 @@
                             <span class="bg-[#920703]/30 text-[#ffb5a0] px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider backdrop-blur-md border border-[#920703]/50 mb-6 inline-block">
                                 ${a2.category}
                             </span>
-                            <a href="blog-detail.html?id=${a2.id}" class="block aspect-video rounded-xl overflow-hidden mb-6">
+                            <a href="${getUrl(a2)}" class="block aspect-video rounded-xl overflow-hidden mb-6">
                                 <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${a2.coverImage}" alt="${a2.title}" />
                             </a>
                             <h2 class="text-xl font-bold mb-3 text-white group-hover:text-[#ffb5a0] transition-colors">
-                                <a href="blog-detail.html?id=${a2.id}">${a2.title}</a>
+                                <a href="${getUrl(a2)}">${a2.title}</a>
                             </h2>
                             <p class="text-[#E7BDB2] text-xs line-clamp-3 mb-6 leading-relaxed">
                                 ${a2.excerpt}
@@ -281,7 +287,7 @@
                         </div>
                         <div class="flex items-center justify-between pt-6 border-t border-white/10">
                             <span class="text-[#E7BDB2] text-xs font-semibold">${a2.readTime}</span>
-                            <a href="blog-detail.html?id=${a2.id}" class="w-10 h-10 rounded-full border border-[#ff5625]/40 flex items-center justify-center text-[#ff5625] group-hover:bg-[#ff5625] group-hover:text-white transition-all">
+                            <a href="${getUrl(a2)}" class="w-10 h-10 rounded-full border border-[#ff5625]/40 flex items-center justify-center text-[#ff5625] group-hover:bg-[#ff5625] group-hover:text-white transition-all">
                                 <span class="material-symbols-outlined text-sm">arrow_forward</span>
                             </a>
                         </div>
@@ -290,6 +296,7 @@
             `;
 
             rest.forEach(item => {
+                const itemUrl = getUrl(item);
                 html += `
                     <article class="md:col-span-4 group">
                         <div class="glass-card rounded-2xl p-8 h-full flex flex-col justify-between border border-white/10">
@@ -297,11 +304,11 @@
                                 <span class="bg-[#ff5625]/20 text-[#ffb5a0] px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider backdrop-blur-md border border-[#ff5625]/30 mb-6 inline-block">
                                     ${item.category}
                                 </span>
-                                <a href="blog-detail.html?id=${item.id}" class="block aspect-video rounded-xl overflow-hidden mb-6">
+                                <a href="${itemUrl}" class="block aspect-video rounded-xl overflow-hidden mb-6">
                                     <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${item.coverImage}" alt="${item.title}" />
                                 </a>
                                 <h2 class="text-xl font-bold mb-3 text-white group-hover:text-[#ffb5a0] transition-colors">
-                                    <a href="blog-detail.html?id=${item.id}">${item.title}</a>
+                                    <a href="${itemUrl}">${item.title}</a>
                                 </h2>
                                 <p class="text-[#E7BDB2] text-xs line-clamp-3 mb-6 leading-relaxed">
                                     ${item.excerpt}
@@ -309,7 +316,7 @@
                             </div>
                             <div class="flex items-center justify-between pt-6 border-t border-white/10">
                                 <span class="text-[#E7BDB2] text-xs font-semibold">${item.readTime}</span>
-                                <a href="blog-detail.html?id=${item.id}" class="inline-flex items-center gap-1 text-[#ff5625] text-xs font-bold uppercase tracking-wider hover:underline">
+                                <a href="${itemUrl}" class="inline-flex items-center gap-1 text-[#ff5625] text-xs font-bold uppercase tracking-wider hover:underline">
                                     Read Now <span class="material-symbols-outlined text-sm">arrow_forward</span>
                                 </a>
                             </div>
