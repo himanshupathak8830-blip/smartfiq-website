@@ -2,6 +2,22 @@
   "version": 2,
   "cleanUrls": true,
   "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/sitemap.xml",
+      "headers": [
+        { "key": "Content-Type", "value": "application/xml; charset=utf-8" },
+        { "key": "Cache-Control", "value": "public, max-age=3600, s-maxage=86400, stale-while-revalidate" }
+      ]
+    },
+    {
+      "source": "/robots.txt",
+      "headers": [
+        { "key": "Content-Type", "value": "text/plain; charset=utf-8" },
+        { "key": "Cache-Control", "value": "public, max-age=3600, s-maxage=86400, stale-while-revalidate" }
+      ]
+    }
+  ],
   "redirects": [
     { "source": "/blog-detail.html", "has": [{ "type": "query", "key": "id", "value": "1" }], "destination": "/blog/what-is-ai-automation-guide", "statusCode": 301 },
     { "source": "/blog-detail.html", "has": [{ "type": "query", "key": "id", "value": "2" }], "destination": "/blog/whatsapp-automation-guide", "statusCode": 301 },
@@ -14,7 +30,10 @@
     { "source": "/blog/whatsapp-automation-guide", "destination": "/blog/whatsapp-automation-guide.html" },
     { "source": "/blog/ai-chatbots-vs-human-support", "destination": "/blog/ai-chatbots-vs-human-support.html" },
     { "source": "/blog/ai-voice-agents-explained", "destination": "/blog/ai-voice-agents-explained.html" },
-    { "source": "/blog/top-processes-to-automate-with-ai", "destination": "/blog/top-processes-to-automate-with-ai.html" }
+    { "source": "/blog/top-processes-to-automate-with-ai", "destination": "/blog/top-processes-to-automate-with-ai.html" },
+    { "source": "/case-studies/whatsapp-automation-guide", "destination": "/case-studies/whatsapp-automation-guide.html" },
+    { "source": "/case-studies/lead-extraction-agent", "destination": "/case-studies/lead-extraction-agent.html" },
+    { "source": "/case-studies/data-modeling-bi-dashboard", "destination": "/case-studies/data-modeling-bi-dashboard.html" }
   ],
   "builds": [
     {
@@ -36,4 +55,3 @@
     }
   ]
 }
-

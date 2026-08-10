@@ -304,12 +304,12 @@ app.get(['/admin', '/admin.html'], (req, res) => {
 
 // Serve Technical SEO Files
 app.get('/robots.txt', (req, res) => {
-  res.type('text/plain');
+  res.header('Content-Type', 'text/plain; charset=utf-8');
   res.sendFile(path.join(__dirname, 'robots.txt'));
 });
 
 app.get(['/sitemap.xml', '/sitemap'], (req, res) => {
-  res.type('application/xml');
+  res.header('Content-Type', 'application/xml; charset=utf-8');
   res.sendFile(path.join(__dirname, 'sitemap.xml'));
 });
 
