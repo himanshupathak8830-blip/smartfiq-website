@@ -116,6 +116,13 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+# Session Persistence Settings (No repeated login prompts)
+SESSION_COOKIE_AGE = 2592000  # 30 Days persistence
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [str(BASE_DIR), str(BASE_DIR / 'static')]
 STATIC_ROOT = str(BASE_DIR / 'staticfiles')

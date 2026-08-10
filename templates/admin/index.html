@@ -26,6 +26,20 @@
 {% block content %}
 <div class="max-w-7xl mx-auto py-4 space-y-6">
 
+  <!-- Quick Admin Management Bar -->
+  <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+    <span class="text-xs font-extrabold uppercase tracking-wider text-slate-400">Quick Actions:</span>
+    <div class="flex flex-wrap gap-2 text-xs font-bold">
+      <a href="/personal-admin/core/lead/" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-all">📥 Leads CRM</a>
+      <a href="/personal-admin/blog/post/" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-all">📰 Manage Blogs</a>
+      <a href="/personal-admin/services/service/" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-all">🛠️ Services & Pricing</a>
+      <a href="/personal-admin/case_studies/casestudy/" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-all">📂 Case Studies</a>
+      <a href="/personal-admin/core/teammember/" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-all">👥 Team Members</a>
+      <a href="/personal-admin/core/visitor/" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-all">👁️ Visitor Logs</a>
+      <a href="/personal-admin/core/sitesetting/" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-all">⚙️ CMS Settings</a>
+    </div>
+  </div>
+
   <!-- Dashboard Banner -->
   <div class="bg-gradient-to-r from-[#00658d] via-[#104a6b] to-[#0f172a] rounded-2xl p-6 text-white shadow-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
     <div>

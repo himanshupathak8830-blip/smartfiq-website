@@ -7,13 +7,15 @@ from blog.views import list_posts, detail_post
 from services.views import list_services
 from case_studies.views import list_case_studies, detail_case_study
 
+from django.shortcuts import redirect
+
 urlpatterns = [
     path('personal-admin/', admin.site.urls),
     path('personal/', admin.site.urls),
     path('personal', admin.site.urls),
-    path('admin', admin_panel, name='admin_panel'),
-    path('admin/', admin_panel),
-    path('admin.html', admin_panel),
+    path('admin', lambda req: redirect('/personal-admin/')),
+    path('admin/', lambda req: redirect('/personal-admin/')),
+    path('admin.html', lambda req: redirect('/personal-admin/')),
     
     path('', home, name='home'),
     path('index.html', home),
