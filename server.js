@@ -60,14 +60,28 @@ app.use(requestIp.mw());
 
 // Hydrate durable storage before any API route and prevent stale browser/CDN caches.
 app.use('/api', async (req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  next();
+});
+
+// PostgreSQL Database Health Check Endpoint
+app.get('/api/health/db', async (req, res) => {
   try {
-    await db.ensureReady();
-    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-    res.set('Pragma', 'no-cache');
-    res.set('Expires', '0');
-    next();
+    const result = await db.query('SELECT NOW() AS current_time;');
+    res.json({
+      success: true,
+      status: 'healthy',
+      database: 'PostgreSQL 17',
+      timestamp: result.rows[0].current_time
+    });
   } catch (err) {
-    next(err);
+    res.status(500).json({
+      success: false,
+      status: 'unhealthy',
+      error: err.message
+    });
   }
 });
 
@@ -385,87 +399,36 @@ app.post('/api/track', (req, res) => {
     try {
       const ip = await resolveRealClientIp(req);
       const devInfo = parseDeviceDetails(uaString);
+      const geo = await getGeoLocation(ip, req);
 
-      const geo = await getGeoLocation(ip);
       const isNational = geo.isNational !== undefined ? geo.isNational : (geo.country === 'India');
       const locationTag = isNational 
         ? `🇮🇳 National (${geo.city || 'India'}, ${geo.state || 'IN'})` 
         : `🌐 International (${geo.city || geo.country || 'Global'}, ${geo.country || 'IN'})`;
 
-      const database = db.readDb();
-      if (!database.visitors) database.visitors = [];
-      let visitorIndex = database.visitors.findIndex(v => v.sessionId === sessionId);
-
-      let existingClicks = visitorIndex !== -1 && database.visitors[visitorIndex].clickEvents ? database.visitors[visitorIndex].clickEvents : [];
-      let newClicks = [...existingClicks];
-
-      if (allClicks && Array.isArray(allClicks)) {
-        allClicks.forEach(c => {
-          if (c && c.label && !newClicks.some(item => item.label === c.label && item.time === c.time)) {
-            newClicks.push(c);
-          }
-        });
-      }
-      if (clickEvent && clickEvent.label && !newClicks.some(item => item.label === clickEvent.label && item.time === clickEvent.time)) {
-        newClicks.push(clickEvent);
-      }
-
-      if (visitorIndex === -1) {
-        const newVisitor = {
-          sessionId,
-          ip,
-          email: email || 'Guest Visitor',
-          location: locationTag,
-          isNational,
-          city: geo.city || 'India',
-          country: geo.country || 'IN',
-          isp: geo.isp || 'Telecom',
-          isBot: devInfo.isBot || false,
-          botName: devInfo.botName || '',
-          botCategory: devInfo.botCategory || '',
-          userAgent: uaString,
-          device: devInfo.device || 'Desktop',
-          deviceModel: devInfo.deviceModel || 'Browser',
-          browser: devInfo.browser || 'Chrome',
-          os: devInfo.os || 'Windows/Mac',
-          entryPage: entryPage || landingPage || currentPage || '/',
-          currentPage: currentPage || '/',
-          exitPage: exitPage || currentPage || '/',
-          timestamp: new Date().toISOString(),
-          lastActive: new Date().toISOString(),
-          sessionDuration: sessionDuration || 0,
-          scrollPct: scrollPercentage || 0,
-          pageViews: pageViews || 1,
-          clickEvents: newClicks,
-          userJourney: [currentPage || '/']
-        };
-        database.visitors.unshift(newVisitor);
-      } else {
-        const v = database.visitors[visitorIndex];
-        v.ip = ip;
-        v.location = locationTag;
-        v.isNational = isNational;
-        v.city = geo.city || v.city;
-        v.country = geo.country || v.country;
-        v.isp = geo.isp || v.isp;
-        v.lastActive = new Date().toISOString();
-        if (sessionDuration !== undefined) v.sessionDuration = Math.max(v.sessionDuration || 0, sessionDuration);
-        if (scrollPercentage !== undefined) v.scrollPct = Math.max(v.scrollPct || 0, scrollPercentage);
-        if (currentPage) {
-          v.currentPage = currentPage;
-          if (!v.userJourney) v.userJourney = [];
-          if (!v.userJourney.includes(currentPage)) {
-            v.userJourney.push(currentPage);
-            v.pageViews = v.userJourney.length;
-          }
-        }
-        if (exitPage) v.exitPage = exitPage;
-        v.clickEvents = newClicks;
-      }
-
-      await db.writeDb(database);
+      await db.recordVisitor({
+        sessionId,
+        ip,
+        email: email || 'Guest Visitor',
+        location: locationTag,
+        isp: geo.isp || 'Telecom',
+        isBot: devInfo.isBot || false,
+        botName: devInfo.botName || null,
+        botCategory: devInfo.botCategory || null,
+        userAgent: uaString,
+        device: devInfo.device || 'Desktop',
+        deviceModel: devInfo.deviceModel || 'PC',
+        browser: devInfo.browser || 'Chrome',
+        os: devInfo.os || 'Windows/Mac',
+        entryPage: entryPage || landingPage || currentPage || '/',
+        currentPage: currentPage || '/',
+        exitPage: exitPage || currentPage || '/',
+        sessionDuration: sessionDuration || 0,
+        scrollPct: scrollPercentage || 0,
+        pageViews: pageViews || 1
+      });
     } catch (err) {
-      console.warn('Async track processing error:', err.message);
+      console.warn('Async PostgreSQL track processing warning:', err.message);
     }
   })();
 });
@@ -506,28 +469,18 @@ app.post('/api/leads', leadLimiter, async (req, res) => {
     const leadName = name || fullName || 'Anonymous Lead';
     const leadMessage = message || requirements || '';
 
-    // Lead CRM Fix: Every lead gets a stable unique ID on creation for reliable status updates in the admin dashboard table.
-    const newLead = {
-      id: Date.now() + Math.floor(Math.random() * 1000),
+    const newLead = await db.createLead({
       name: leadName,
-      email: email || '',
-      phone: phone || '',
-      budget: budget || '',
+      email: email || null,
+      phone: phone || null,
+      budget: budget || null,
       message: leadMessage,
-      ip,
-      location: `${geo.city}, ${geo.country}`,
-      isBot: false,
-      timestamp: new Date().toISOString(),
       source: source || 'Hero Form',
-      status: 'New',
-      aiScore: calculateLeadAiScore({ email, phone, budget, message: leadMessage }),
-      assignedTo: 'Aman',
-      notes: ''
-    };
-
-    const database = db.readDb();
-    database.leads.push(newLead);
-    await db.writeDb(database);
+      status: 'new',
+      priority: 'normal',
+      lead_score: calculateLeadAiScore({ email, phone, budget, message: leadMessage }),
+      ai_summary: `${leadName} submitted a contact form requirement: "${leadMessage.substring(0, 100)}..."`
+    });
 
     // Forward to Google Apps Script if URL set
     if (GOOGLE_SHEET_URL) {
@@ -548,7 +501,7 @@ app.post('/api/leads', leadLimiter, async (req, res) => {
     }
 
     // Forward to Telegram Group if credentials set
-    await sendTelegramNotification(newLead);
+    await sendTelegramNotification({ ...newLead, location: `${geo.city}, ${geo.country}` });
 
     res.json({ success: true, lead: newLead });
   } catch (err) {
@@ -563,216 +516,239 @@ app.post('/api/auth/login', loginLimiter, async (req, res) => {
     return res.status(400).json({ success: false, error: 'Username and password are required' });
   }
 
-  const database = db.readDb();
-  const users = database.users || [];
+  try {
+    const inputUser = username.trim().toLowerCase();
+    const inputPass = password.trim();
 
-  const inputUser = username.trim().toLowerCase();
-  const inputPass = password.trim();
+    const found = await db.findUserByUsername(inputUser);
 
-  const found = users.find(u => u.username.toLowerCase() === inputUser);
+    if (found && found.password_hash) {
+      let isValidPassword = false;
 
-  if (found && found.password) {
-    let isValidPassword = false;
-
-    if (found.password.startsWith('$2a$') || found.password.startsWith('$2b$')) {
-      isValidPassword = bcrypt.compareSync(inputPass, found.password);
-    } else {
-      if (found.password === inputPass || found.password.toLowerCase() === inputPass.toLowerCase()) {
+      if (found.password_hash.startsWith('$2a$') || found.password_hash.startsWith('$2b$')) {
+        isValidPassword = bcrypt.compareSync(inputPass, found.password_hash);
+      } else if (found.password_hash === inputPass) {
         isValidPassword = true;
-        found.password = bcrypt.hashSync(inputPass, 10);
-        await db.writeDb(database);
+        const newHash = bcrypt.hashSync(inputPass, 10);
+        await db.updateUser(found.id, { password_hash: newHash });
+      }
+
+      if (isValidPassword) {
+        const secret = process.env.JWT_SECRET;
+        if (!secret) {
+          return res.status(500).json({ success: false, error: 'Server configuration error: JWT_SECRET not configured.' });
+        }
+
+        // Update last_login timestamp & log security event
+        await db.updateUser(found.id, { last_login: new Date() });
+        const ip = await resolveRealClientIp(req);
+        await db.addSecurityLog('Admin Login Success', found.username, 'Successful authentication', ip, req.headers['user-agent'], found.id);
+
+        const payload = {
+          id: found.id,
+          username: found.username,
+          name: found.full_name || found.username,
+          roleTitle: found.user_role || 'Admin',
+          isSuperAdmin: !!found.is_super_admin,
+          permissions: found.permissions || ['overview']
+        };
+
+        const token = jwt.sign(payload, secret, { expiresIn: '12h' });
+        return res.json({ success: true, token, user: payload });
       }
     }
 
-    if (isValidPassword) {
-      const secret = process.env.JWT_SECRET;
-      if (!secret) {
-        return res.status(500).json({ success: false, error: 'Server configuration error: JWT_SECRET not configured.' });
-      }
-      const payload = {
-        id: found.id,
-        username: found.username,
-        name: found.name,
-        roleTitle: found.roleTitle,
-        isSuperAdmin: !!found.isSuperAdmin,
-        permissions: found.permissions || ['overview']
-      };
+    // Log failed login event
+    const ip = await resolveRealClientIp(req);
+    await db.addSecurityLog('Admin Login Failed', inputUser, 'Invalid credentials', ip, req.headers['user-agent']);
 
-      const token = jwt.sign(payload, secret, { expiresIn: '12h' });
-      return res.json({ success: true, token, user: payload });
-    }
+    res.status(401).json({ success: false, error: 'Invalid Username or Password' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Database authentication error: ' + err.message });
   }
-
-  res.status(401).json({ success: false, error: 'Invalid Username or Password' });
 });
 
 // Fetch current user details
-app.get('/api/auth/me', requireAuth, (req, res) => {
-  const database = db.readDb();
-  const latest = (database.users || []).find(u => String(u.id) === String(req.user.id) || (u.username && req.user.username && u.username.toLowerCase() === req.user.username.toLowerCase()));
-  if (!latest) {
-    return res.status(404).json({ success: false, error: 'User no longer exists. Please login again.' });
+app.get('/api/auth/me', requireAuth, async (req, res) => {
+  try {
+    const latest = await db.findUserById(req.user.id);
+    if (!latest) {
+      return res.status(404).json({ success: false, error: 'User no longer exists. Please login again.' });
+    }
+    res.json({ success: true, user: latest });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
   }
-  const { password, ...safeUser } = latest;
-  res.json({ success: true, user: safeUser });
 });
 
 // ==================== PROTECTED API ROUTES (Require Auth JWT) ====================
 
-// Update Lead details in CRM (Lead CRM Fix: Match by unique id first to prevent update collisions)
+// Update Lead details in CRM
 app.post('/api/leads/update', requireAuth, async (req, res) => {
-  const { id, email, status, aiScore, notes, assignedTo } = req.body;
-  const database = db.readDb();
-  let leadIndex = -1;
+  try {
+    const { id, status, aiScore, notes, assignedTo } = req.body;
+    if (!id) return res.status(400).json({ error: 'Lead ID required' });
 
-  if (id !== undefined && id !== null && id !== '') {
-    leadIndex = database.leads.findIndex(l => String(l.id) === String(id));
+    const updated = await db.updateLead(id, { status, aiScore, assigned_to: assignedTo });
+    if (notes && notes.trim() !== '') {
+      await db.addLeadNote(id, notes, req.user.id);
+    }
+    res.json({ success: true, lead: updated });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-  if (leadIndex === -1 && email) {
-    leadIndex = database.leads.findIndex(l => l.email === email);
-  }
+});
 
-  if (leadIndex !== -1) {
-    if (status) database.leads[leadIndex].status = status;
-    if (aiScore) database.leads[leadIndex].aiScore = Number(aiScore);
-    if (notes !== undefined) database.leads[leadIndex].notes = notes;
-    if (assignedTo) database.leads[leadIndex].assignedTo = assignedTo;
-    await db.writeDb(database);
-    res.json({ success: true, lead: database.leads[leadIndex] });
-  } else {
-    res.status(404).json({ error: 'Lead not found for update' });
+// Add Internal Note to Lead
+app.post('/api/leads/notes', requireAuth, async (req, res) => {
+  try {
+    const { leadId, note } = req.body;
+    if (!leadId || !note) return res.status(400).json({ error: 'leadId and note are required' });
+    const newNote = await db.addLeadNote(leadId, note, req.user.id);
+    res.json({ success: true, note: newNote });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
 // Clear leads
 app.delete('/api/leads', requireAuth, async (req, res) => {
-  const database = db.readDb();
-  database.leads = [];
-  await db.writeDb(database);
-  res.json({ success: true, message: 'Leads cleared' });
+  try {
+    await db.query('DELETE FROM leads;');
+    res.json({ success: true, message: 'Leads cleared' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Fetch stats summary (Dashboard module 1 - Cached 30s)
-app.get('/api/stats', requireAuth, (req, res) => {
-  if (statsCache && Date.now() < statsCache.expiresAt) {
-    return res.json(statsCache.data);
+app.get('/api/stats', requireAuth, async (req, res) => {
+  try {
+    if (statsCache && Date.now() < statsCache.expiresAt) {
+      return res.json(statsCache.data);
+    }
+
+    const visitors = await db.getVisitors();
+    const leads = await db.getLeads();
+
+    const twoMinutesAgo = new Date(Date.now() - 2 * 60 * 1000);
+    const onlineCount = visitors.filter(v => v.lastActive && new Date(v.lastActive) > twoMinutesAgo && !v.isBot).length;
+
+    const totalCount = visitors.length;
+    const humanCount = visitors.filter(v => !v.isBot).length;
+    const botCount = visitors.filter(v => v.isBot).length;
+    const humanPct = totalCount > 0 ? Math.round((humanCount / totalCount) * 100) : 0;
+
+    const result = {
+      totalVisitors: totalCount,
+      onlineVisitors: onlineCount,
+      totalLeads: leads.length,
+      humanPercentage: humanPct,
+      botsBlocked: botCount
+    };
+
+    statsCache = { data: result, expiresAt: Date.now() + 30000 };
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-
-  const database = db.readDb();
-  const visitors = database.visitors;
-  const leads = database.leads;
-
-  const twoMinutesAgo = new Date(Date.now() - 2 * 60 * 1000);
-  const onlineCount = visitors.filter(v => v.lastActive && new Date(v.lastActive) > twoMinutesAgo && !v.isBot).length;
-
-  const totalCount = visitors.length;
-  const humanCount = visitors.filter(v => !v.isBot).length;
-  const botCount = visitors.filter(v => v.isBot).length;
-  const humanPct = totalCount > 0 ? Math.round((humanCount / totalCount) * 100) : 0;
-
-  const result = {
-    totalVisitors: totalCount,
-    onlineVisitors: onlineCount,
-    totalLeads: leads.length,
-    humanPercentage: humanPct,
-    botsBlocked: botCount
-  };
-
-  statsCache = { data: result, expiresAt: Date.now() + 30000 };
-  res.json(result);
 });
 
 // Fetch visitor moment logs (Visitor Intel module 2)
-app.get('/api/visitors', requireAuth, (req, res) => {
-  const database = db.readDb();
-  const sortedVisitors = [...database.visitors].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-  res.json(sortedVisitors);
+app.get('/api/visitors', requireAuth, async (req, res) => {
+  try {
+    const sortedVisitors = await db.getVisitors();
+    res.json(sortedVisitors);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Clear visitor logs
 app.delete('/api/visitors', requireAuth, async (req, res) => {
-  const database = db.readDb();
-  database.visitors = [];
-  await db.writeDb(database);
-  res.json({ success: true });
+  try {
+    await db.clearVisitors();
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Fetch all leads (CRM module 3)
-app.get('/api/leads', requireAuth, (req, res) => {
-  const database = db.readDb();
-  const sortedLeads = [...database.leads].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-  res.json(sortedLeads);
+app.get('/api/leads', requireAuth, async (req, res) => {
+  try {
+    const sortedLeads = await db.getLeads();
+    res.json(sortedLeads);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // User Management & RBAC API Endpoints (Requires Security Permission)
-app.get('/api/users', requireAuth, requirePermission('security'), (req, res) => {
-  const database = db.readDb();
-  const users = (database.users || []).map(u => {
-    const { password, ...safeUser } = u;
-    return safeUser;
-  });
-  res.json(users);
+app.get('/api/users', requireAuth, requirePermission('security'), async (req, res) => {
+  try {
+    const users = await db.getUsers();
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.post('/api/users', requireAuth, requirePermission('security'), async (req, res) => {
-  const { id, username, password, name, roleTitle, isSuperAdmin, permissions } = req.body;
-  if (!username) {
-    return res.status(400).json({ error: 'Username is required' });
-  }
-  const database = db.readDb();
-  if (!database.users) database.users = [];
-
-  let user = null;
-  if (id) {
-    user = database.users.find(u => u.id === parseInt(id));
-  }
-  if (!user) {
-    user = database.users.find(u => u.username.toLowerCase() === username.toLowerCase());
-  }
-
-  if (user) {
-    if (password && password.trim() !== '' && password !== '******') {
-      user.password = bcrypt.hashSync(password.trim(), 10);
+  try {
+    const { id, username, password, name, roleTitle, isSuperAdmin, permissions } = req.body;
+    if (!username) {
+      return res.status(400).json({ error: 'Username is required' });
     }
-    user.name = name || user.name;
-    user.roleTitle = roleTitle || user.roleTitle;
-    user.isSuperAdmin = isSuperAdmin !== undefined ? isSuperAdmin : user.isSuperAdmin;
-    user.permissions = permissions || user.permissions || ['overview'];
-  } else {
-    if (!password || password.trim() === '' || password === '******') {
-      return res.status(400).json({ error: 'Password is required for new users' });
-    }
-    const newId = database.users.length ? Math.max(...database.users.map(u => u.id || 0)) + 1 : 1;
-    user = {
-      id: newId,
-      username: username.trim(),
-      password: bcrypt.hashSync(password.trim(), 10),
-      name: name || username,
-      roleTitle: roleTitle || 'Admin User',
-      isSuperAdmin: !!isSuperAdmin,
-      permissions: permissions && permissions.length ? permissions : ['overview']
-    };
-    database.users.push(user);
-  }
 
-  await db.writeDb(database);
-  const { password: p, ...safeUser } = user;
-  res.json({ success: true, user: safeUser });
+    let existing = null;
+    if (id) existing = await db.findUserById(id);
+    if (!existing) existing = await db.findUserByUsername(username);
+
+    if (existing) {
+      const updates = {
+        full_name: name,
+        user_role: roleTitle,
+        is_super_admin: isSuperAdmin,
+        permissions: permissions || ['overview']
+      };
+      if (password && password.trim() !== '' && password !== '******') {
+        updates.password_hash = bcrypt.hashSync(password.trim(), 10);
+      }
+      const updated = await db.updateUser(existing.id, updates);
+      return res.json({ success: true, user: updated });
+    } else {
+      if (!password || password.trim() === '' || password === '******') {
+        return res.status(400).json({ error: 'Password is required for new users' });
+      }
+      const passHash = bcrypt.hashSync(password.trim(), 10);
+      const newUser = await db.createUser({
+        username: username.trim(),
+        password_hash: passHash,
+        full_name: name || username,
+        user_role: roleTitle || 'admin',
+        is_super_admin: !!isSuperAdmin,
+        permissions: permissions || ['overview']
+      });
+      return res.json({ success: true, user: newUser });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.delete('/api/users/:id', requireAuth, requirePermission('security'), async (req, res) => {
-  const userId = parseInt(req.params.id);
-  const database = db.readDb();
-  if (!database.users) database.users = [];
-
-  const target = database.users.find(u => u.id === userId);
-  if (target && target.isSuperAdmin) {
-    return res.status(400).json({ error: 'Cannot delete primary Super Admin' });
+  try {
+    const userId = parseInt(req.params.id);
+    const target = await db.findUserById(userId);
+    if (target && target.is_super_admin) {
+      return res.status(400).json({ error: 'Cannot delete primary Super Admin' });
+    }
+    await db.deleteUser(userId);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-
-  database.users = database.users.filter(u => u.id !== userId);
-  await db.writeDb(database);
-  res.json({ success: true });
 });
 
 // Grouped chart timeline + analytics (Analytics module 21 - Cached 30s)
@@ -850,360 +826,322 @@ app.get('/api/charts', requireAuth, (req, res) => {
 
 // ==================== CMS CONFIG ====================
 
-app.get('/api/cms', (req, res) => {
-  const database = db.readDb();
-  res.json(database.cms);
+app.get('/api/cms', async (req, res) => {
+  try {
+    const cmsData = await db.getSiteSettings('global_cms');
+    res.json(cmsData || {});
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.post('/api/cms', requireAuth, requirePermission('cms'), async (req, res) => {
-  const updatedCms = await db.updateCMS(req.body);
-  res.json({ success: true, cms: updatedCms });
+  try {
+    const updated = await db.saveSiteSettings('global_cms', req.body);
+    res.json({ success: true, cms: updated.value });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // ==================== SERVICES ====================
 
-app.get('/api/services', (req, res) => {
-  const database = db.readDb();
-  res.json(database.services || []);
+app.get('/api/services', async (req, res) => {
+  try {
+    const services = await db.getServices();
+    res.json(services);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.post('/api/services', requireAuth, requirePermission('services'), async (req, res) => {
-  const database = db.readDb();
-  if (!database.services) database.services = [];
-
-  const reqId = req.body.id !== undefined && req.body.id !== null && req.body.id !== '' ? Number(req.body.id) : null;
-
-  if (reqId !== null && !isNaN(reqId)) {
-    const index = database.services.findIndex(s => Number(s.id) === reqId);
-    if (index !== -1) {
-      database.services[index] = {
-        ...database.services[index],
-        id: reqId,
-        name: req.body.name || database.services[index].name,
-        desc: req.body.desc || database.services[index].desc,
-        price: req.body.price || database.services[index].price,
-        icon: req.body.icon || database.services[index].icon || 'smart_toy',
-        features: req.body.features || database.services[index].features || []
-      };
-      await db.writeDb(database);
-      return res.json({ success: true, service: database.services[index] });
-    }
+  try {
+    const newService = await db.createService(req.body);
+    res.json({ success: true, service: newService });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-
-  const maxId = database.services.reduce((max, s) => Math.max(max, Number(s.id) || 0), 0);
-  const newService = {
-    id: maxId + 1,
-    name: req.body.name,
-    desc: req.body.desc,
-    price: req.body.price,
-    icon: req.body.icon || 'smart_toy',
-    features: req.body.features || []
-  };
-  database.services.push(newService);
-  await db.writeDb(database);
-  res.json({ success: true, service: newService });
 });
 
 app.put('/api/services/:id', requireAuth, requirePermission('services'), async (req, res) => {
-  const id = Number(req.params.id);
-  const database = db.readDb();
-  if (!database.services) database.services = [];
-  const index = database.services.findIndex(s => Number(s.id) === id);
-
-  if (index !== -1) {
-    database.services[index] = {
-      ...database.services[index],
-      id: id,
-      name: req.body.name || database.services[index].name,
-      desc: req.body.desc || database.services[index].desc,
-      price: req.body.price || database.services[index].price,
-      icon: req.body.icon || database.services[index].icon || 'smart_toy',
-      features: req.body.features || database.services[index].features || []
-    };
-    await db.writeDb(database);
-    return res.json({ success: true, service: database.services[index] });
+  try {
+    const id = Number(req.params.id);
+    const updated = await db.createService({ ...req.body, id });
+    res.json({ success: true, service: updated });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-
-  res.status(404).json({ error: 'Service not found' });
 });
 
 app.delete('/api/services/:id', requireAuth, requirePermission('services'), async (req, res) => {
-  const id = Number(req.params.id);
-  const database = db.readDb();
-  if (!database.services) database.services = [];
-  database.services = database.services.filter(s => Number(s.id) !== id);
-  await db.writeDb(database);
-  res.json({ success: true });
+  try {
+    const id = Number(req.params.id);
+    await db.deleteService(id);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // ==================== BLOGS ====================
 
-app.get('/api/blogs', (req, res) => {
-  const database = db.readDb();
-  res.json(database.blogs || []);
+app.get('/api/blogs', async (req, res) => {
+  try {
+    const blogs = await db.getBlogs();
+    res.json(blogs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.post('/api/blogs', requireAuth, requirePermission('blog'), async (req, res) => {
-  const database = db.readDb();
-  if (!database.blogs) database.blogs = [];
-
-  const reqId = req.body.id !== undefined && req.body.id !== null && req.body.id !== '' ? Number(req.body.id) : null;
-  const article = db.normalizeArticle({
-    ...req.body,
-    id: reqId || undefined,
-    status: req.body.status || 'Published'
-  });
-
-  if (reqId) {
-    const index = database.blogs.findIndex(b => Number(b.id) === reqId);
-    if (index !== -1) {
-      database.blogs[index] = db.normalizeArticle({ ...database.blogs[index], ...article, id: reqId });
-      await db.writeDb(database);
-      return res.json({ success: true, blog: database.blogs[index] });
-    }
+  try {
+    const newBlog = await db.createBlog(req.body);
+    res.json({ success: true, blog: newBlog });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-
-  const maxId = database.blogs.reduce((max, b) => Math.max(max, Number(b.id) || 0), 0);
-  const newBlog = db.normalizeArticle({
-    ...article,
-    id: reqId || maxId + 1,
-    date: article.date || new Date().toISOString().split('T')[0]
-  });
-  database.blogs.unshift(newBlog);
-  await db.writeDb(database);
-  res.json({ success: true, blog: newBlog });
 });
 
 app.delete('/api/blogs/:id', requireAuth, requirePermission('blog'), async (req, res) => {
-  const id = Number(req.params.id);
-  const database = db.readDb();
-  if (!database.blogs) database.blogs = [];
-  database.blogs = database.blogs.filter(b => Number(b.id) !== id);
-  await db.writeDb(database);
-  res.json({ success: true });
+  try {
+    const id = Number(req.params.id);
+    await db.deleteBlog(id);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // ==================== PORTFOLIO ====================
 
-app.get('/api/portfolio', (req, res) => {
-  const database = db.readDb();
-  res.json(database.portfolio || []);
+app.get('/api/portfolio', async (req, res) => {
+  try {
+    const items = await db.getPortfolio();
+    res.json(items);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.post('/api/portfolio', requireAuth, requirePermission('portfolio'), async (req, res) => {
-  const database = db.readDb();
-  if (!database.portfolio) database.portfolio = [];
-  const maxId = database.portfolio.reduce((max, p) => Math.max(max, Number(p.id) || 0), 0);
-  const item = {
-    id: maxId + 1,
-    title: req.body.title,
-    desc: req.body.desc,
-    category: req.body.category,
-    image: req.body.image || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600'
-  };
-  database.portfolio.unshift(item);
-  await db.writeDb(database);
-  res.json({ success: true, portfolio: item });
+  try {
+    const item = await db.createPortfolio(req.body);
+    res.json({ success: true, portfolio: item });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.delete('/api/portfolio/:id', requireAuth, requirePermission('portfolio'), async (req, res) => {
-  const id = Number(req.params.id);
-  const database = db.readDb();
-  if (!database.portfolio) database.portfolio = [];
-  database.portfolio = database.portfolio.filter(p => Number(p.id) !== id);
-  await db.writeDb(database);
-  res.json({ success: true });
+  try {
+    const id = Number(req.params.id);
+    await db.deletePortfolio(id);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // ==================== APPOINTMENTS ====================
 
-app.get('/api/appointments', requireAuth, (req, res) => {
-  const database = db.readDb();
-  res.json(database.appointments);
+app.get('/api/appointments', requireAuth, async (req, res) => {
+  try {
+    const appts = await db.getAppointments();
+    res.json(appts);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.post('/api/appointments', requireAuth, async (req, res) => {
-  const database = db.readDb();
-  const newAppt = {
-    id: database.appointments.length + 1,
-    clientName: req.body.clientName,
-    service: req.body.service,
-    date: req.body.date,
-    time: req.body.time,
-    status: 'Confirmed'
-  };
-  database.appointments.push(newAppt);
-  await db.writeDb(database);
-  res.json({ success: true, appointment: newAppt });
+  try {
+    const newAppt = await db.createAppointment(req.body);
+    res.json({ success: true, appointment: newAppt });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // ==================== PROPOSALS & INVOICES ====================
 
-app.get('/api/proposals', requireAuth, (req, res) => {
-  const database = db.readDb();
-  res.json(database.proposals);
+app.get('/api/proposals', requireAuth, async (req, res) => {
+  try {
+    const props = await db.getProposals();
+    res.json(props);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.post('/api/proposals', requireAuth, async (req, res) => {
-  const database = db.readDb();
-  const newProp = {
-    id: database.proposals.length + 1,
-    client: req.body.client,
-    project: req.body.project,
-    amount: req.body.amount,
-    status: 'Sent'
-  };
-  database.proposals.push(newProp);
-  await db.writeDb(database);
-  res.json({ success: true, proposal: newProp });
+  try {
+    const { client, project, amount } = req.body;
+    const resProp = await db.query(`
+      INSERT INTO proposals (title, client_name, pricing_display, status)
+      VALUES ($1, $2, $3, 'Sent')
+      RETURNING *;
+    `, [project || 'AI Automation Proposal', client || 'Client', amount || '₹50,000']);
+    res.json({ success: true, proposal: resProp.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-app.get('/api/invoices', requireAuth, (req, res) => {
-  const database = db.readDb();
-  res.json(database.invoices);
+app.get('/api/invoices', requireAuth, async (req, res) => {
+  try {
+    const invs = await db.getInvoices();
+    res.json(invs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.post('/api/invoices', requireAuth, async (req, res) => {
-  const database = db.readDb();
-  const newInv = {
-    id: 100 + database.invoices.length + 1,
-    client: req.body.client,
-    project: req.body.project,
-    amount: req.body.amount,
-    status: 'Pending',
-    date: new Date().toISOString().split('T')[0]
-  };
-  database.invoices.push(newInv);
-  await db.writeDb(database);
-  res.json({ success: true, invoice: newInv });
+  try {
+    const { client, project, amount } = req.body;
+    const invNum = `INV-${Date.now().toString().slice(-6)}`;
+    const resInv = await db.query(`
+      INSERT INTO invoices (invoice_number, client_name, amount_display, status, due_date)
+      VALUES ($1, $2, $3, 'Pending', NOW() + INTERVAL '15 days')
+      RETURNING *;
+    `, [invNum, client || 'Client', amount || '₹50,000']);
+    res.json({ success: true, invoice: resInv.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // ==================== TEAM ====================
 
-app.get('/api/team', requireAuth, (req, res) => {
-  const database = db.readDb();
-  res.json(database.team);
+app.get('/api/team', requireAuth, async (req, res) => {
+  try {
+    const team = await db.getTeamMembers();
+    res.json(team);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/agency-team', async (req, res) => {
+  try {
+    const team = await db.getTeamMembers();
+    res.json(team);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ==================== CASE STUDIES ====================
+
+app.get('/api/case-studies', async (req, res) => {
+  try {
+    const cs = await db.getCaseStudies();
+    res.json(cs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/case-studies', requireAuth, requirePermission('case-studies-cms'), async (req, res) => {
+  try {
+    const cs = await db.createCaseStudy(req.body);
+    res.json({ success: true, caseStudies: [cs] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/case-studies/:id', requireAuth, requirePermission('case-studies-cms'), async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    await db.deleteCaseStudy(id);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // ==================== SECURITY LOGS ====================
 
-app.get('/api/security', requireAuth, requirePermission('security'), (req, res) => {
-  const database = db.readDb();
-  res.json(database.securityLogs);
+app.get('/api/security', requireAuth, requirePermission('security'), async (req, res) => {
+  try {
+    const logs = await db.getSecurityLogs();
+    res.json(logs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // ==================== LEGAL & FAQ CMS API ====================
 
-app.get('/api/legal', (req, res) => {
-  const database = db.readDb();
-  res.json(database.legalCms || {});
+app.get('/api/legal', async (req, res) => {
+  try {
+    const legalData = await db.getSiteSettings('legal_cms');
+    res.json(legalData || {});
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.post('/api/legal/privacy', requireAuth, requirePermission('legal-cms'), async (req, res) => {
-  const database = db.readDb();
-  if (!database.legalCms) database.legalCms = {};
-  database.legalCms.privacyPolicy = req.body;
-  await db.writeDb(database);
-  res.json({ success: true, privacyPolicy: database.legalCms.privacyPolicy });
+  try {
+    const current = (await db.getSiteSettings('legal_cms')) || {};
+    current.privacyPolicy = req.body;
+    await db.saveSiteSettings('legal_cms', current);
+    res.json({ success: true, privacyPolicy: req.body });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.post('/api/legal/terms', requireAuth, requirePermission('legal-cms'), async (req, res) => {
-  const database = db.readDb();
-  if (!database.legalCms) database.legalCms = {};
-  database.legalCms.termsOfService = req.body;
-  await db.writeDb(database);
-  res.json({ success: true, termsOfService: database.legalCms.termsOfService });
+  try {
+    const current = (await db.getSiteSettings('legal_cms')) || {};
+    current.termsOfService = req.body;
+    await db.saveSiteSettings('legal_cms', current);
+    res.json({ success: true, termsOfService: req.body });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.post('/api/legal/faqs', requireAuth, requirePermission('legal-cms'), async (req, res) => {
-  const database = db.readDb();
-  if (!database.legalCms) database.legalCms = {};
-  database.legalCms.faqs = req.body;
-  await db.writeDb(database);
-  res.json({ success: true, faqs: database.legalCms.faqs });
-});
-
-// ==================== AGENCY TEAM & CASE STUDIES API ====================
-
-app.get('/api/agency-team', (req, res) => {
-  const database = db.readDb();
-  res.json(database.agencyTeam || []);
-});
-
-app.post('/api/agency-team', requireAuth, requirePermission('agency-team'), async (req, res) => {
-  const database = db.readDb();
-  if (!database.agencyTeam) database.agencyTeam = [];
-  const member = req.body;
-  if (member.id) {
-    const idx = database.agencyTeam.findIndex(m => m.id === member.id);
-    if (idx !== -1) database.agencyTeam[idx] = member;
-    else database.agencyTeam.push(member);
-  } else {
-    member.id = database.agencyTeam.length > 0 ? Math.max(...database.agencyTeam.map(m => m.id || 0)) + 1 : 1;
-    database.agencyTeam.push(member);
+  try {
+    const current = (await db.getSiteSettings('legal_cms')) || {};
+    current.faqs = req.body;
+    await db.saveSiteSettings('legal_cms', current);
+    res.json({ success: true, faqs: req.body });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-  await db.writeDb(database);
-  res.json({ success: true, team: database.agencyTeam });
 });
 
-app.delete('/api/agency-team/:id', requireAuth, requirePermission('agency-team'), async (req, res) => {
-  const database = db.readDb();
-  if (database.agencyTeam) {
-    const id = Number(req.params.id);
-    database.agencyTeam = database.agencyTeam.filter(m => m.id !== id);
-    await db.writeDb(database);
+app.get('/api/apikeys', requireAuth, requirePermission('security'), async (req, res) => {
+  res.json([]);
+});
+
+app.get('/api/settings', requireAuth, async (req, res) => {
+  try {
+    const settings = await db.getSiteSettings('global_settings');
+    res.json(settings || {});
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-  res.json({ success: true });
-});
-
-app.get('/api/case-studies', (req, res) => {
-  const database = db.readDb();
-  res.json(database.caseStudies || []);
-});
-
-app.post('/api/case-studies', requireAuth, requirePermission('case-studies-cms'), async (req, res) => {
-  const database = db.readDb();
-  if (!database.caseStudies) database.caseStudies = [];
-  const cs = req.body;
-  if (cs.id) {
-    const idx = database.caseStudies.findIndex(c => c.id === cs.id);
-    if (idx !== -1) database.caseStudies[idx] = cs;
-    else database.caseStudies.push(cs);
-  } else {
-    cs.id = database.caseStudies.length > 0 ? Math.max(...database.caseStudies.map(c => c.id || 0)) + 1 : 1;
-    database.caseStudies.push(cs);
-  }
-  await db.writeDb(database);
-  res.json({ success: true, caseStudies: database.caseStudies });
-});
-
-app.delete('/api/case-studies/:id', requireAuth, requirePermission('case-studies-cms'), async (req, res) => {
-  const database = db.readDb();
-  if (database.caseStudies) {
-    const id = Number(req.params.id);
-    database.caseStudies = database.caseStudies.filter(c => c.id !== id);
-    await db.writeDb(database);
-  }
-  res.json({ success: true });
-});
-
-app.get('/api/apikeys', requireAuth, requirePermission('security'), (req, res) => {
-  const database = db.readDb();
-  res.json(database.apiKeys || []);
-});
-
-app.get('/api/settings', requireAuth, (req, res) => {
-  const database = db.readDb();
-  res.json(database.settings || {});
 });
 
 app.post('/api/settings', requireAuth, async (req, res) => {
-  const updatedSettings = await db.updateSettings(req.body);
-  res.json({ success: true, settings: updatedSettings });
+  try {
+    const updated = await db.saveSiteSettings('global_settings', req.body);
+    res.json({ success: true, settings: updated.value });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Start integrated server for local development or traditional hosting
-if (!process.env.VERCEL) {
+if (require.main === module && !process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`===============================================`);
     console.log(`SmartFiQ Integrated Server started successfully`);
