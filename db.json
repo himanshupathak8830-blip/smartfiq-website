@@ -614,8 +614,8 @@
       "currentPage": "/case-studies",
       "exitPage": "/our-story",
       "timestamp": "2026-08-10T03:55:25.521Z",
-      "lastActive": "2026-08-10T04:57:08.518Z",
-      "sessionDuration": 3679,
+      "lastActive": "2026-08-10T05:11:03.092Z",
+      "sessionDuration": 4514,
       "scrollPct": 100,
       "pageViews": 2,
       "clickEvents": [
@@ -653,11 +653,11 @@
       "browser": "Chrome",
       "os": "macOS Ventura",
       "entryPage": "/blog",
-      "currentPage": "/",
+      "currentPage": "/case-studies",
       "exitPage": "/",
       "timestamp": "2026-08-10T03:07:47.137Z",
-      "lastActive": "2026-08-10T04:56:16.637Z",
-      "sessionDuration": 2539,
+      "lastActive": "2026-08-10T05:10:16.606Z",
+      "sessionDuration": 2667,
       "scrollPct": 100,
       "pageViews": 12,
       "clickEvents": [
@@ -1110,6 +1110,16 @@
           "x": 478,
           "y": 51,
           "time": "09:43:54"
+        },
+        {
+          "label": "A",
+          "tagName": "A",
+          "id": "",
+          "className": "flex items-center group",
+          "page": "/",
+          "x": 211,
+          "y": 55,
+          "time": "10:28:23"
         }
       ],
       "userJourney": [

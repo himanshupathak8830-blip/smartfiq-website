@@ -381,11 +381,19 @@ const htmlPages = [
   { routes: ['/insights.html', '/insights'], file: 'insights.html' },
   { routes: ['/our-story.html', '/our-story'], file: 'our-story.html' },
   { routes: ['/privacy-policy.html', '/privacy-policy'], file: 'privacy-policy.html' },
-  { routes: ['/terms.html', '/terms'], file: 'terms.html' },
-  { routes: ['/whatsapp-automation-case-study.html', '/whatsapp-automation-case-study', '/case-studies/whatsapp-automation'], file: 'whatsapp-automation-case-study.html' },
-  { routes: ['/lead-extraction-case-study.html', '/lead-extraction-case-study', '/case-studies/lead-extraction'], file: 'lead-extraction-case-study.html' },
-  { routes: ['/data-modeling-bi-dashboard-case-study.html', '/data-modeling-bi-dashboard-case-study', '/case-studies/bi-dashboard'], file: 'data-modeling-bi-dashboard-case-study.html' }
+  { routes: ['/terms.html', '/terms'], file: 'terms.html' }
 ];
+
+// Case Study 301 Redirects for Legacy URLs to Single Canonical URLs
+app.get(['/whatsapp-automation-case-study.html', '/whatsapp-automation-case-study', '/case-studies/whatsapp-automation'], (req, res) => {
+  res.redirect(301, '/case-studies/whatsapp-automation-guide');
+});
+app.get(['/lead-extraction-case-study.html', '/lead-extraction-case-study', '/case-studies/lead-extraction'], (req, res) => {
+  res.redirect(301, '/case-studies/lead-extraction-agent');
+});
+app.get(['/data-modeling-bi-dashboard-case-study.html', '/data-modeling-bi-dashboard-case-study', '/case-studies/bi-dashboard'], (req, res) => {
+  res.redirect(301, '/case-studies/data-modeling-bi-dashboard');
+});
 
 htmlPages.forEach(p => {
   app.get(p.routes, (req, res) => {
