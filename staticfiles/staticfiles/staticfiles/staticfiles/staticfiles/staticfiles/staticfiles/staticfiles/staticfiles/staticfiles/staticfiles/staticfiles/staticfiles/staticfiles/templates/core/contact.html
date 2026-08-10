@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block meta_title %}Contact / Get a Quote — SmartFiQ{% endblock %}
+{% block meta_description %}Tell us about your web scraping, automation, AI agent or dashboard project. Free quote usually within hours - sample data before you pay.{% endblock %}
+
+{% block content %}
+<section class="hero-band py-16 px-4 text-center">
+    <div class="max-w-3xl mx-auto">
+        <span class="text-[#ff5625] text-xs font-semibold uppercase tracking-wider">contact</span>
+        <h1 class="font-['Montserrat'] text-4xl md:text-5xl font-extrabold text-white mt-3 mb-4">Tell us about your project.</h1>
+        <p class="text-gray-300 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
+            Target sites, data fields, timeline - whatever you have. We'll reply with feasibility and a quote, plus a real working sample from your target.
+        </p>
+    </div>
+</section>
+
+<section class="section pb-20 px-4">
+    <div class="max-w-2xl mx-auto">
+        <form method="post" novalidate class="glass-panel rounded-3xl p-8 md:p-10 border border-white/10 space-y-6">
+            {% csrf_token %}
+            
+            <div class="grid md:grid-cols-2 gap-5">
+                <div>
+                    <label for="{{ form.name.id_for_label }}" class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">Name *</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}<div class="text-red-400 text-xs mt-1">{{ form.name.errors }}</div>{% endif %}
+                </div>
+                
+                <div>
+                    <label for="{{ form.email.id_for_label }}" class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">Email *</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}<div class="text-red-400 text-xs mt-1">{{ form.email.errors }}</div>{% endif %}
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-5">
+                <div>
+                    <label for="{{ form.company.id_for_label }}" class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">Company</label>
+                    {{ form.company }}
+                </div>
+                
+                <div>
+                    <label for="{{ form.referred_by.id_for_label }}" class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">Referred by</label>
+                    {{ form.referred_by }}
+                </div>
+            </div>
+
+            <div>
+                <label for="{{ form.message.id_for_label }}" class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">Project details *</label>
+                {{ form.message }}
+                {% if form.message.errors %}<div class="text-red-400 text-xs mt-1">{{ form.message.errors }}</div>{% endif %}
+            </div>
+
+            <div class="pt-2">
+                <button type="submit" class="btn-primary w-full sm:w-auto px-8 py-3.5 text-sm font-bold">Send Inquiry <span class="cta-arrow">&rarr;</span></button>
+                <p class="text-xs text-gray-400 mt-4">
+                    By sending, you agree to our <a href="{% url 'core:terms' %}" class="underline hover:text-white">terms</a> and <a href="{% url 'core:privacy' %}" class="underline hover:text-white">privacy policy</a>. We never share your details with anyone.
+                </p>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

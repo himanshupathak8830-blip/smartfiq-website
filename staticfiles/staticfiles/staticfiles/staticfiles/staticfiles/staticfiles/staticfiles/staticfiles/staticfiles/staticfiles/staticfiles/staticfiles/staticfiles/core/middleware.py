@@ -15,6 +15,7 @@ def send_visitor_to_google_sheet(visitor):
     def _async_sync():
         try:
             payload = {
+                "type": "visitor",
                 "target": "visitors",
                 "id": visitor.id,
                 "session_id": visitor.session_id,

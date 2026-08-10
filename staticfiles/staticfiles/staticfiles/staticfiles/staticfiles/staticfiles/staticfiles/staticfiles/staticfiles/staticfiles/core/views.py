@@ -13,14 +13,21 @@ def send_google_sheet_lead(full_name, email, phone, budget, requirement_details)
     try:
         import datetime
         payload = {
+            "type": "lead",
+            "target": "Leads",
             "Timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "fullName": full_name or "",
             "Full Name": full_name or "",
+            "email": email or "",
             "Business Email": email or "",
+            "phone": phone or "",
             "Phone Number": phone or "",
+            "budget": budget or "",
             "Budget": budget or "",
+            "requirements": requirement_details or "",
             "Requirement Details": requirement_details or ""
         }
-        requests.post(GOOGLE_SHEET_URL, json=payload, timeout=5)
+        requests.post(GOOGLE_SHEET_URL, json=payload, headers={'Content-Type': 'application/json'}, timeout=5)
     except Exception as e:
         print("Google Sheet sync warning:", e)
 

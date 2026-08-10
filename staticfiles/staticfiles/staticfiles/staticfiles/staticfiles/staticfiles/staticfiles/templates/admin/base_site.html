@@ -1,0 +1,30 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | SmartFiQ Personal Admin{% endblock %}
+
+{% block branding %}
+<div id="site-name" style="display: flex; align-items: center; gap: 12px;">
+  <a href="{% url 'admin:index' %}" style="font-weight: 800; font-size: 18px; color: #ff5625; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+    <span>⚡ SmartFiQ Personal Admin</span>
+  </a>
+</div>
+{% endblock %}
+
+{% block usertools %}
+<div id="user-tools" style="font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+    <a href="{% url 'admin:index' %}" style="background: #ff5625; color: #ffffff; padding: 6px 14px; border-radius: 8px; text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 4px rgba(255,86,37,0.3);">
+      📊 Live Dashboard
+    </a>
+    <a href="/" target="_blank" style="background: #1e293b; color: #ffffff; padding: 6px 12px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+      🌐 View Website
+    </a>
+    {% if user.has_usable_password %}
+    <a href="{% url 'admin:password_change' %}" style="color: #64748b; text-decoration: none;">Change password</a>
+    <span style="color: #cbd5e1;">|</span>
+    {% endif %}
+    <form action="{% url 'admin:logout' %}" method="post" id="logout-form" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" style="background: none; border: none; color: #ef4444; font: inherit; cursor: pointer; text-decoration: underline; font-weight: 700;">Log out</button>
+    </form>
+</div>
+{% endblock %}
