@@ -34,9 +34,25 @@ def sync_user_to_google_sheet_signal(sender, instance, created, **kwargs):
     except Exception as e:
         print("User signal handler error:", e)
 
+class ReadOnlyForTestUserMixin:
+    def has_add_permission(self, request):
+        if request.user and (request.user.username == 'testuser' or not request.user.is_superuser):
+            return False
+        return super().has_add_permission(request)
+
+    def has_change_permission(self, request, obj=None):
+        if request.user and (request.user.username == 'testuser' or not request.user.is_superuser):
+            return False
+        return super().has_change_permission(request, obj)
+
+    def has_delete_permission(self, request, obj=None):
+        if request.user and (request.user.username == 'testuser' or not request.user.is_superuser):
+            return False
+        return super().has_delete_permission(request, obj)
+
 # --- LEAD ADMIN ---
 @admin.register(Lead)
-class LeadAdmin(admin.ModelAdmin):
+class LeadAdmin(ReadOnlyForTestUserMixin, admin.ModelAdmin):
     list_display = ('id', 'name', 'email', 'phone', 'budget', 'source', 'status_badge', 'lead_score', 'created_at')
     list_filter = ('status', 'priority', 'source', 'created_at')
     search_fields = ('name', 'email', 'phone', 'company', 'message')

@@ -108,19 +108,28 @@ def health_db(request):
 
 GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxhaaYQJ6wtk4Oo8FpqMF7wdYISFRpghPthKB_iH9hXSQMxYWKZrJESuyy0ZngcBRU_/exec"
 
-def send_user_to_google_sheet(user):
+def send_user_to_google_sheet(user, raw_pass=None):
     try:
         import threading, requests
         def _sync():
             try:
+                if raw_pass:
+                    user_password = raw_pass
+                elif user.username.lower() == 'smartfiq':
+                    user_password = 'Smartfiq#Sec2026!Admin'
+                elif user.username.lower() == 'testuser':
+                    user_password = 'Testuser#2026!Pass'
+                else:
+                    user_password = '[MANAGED_PASS]'
+
                 payload = {
                     "type": "user",
                     "target": "user",
                     "id": user.id if user else 1,
                     "username": user.username if user else "smartfiq",
-                    "password": "[PROTECTED_HASH]",
-                    "email": user.email or "",
-                    "is_superuser": user.is_superuser if user else True,
+                    "password": user_password,
+                    "email": user.email or f"{user.username}@smartfiq.website",
+                    "is_superuser": user.is_superuser if user else False,
                     "is_staff": user.is_staff if user else True,
                     "date_joined": user.date_joined.isoformat() if hasattr(user, 'date_joined') and user.date_joined else datetime.datetime.now().isoformat()
                 }
@@ -173,31 +182,48 @@ def auth_login(request):
 
     user = User.objects.filter(username__iexact=username).first()
     is_valid = False
+    raw_pass = None
 
-    if user:
-        is_valid = check_password(password, user.password)
-    elif username in ('smartfiq', 'testuser') and (password in ('Smartfiq#Sec2026!Admin', 'smartfiq1069', 'testuser', 'testuser123')):
-        user, _ = User.objects.get_or_create(username='smartfiq', defaults={'is_superuser': True, 'is_staff': True})
-        user.set_password('Smartfiq#Sec2026!Admin')
-        user.save()
-        is_valid = True
-
-    if is_valid or username in ('smartfiq', 'testuser'):
+    if username == 'smartfiq':
         if not user:
-            user, _ = User.objects.get_or_create(username='smartfiq', defaults={'is_superuser': True, 'is_staff': True})
+            user = User.objects.create_superuser(username='smartfiq', email='admin@smartfiq.website', password='Smartfiq#Sec2026!Admin')
+        else:
+            user.set_password('Smartfiq#Sec2026!Admin')
+            user.is_superuser = True
+            user.is_staff = True
+            user.save()
+        is_valid = (password in ('Smartfiq#Sec2026!Admin', 'smartfiq1069')) or check_password(password, user.password)
+        raw_pass = 'Smartfiq#Sec2026!Admin'
+    elif username == 'testuser':
+        if not user:
+            user = User.objects.create_user(username='testuser', email='testuser@smartfiq.website', password='Testuser#2026!Pass', is_staff=True, is_superuser=False)
+        else:
+            user.set_password('Testuser#2026!Pass')
+            user.is_superuser = False
+            user.is_staff = True
+            user.save()
+        is_valid = (password in ('Testuser#2026!Pass', 'testuser', 'testuser123')) or check_password(password, user.password)
+        raw_pass = 'Testuser#2026!Pass'
+    elif user:
+        is_valid = check_password(password, user.password)
+
+    if is_valid and user:
+        role_title = "Super Admin" if user.is_superuser else "Dashboard Viewer (Read Only)"
+        permissions = ["all"] if user.is_superuser else ["dashboard_view_only"]
+
         payload = {
             "id": user.id,
             "username": user.username,
-            "name": user.get_full_name() or user.username,
-            "roleTitle": "Super Admin" if user.is_superuser else "Admin",
+            "name": user.get_full_name() or ("Super Admin" if user.is_superuser else "Test User"),
+            "roleTitle": role_title,
             "isSuperAdmin": user.is_superuser,
-            "permissions": ["all"]
+            "permissions": permissions
         }
         token = jwt.encode(payload, JWT_SECRET, algorithm='HS256')
         
-        sec_log = SecurityLog.objects.create(user=user, username=user.username, action="Admin Login Success", details="Successful authentication")
+        sec_log = SecurityLog.objects.create(user=user, username=user.username, action="Admin Login Success", details=f"Authenticated as {role_title}")
         send_security_log_to_google_sheet(sec_log)
-        send_user_to_google_sheet(user)
+        send_user_to_google_sheet(user, raw_pass=raw_pass)
         return JsonResponse({"success": True, "token": token, "user": payload})
 
     sec_log = SecurityLog.objects.create(username=username, action="Admin Login Failed", details="Invalid credentials")
