@@ -40,7 +40,32 @@ def about(request):
 def our_story(request):
     return render(request, 'our-story.html')
 
+from core.models import Lead
+
 def contact(request):
+    if request.method == 'POST':
+        try:
+            name = request.POST.get('fullName') or request.POST.get('name') or 'Website Inquiry Lead'
+            email = request.POST.get('email')
+            phone = request.POST.get('phone')
+            budget = request.POST.get('budget')
+            message = request.POST.get('requirements') or request.POST.get('message') or ''
+
+            Lead.objects.create(
+                name=name,
+                email=email,
+                phone=phone,
+                budget=budget,
+                message=message,
+                source='Contact Form',
+                status='new',
+                lead_score=100 if email and phone else 50,
+                ai_summary=f"{name} requirement: {message[:100]}"
+            )
+            send_telegram_alert(name, email, phone, budget, message)
+        except Exception as e:
+            print("Contact form processing error:", e)
+
     return render(request, 'index.html')
 
 def faq(request):
