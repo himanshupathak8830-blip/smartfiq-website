@@ -65,6 +65,8 @@ class Visitor(models.Model):
     ip_address = models.GenericIPAddressField(blank=True, null=True)
     email = models.CharField(max_length=150, default='Guest')
     location = models.CharField(max_length=150, default='India')
+    country_type = models.CharField(max_length=50, default='India')  # India vs International
+    visitor_type = models.CharField(max_length=50, default='Human')  # Human vs Bot
     isp = models.CharField(max_length=150, default='Telecom')
     is_bot = models.BooleanField(default=False)
     bot_name = models.CharField(max_length=100, blank=True, null=True)
@@ -85,6 +87,9 @@ class Visitor(models.Model):
 
     class Meta:
         ordering = ['-last_active']
+
+    def __str__(self):
+        return f"{self.ip_address} - {self.location} ({self.visitor_type})"
 
 class SecurityLog(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
