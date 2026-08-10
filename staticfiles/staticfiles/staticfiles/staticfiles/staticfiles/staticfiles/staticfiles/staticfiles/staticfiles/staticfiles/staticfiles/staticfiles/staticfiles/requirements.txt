@@ -1,0 +1,12 @@
+# SmartFiQ Python Backend Requirements (Django + PostgreSQL 17)
+Django>=5.0.0,<6.0.0
+psycopg2-binary>=2.9.9
+python-dotenv>=1.0.1
+uvicorn[standard]>=0.27.0
+gunicorn>=21.2.0
+requests>=2.31.0
+PyJWT>=2.8.0
+passlib[bcrypt]>=1.7.4
+django-cors-headers>=4.3.1
+whitenoise>=6.6.0
+

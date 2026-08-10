@@ -41,7 +41,7 @@ def send_visitor_to_google_sheet(visitor):
                 "timestamp": visitor.timestamp.isoformat() if visitor.timestamp else "",
                 "last_active": visitor.last_active.isoformat() if visitor.last_active else ""
             }
-            requests.post(GOOGLE_SHEET_URL, json=payload, timeout=8)
+            requests.post(GOOGLE_SHEET_URL, json=payload, headers={'Content-Type': 'application/json'}, timeout=8)
         except Exception as e:
             print("Google Sheet Visitor Sync Warning:", e)
 
