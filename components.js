@@ -144,27 +144,27 @@
                 <div>
                     <h5 class="text-[#ffb5a0] font-bold text-sm uppercase tracking-wider mb-6">Services</h5>
                     <ul class="space-y-3 text-[#E7BDB2] text-sm font-medium">
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/services.html">AI Automation</a></li>
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/services.html">WhatsApp Automation</a></li>
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/services.html">Voice AI Agents</a></li>
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/services.html">Custom AI Solutions</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/services">AI Automation</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/services">WhatsApp Automation</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/services">Voice AI Agents</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/services">Custom AI Solutions</a></li>
                     </ul>
                 </div>
                 <div>
                     <h5 class="text-[#ffb5a0] font-bold text-sm uppercase tracking-wider mb-6">Resources</h5>
                     <ul class="space-y-3 text-[#E7BDB2] text-sm font-medium">
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/case-studies.html">Case Studies</a></li>
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/blog.html">Insights &amp; Blogs</a></li>
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/about-smartfiq.html">About Us</a></li>
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/our-story.html">Our Story</a></li>
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/faq.html">FAQs</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/case-studies">Case Studies</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/blog">Insights &amp; Blogs</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/about-smartfiq">About Us</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/our-story">Our Story</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/faq">FAQs</a></li>
                     </ul>
                 </div>
                 <div>
                     <h5 class="text-[#ffb5a0] font-bold text-sm uppercase tracking-wider mb-6">Legal &amp; Support</h5>
                     <ul class="space-y-3 text-[#E7BDB2] text-sm font-medium">
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/privacy-policy.html">Privacy Policy</a></li>
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/terms.html">Terms of Service</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/privacy-policy">Privacy Policy</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/terms">Terms of Service</a></li>
                         <li>
                             <button onclick="openContactModal()" class="inline-flex items-center gap-1.5 text-[#ff5625] hover:text-white transition-colors font-bold text-xs uppercase tracking-wider mt-1">
                                 <span class="material-symbols-outlined text-sm">support_agent</span> Contact Support
@@ -184,11 +184,11 @@
             <div class="max-w-[1280px] mx-auto px-6 mt-16 pt-8 border-t border-white/10 text-center flex flex-col md:flex-row items-center justify-between gap-4">
                 <p id="footer-copyright" class="text-[#E7BDB2] text-xs">© 2026 SmartFiQ AI Solutions. All rights reserved. Smart Intelligence. Faster Growth.</p>
                 <div class="flex items-center gap-6 text-xs text-[#E7BDB2]">
-                    <a href="privacy-policy.html" class="hover:text-white transition-colors">Privacy</a>
+                    <a href="/privacy-policy" class="hover:text-white transition-colors">Privacy</a>
                     <span>•</span>
-                    <a href="terms.html" class="hover:text-white transition-colors">Terms</a>
+                    <a href="/terms" class="hover:text-white transition-colors">Terms</a>
                     <span>•</span>
-                    <a href="faq.html" class="hover:text-white transition-colors">Help Center</a>
+                    <a href="/faq" class="hover:text-white transition-colors">Help Center</a>
                 </div>
             </div>
         </footer>
