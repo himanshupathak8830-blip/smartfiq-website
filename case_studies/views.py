@@ -1,10 +1,11 @@
-from django.shortcuts import render, get_object_or_404
-from .models import CaseStudy
+from django.shortcuts import render
 
 def list_case_studies(request):
-    case_studies = CaseStudy.objects.all()
-    return render(request, 'case_studies/list.html', {'case_studies': case_studies})
+    return render(request, 'case-studies.html')
 
-def detail_case_study(request, slug):
-    case_study = get_object_or_404(CaseStudy, slug=slug)
-    return render(request, 'case_studies/detail.html', {'case_study': case_study})
+def detail_case_study(request, slug=None):
+    if slug == 'whatsapp-automation-guide':
+        return render(request, 'case-studies/whatsapp-automation-guide.html')
+    elif slug == 'data-modeling-bi-dashboard':
+        return render(request, 'case-studies/data-modeling-bi-dashboard.html')
+    return render(request, 'case-studies/lead-extraction-agent.html')

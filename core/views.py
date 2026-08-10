@@ -2,23 +2,26 @@ import os
 import requests
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import TeamMember, Lead
-from .forms import ContactForm
+from django.views.static import serve
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 
-def send_telegram_alert(lead):
+def send_telegram_alert(lead_name, email, phone, budget, message):
     if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
         return
     try:
         text = (
-            f"🚨 New Website Lead Received!\n\n"
-            f"👤 Name: {lead.name}\n"
-            f"📧 Email: {lead.email or 'N/A'}\n"
-            f"🏢 Company: {lead.company or 'N/A'}\n"
-            f"📝 Message: {lead.message or 'N/A'}\n"
-            f"🌐 Source: {lead.source}"
+            f"🚨 New Lead Received! (Automate With AK)\n\n"
+            f"👤 Name: {lead_name}\n"
+            f"📧 Email: {email or 'N/A'}\n"
+            f"📞 Phone: {phone or 'N/A'}\n"
+            f"💰 Budget: {budget or 'N/A'}\n"
+            f"📝 Message: {message or 'N/A'}\n"
+            f"🌐 Source: Website Contact Form"
         )
         requests.post(
             f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage",
@@ -29,34 +32,34 @@ def send_telegram_alert(lead):
         print("Telegram alert warning:", e)
 
 def home(request):
-    return render(request, 'core/home.html')
+    return render(request, 'index.html')
 
 def about(request):
-    return render(request, 'core/about.html')
+    return render(request, 'about-smartfiq.html')
 
 def our_story(request):
-    team_members = TeamMember.objects.filter(is_active=True)
-    return render(request, 'core/our_story.html', {'team_members': team_members})
+    return render(request, 'our-story.html')
 
 def contact(request):
-    if request.method == 'POST':
-        form = ContactForm(request.POST)
-        if form.is_valid():
-            lead = form.save(commit=False)
-            lead.source = 'Contact Page'
-            lead.save()
-            send_telegram_alert(lead)
-            messages.success(request, 'Thank you! Your message has been received. Our team will get back to you shortly.')
-            return redirect('core:contact')
-    else:
-        form = ContactForm()
-    return render(request, 'core/contact.html', {'form': form})
+    return render(request, 'index.html')
 
 def faq(request):
-    return render(request, 'core/faq.html')
+    return render(request, 'faq.html')
 
 def terms(request):
-    return render(request, 'core/terms.html')
+    return render(request, 'terms.html')
 
 def privacy(request):
-    return render(request, 'core/privacy.html')
+    return render(request, 'privacy-policy.html')
+
+def admin_panel(request):
+    return render(request, 'admin.html')
+
+def insights_view(request):
+    return render(request, 'insights.html')
+
+def serve_root_file(request, filename):
+    file_path = BASE_DIR / filename
+    if file_path.exists() and file_path.is_file():
+        return serve(request, filename, document_root=BASE_DIR)
+    return render(request, 'index.html')
