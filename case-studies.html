@@ -171,7 +171,7 @@
         function formatMarkdownToHTML(md) {
             if (!md) return '';
             let html = md
-                .replace(/^# (.*$)/gim, '<h1 class="text-2xl md:text-3xl font-extrabold text-white mt-6 mb-4">$1</h1>')
+                .replace(/^# (.*$)/gim, '<h2 class="text-2xl md:text-3xl font-extrabold text-white mt-6 mb-4">$1</h2>')
                 .replace(/^## (.*$)/gim, '<h2 class="text-xl md:text-2xl font-bold text-[#ffb5a0] mt-8 mb-4 border-b border-white/10 pb-2 flex items-center gap-2">$1</h2>')
                 .replace(/^### (.*$)/gim, '<h3 class="text-lg font-bold text-white mt-6 mb-3">$1</h3>')
                 .replace(/^#### (.*$)/gim, '<h4 class="text-base font-bold text-[#ff5625] mt-4 mb-2">$1</h4>')

@@ -313,7 +313,20 @@ app.get(['/sitemap.xml', '/sitemap'], (req, res) => {
   res.sendFile(path.join(__dirname, 'sitemap.xml'));
 });
 
-// Blog 301 Redirects & Clean Routing
+// --- 1. LEGACY 301 REDIRECTS (EXECUTIVE ROUTING FIRST) ---
+
+// Case Studies 301 Redirects for Legacy / Alternate Slugs to Single Canonical URLs
+app.get(['/whatsapp-automation-case-study.html', '/whatsapp-automation-case-study', '/case-studies/whatsapp-automation'], (req, res) => {
+  res.redirect(301, '/case-studies/whatsapp-automation-guide');
+});
+app.get(['/lead-extraction-case-study.html', '/lead-extraction-case-study', '/case-studies/lead-extraction'], (req, res) => {
+  res.redirect(301, '/case-studies/lead-extraction-agent');
+});
+app.get(['/data-modeling-bi-dashboard-case-study.html', '/data-modeling-bi-dashboard-case-study', '/case-studies/bi-dashboard'], (req, res) => {
+  res.redirect(301, '/case-studies/data-modeling-bi-dashboard');
+});
+
+// Blog Detail Legacy 301 Redirects
 const blogMap = {
   '1': 'what-is-ai-automation-guide',
   '2': 'whatsapp-automation-guide',
@@ -327,8 +340,31 @@ app.get(['/blog-detail.html', '/blog-detail'], (req, res) => {
   if (id && blogMap[id]) {
     return res.redirect(301, `/blog/${blogMap[id]}`);
   }
-  res.sendFile(path.join(__dirname, 'blog.html'));
+  return res.redirect(301, '/blog');
 });
+
+// Clean 301 Redirects for .html Extension Requests to Extensionless URLs
+app.get('/services.html', (req, res) => res.redirect(301, '/services'));
+app.get(['/about.html', '/about-smartfiq.html', '/about'], (req, res) => res.redirect(301, '/about-smartfiq'));
+app.get('/case-studies.html', (req, res) => res.redirect(301, '/case-studies'));
+app.get('/blog.html', (req, res) => res.redirect(301, '/blog'));
+app.get('/faq.html', (req, res) => res.redirect(301, '/faq'));
+app.get('/our-story.html', (req, res) => res.redirect(301, '/our-story'));
+app.get('/privacy-policy.html', (req, res) => res.redirect(301, '/privacy-policy'));
+app.get('/terms.html', (req, res) => res.redirect(301, '/terms'));
+
+// --- 2. PRIMARY CLEAN ROUTE HANDLERS ---
+
+app.get(['/services', '/Services'], (req, res) => res.sendFile(path.join(__dirname, 'services.html')));
+app.get(['/about-smartfiq', '/About-Smartfiq'], (req, res) => res.sendFile(path.join(__dirname, 'about-smartfiq.html')));
+app.get(['/case-studies', '/Case-Studies'], (req, res) => res.sendFile(path.join(__dirname, 'case-studies.html')));
+app.get(['/blog', '/Blog'], (req, res) => res.sendFile(path.join(__dirname, 'blog.html')));
+app.get(['/faq', '/FAQ'], (req, res) => res.sendFile(path.join(__dirname, 'faq.html')));
+app.get(['/our-story', '/Our-Story'], (req, res) => res.sendFile(path.join(__dirname, 'our-story.html')));
+app.get('/privacy-policy', (req, res) => res.sendFile(path.join(__dirname, 'privacy-policy.html')));
+app.get('/terms', (req, res) => res.sendFile(path.join(__dirname, 'terms.html')));
+
+// --- 3. DYNAMIC SLUG ROUTERS FOR BLOG & CASE STUDIES ---
 
 app.get('/blog/:slug', (req, res, next) => {
   const slug = req.params.slug;
@@ -339,66 +375,13 @@ app.get('/blog/:slug', (req, res, next) => {
   next();
 });
 
-// Case Studies Dynamic Clean Routing
-const caseStudySlugMap = {
-  '1': 'whatsapp-automation-guide',
-  '2': 'lead-extraction-agent',
-  '3': 'data-modeling-bi-dashboard',
-  'whatsapp-automation': 'whatsapp-automation-guide',
-  'whatsapp-automation-case-study': 'whatsapp-automation-guide',
-  'lead-extraction': 'lead-extraction-agent',
-  'lead-extraction-case-study': 'lead-extraction-agent',
-  'bi-dashboard': 'data-modeling-bi-dashboard',
-  'data-modeling-bi-dashboard-case-study': 'data-modeling-bi-dashboard'
-};
-
 app.get('/case-studies/:slug', (req, res, next) => {
-  let slug = req.params.slug;
-  if (slug.endsWith('.html')) slug = slug.replace('.html', '');
-  
-  const mappedSlug = caseStudySlugMap[slug] || slug;
-  
-  const fileInSub = path.join(__dirname, 'case-studies', `${mappedSlug}.html`);
-  if (fs.existsSync(fileInSub)) {
-    return res.sendFile(fileInSub);
+  const slug = req.params.slug;
+  const filePath = path.join(__dirname, 'case-studies', `${slug}.html`);
+  if (fs.existsSync(filePath)) {
+    return res.sendFile(filePath);
   }
-  
-  const fileInRoot = path.join(__dirname, `${mappedSlug}.html`);
-  if (fs.existsSync(fileInRoot)) {
-    return res.sendFile(fileInRoot);
-  }
-  
   next();
-});
-
-// Serve static HTML pages
-const htmlPages = [
-  { routes: ['/services.html', '/services', '/Services.html', '/Services'], file: 'services.html' },
-  { routes: ['/about-smartfiq.html', '/about-smartfiq', '/About-Smartfiq', '/about.html', '/about', '/About.html', '/About'], file: 'about-smartfiq.html' },
-  { routes: ['/case-studies.html', '/case-studies', '/Case-Studies'], file: 'case-studies.html' },
-  { routes: ['/blog.html', '/blog', '/Blog'], file: 'blog.html' },
-  { routes: ['/faq.html', '/faq', '/FAQ'], file: 'faq.html' },
-  { routes: ['/insights.html', '/insights'], file: 'insights.html' },
-  { routes: ['/our-story.html', '/our-story'], file: 'our-story.html' },
-  { routes: ['/privacy-policy.html', '/privacy-policy'], file: 'privacy-policy.html' },
-  { routes: ['/terms.html', '/terms'], file: 'terms.html' }
-];
-
-// Case Study 301 Redirects for Legacy URLs to Single Canonical URLs
-app.get(['/whatsapp-automation-case-study.html', '/whatsapp-automation-case-study', '/case-studies/whatsapp-automation'], (req, res) => {
-  res.redirect(301, '/case-studies/whatsapp-automation-guide');
-});
-app.get(['/lead-extraction-case-study.html', '/lead-extraction-case-study', '/case-studies/lead-extraction'], (req, res) => {
-  res.redirect(301, '/case-studies/lead-extraction-agent');
-});
-app.get(['/data-modeling-bi-dashboard-case-study.html', '/data-modeling-bi-dashboard-case-study', '/case-studies/bi-dashboard'], (req, res) => {
-  res.redirect(301, '/case-studies/data-modeling-bi-dashboard');
-});
-
-htmlPages.forEach(p => {
-  app.get(p.routes, (req, res) => {
-    res.sendFile(path.join(__dirname, p.file));
-  });
 });
 
 // Case-insensitive catch-all HTML page resolver
