@@ -3,43 +3,43 @@
 
   <!-- Core Pages -->
   <url>
-    <loc>https://smartfiq.website/</loc>
+    <loc>https://www.smartfiq.website/</loc>
     <lastmod>2026-08-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://smartfiq.website/services</loc>
+    <loc>https://www.smartfiq.website/services</loc>
     <lastmod>2026-08-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://smartfiq.website/about-smartfiq</loc>
+    <loc>https://www.smartfiq.website/about-smartfiq</loc>
     <lastmod>2026-08-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://smartfiq.website/our-story</loc>
+    <loc>https://www.smartfiq.website/our-story</loc>
     <lastmod>2026-08-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://smartfiq.website/case-studies</loc>
+    <loc>https://www.smartfiq.website/case-studies</loc>
     <lastmod>2026-08-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://smartfiq.website/blog</loc>
+    <loc>https://www.smartfiq.website/blog</loc>
     <lastmod>2026-08-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://smartfiq.website/faq</loc>
+    <loc>https://www.smartfiq.website/faq</loc>
     <lastmod>2026-08-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -47,19 +47,19 @@
 
   <!-- Case Studies Detail Pages -->
   <url>
-    <loc>https://smartfiq.website/case-studies/whatsapp-automation-guide</loc>
+    <loc>https://www.smartfiq.website/case-studies/whatsapp-automation-guide</loc>
     <lastmod>2026-08-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://smartfiq.website/case-studies/lead-extraction-agent</loc>
+    <loc>https://www.smartfiq.website/case-studies/lead-extraction-agent</loc>
     <lastmod>2026-08-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://smartfiq.website/case-studies/data-modeling-bi-dashboard</loc>
+    <loc>https://www.smartfiq.website/case-studies/data-modeling-bi-dashboard</loc>
     <lastmod>2026-08-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -67,31 +67,31 @@
 
   <!-- Blog Detail Pages -->
   <url>
-    <loc>https://smartfiq.website/blog/what-is-ai-automation-guide</loc>
+    <loc>https://www.smartfiq.website/blog/what-is-ai-automation-guide</loc>
     <lastmod>2026-08-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://smartfiq.website/blog/whatsapp-automation-guide</loc>
+    <loc>https://www.smartfiq.website/blog/whatsapp-automation-guide</loc>
     <lastmod>2026-08-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://smartfiq.website/blog/ai-chatbots-vs-human-support</loc>
+    <loc>https://www.smartfiq.website/blog/ai-chatbots-vs-human-support</loc>
     <lastmod>2026-08-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://smartfiq.website/blog/ai-voice-agents-explained</loc>
+    <loc>https://www.smartfiq.website/blog/ai-voice-agents-explained</loc>
     <lastmod>2026-08-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://smartfiq.website/blog/top-processes-to-automate-with-ai</loc>
+    <loc>https://www.smartfiq.website/blog/top-processes-to-automate-with-ai</loc>
     <lastmod>2026-08-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -99,13 +99,13 @@
 
   <!-- Legal Pages -->
   <url>
-    <loc>https://smartfiq.website/privacy-policy</loc>
+    <loc>https://www.smartfiq.website/privacy-policy</loc>
     <lastmod>2026-08-10</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://smartfiq.website/terms</loc>
+    <loc>https://www.smartfiq.website/terms</loc>
     <lastmod>2026-08-10</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
