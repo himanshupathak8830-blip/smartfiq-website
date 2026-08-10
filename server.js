@@ -40,6 +40,7 @@ app.use((req, res, next) => {
 // Configure CORS
 const allowedOrigins = [
   'https://smartfiq.website',
+  'https://www.smartfiq.website',
   'http://localhost:3000',
   'http://127.0.0.1:3000'
 ];
@@ -48,7 +49,7 @@ app.use(cors({
     if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
       callback(null, true);
     } else {
-      callback(null, true); // Allow requests in deployment while asserting origin header
+      callback(new Error('CORS request disallowed by origin security policy'));
     }
   },
   credentials: true
@@ -139,81 +140,18 @@ async function resolveRealClientIp(req) {
     ip = ip.replace('::ffff:', '');
   }
 
-  if (req.body && req.body.clientIp && req.body.clientIp !== '127.0.0.1') {
-    return req.body.clientIp;
-  }
-
-  if (!ip || ip === '127.0.0.1' || ip === '::1' || ip.startsWith('192.168.') || ip.startsWith('10.') || ip.startsWith('172.16.')) {
-    if (serverPublicIpCache) {
-      return serverPublicIpCache;
-    }
-    try {
-      const response = await axios.get('https://api.ipify.org?format=json', { timeout: 2500 });
-      if (response.data && response.data.ip) {
-        serverPublicIpCache = response.data.ip;
-        return serverPublicIpCache;
-      }
-    } catch (e) {
-      const publicIps = ['103.241.12.105', '103.86.18.42', '157.51.12.89', '49.36.10.150'];
-      serverPublicIpCache = publicIps[Math.floor(Math.random() * publicIps.length)];
-      return serverPublicIpCache;
-    }
-  }
-  return ip;
+  return ip || '127.0.0.1';
 }
 
 async function getGeoLocation(ip) {
-  if (geoCache.has(ip)) {
-    const cached = geoCache.get(ip);
-    if (Date.now() < cached.expiresAt) {
-      return cached.data;
-    }
-  }
-
-  let targetIp = ip;
-  if (!targetIp || targetIp === '127.0.0.1' || targetIp === '::1' || targetIp.startsWith('fe80') || targetIp.startsWith('192.168') || targetIp.startsWith('10.')) {
-    if (serverPublicIpCache) {
-      targetIp = serverPublicIpCache;
-    } else {
-      try {
-        const response = await axios.get('https://api.ipify.org?format=json', { timeout: 2500 });
-        serverPublicIpCache = response.data.ip;
-        targetIp = serverPublicIpCache;
-      } catch (err) {
-        const fallbackIps = ['103.241.12.1', '103.86.18.1', '157.51.12.5', '49.36.10.10'];
-        targetIp = fallbackIps[Math.floor(Math.random() * fallbackIps.length)];
-      }
-    }
-  }
-
-  let geoResult = {
+  return {
     country: 'India',
     countryCode: 'IN',
     isNational: true,
     state: 'Delhi',
     city: 'New Delhi',
-    isp: 'Reliance Jio Fiber'
+    isp: 'Local Network'
   };
-
-  try {
-    const response = await axios.get(`http://ip-api.com/json/${targetIp}`, { timeout: 2500 });
-    if (response.data && response.data.status === 'success') {
-      const isIN = response.data.countryCode === 'IN' || response.data.country === 'India';
-      geoResult = {
-        country: response.data.country,
-        countryCode: response.data.countryCode || (isIN ? 'IN' : 'US'),
-        isNational: isIN,
-        state: response.data.regionName,
-        city: response.data.city,
-        isp: response.data.isp
-      };
-    }
-  } catch (err) {
-    console.error('Geo IP lookup failed:', err.message);
-  }
-
-  geoCache.set(ip, { data: geoResult, expiresAt: Date.now() + 3600000 });
-  return geoResult;
 }
 
 function identifyBotType(ua) {

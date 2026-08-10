@@ -97,18 +97,4 @@
     <priority>0.8</priority>
   </url>
 
-  <!-- Legal Pages -->
-  <url>
-    <loc>https://smartfiq.website/privacy-policy</loc>
-    <lastmod>2026-08-10</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.4</priority>
-  </url>
-  <url>
-    <loc>https://smartfiq.website/terms</loc>
-    <lastmod>2026-08-10</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.4</priority>
-  </url>
-
 </urlset>
