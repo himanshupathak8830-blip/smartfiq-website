@@ -1,6 +1,8 @@
 import re
 import requests
 import threading
+import datetime
+from django.utils import timezone
 from core.models import Visitor
 
 GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxhaaYQJ6wtk4Oo8FpqMF7wdYISFRpghPthKB_iH9hXSQMxYWKZrJESuyy0ZngcBRU_/exec"
@@ -8,12 +10,24 @@ GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxhaaYQJ6wtk4Oo8FpqM
 BOT_USER_AGENTS = [
     'googlebot', 'bingbot', 'slurp', 'duckduckbot', 'baiduspider',
     'yandexbot', 'ahrefsbot', 'semrushbot', 'facebookexternalhit',
-    'twitterbot', 'python-requests', 'curl', 'wget', 'bytespider'
+    'twitterbot', 'python-requests', 'curl', 'wget', 'bytespider', 'cms-checker'
 ]
 
-def send_visitor_to_google_sheet(visitor):
+# Cache to prevent duplicate Google Sheet row spam for same session within 5 minutes
+RECENT_SHEET_SYNCS = {}
+
+def send_visitor_to_google_sheet(visitor, force_sync=False):
     def _async_sync():
         try:
+            now = datetime.datetime.now()
+            last_sync = RECENT_SHEET_SYNCS.get(visitor.session_id)
+            
+            # Rate limit sheet appends: Only append if last sync was > 5 minutes ago or force_sync
+            if not force_sync and last_sync and (now - last_sync).total_seconds() < 300:
+                return
+
+            RECENT_SHEET_SYNCS[visitor.session_id] = now
+
             payload = {
                 "type": "visitor",
                 "target": "visitors",
@@ -28,7 +42,7 @@ def send_visitor_to_google_sheet(visitor):
                 "is_bot": visitor.is_bot,
                 "bot_name": visitor.bot_name or ("Bot Crawler" if visitor.is_bot else "Human User"),
                 "bot_category": visitor.bot_category or ("Search Engine" if visitor.is_bot else "User"),
-                "device": visitor.device or "Desktop",
+                "device": visitor.device or "Desktop PC",
                 "device_model": visitor.device_model or "PC",
                 "browser": visitor.browser or "Chrome",
                 "os": visitor.os or "Windows",
@@ -53,15 +67,18 @@ class VisitorTrackingMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        path = request.path
-        
-        # Ignore static assets, media, and admin background API polling calls
-        if not path.startswith(('/static/', '/media/', '/favicon.ico', '/personal-admin/js/', '/personal-admin/css/')):
+        path = request.path.lower()
+
+        # STRICT FILTER: Ignore static files, images, JS/CSS, API endpoints, and Admin internal URLs
+        ignored_extensions = ('.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg', '.ico', '.js', '.css', '.woff', '.woff2', '.ttf', '.map', '.json', '.xml')
+        ignored_prefixes = ('/static/', '/media/', '/api/', '/personal-admin/', '/favicon.ico')
+
+        if not path.endswith(ignored_extensions) and not any(path.startswith(prefix) for prefix in ignored_prefixes):
             try:
                 user_agent_str = request.META.get('HTTP_USER_AGENT', '').lower()
                 is_bot = any(bot in user_agent_str for bot in BOT_USER_AGENTS)
                 
-                # Determine detailed device type
+                # Accurate Device Detection (Mobile Phone vs PC)
                 if any(m in user_agent_str for m in ['iphone', 'android', 'mobile', 'webos', 'ipod', 'blackBerry', 'windows phone']):
                     if 'iphone' in user_agent_str:
                         device = 'Mobile (iPhone)'
@@ -115,7 +132,7 @@ class VisitorTrackingMiddleware:
                 visitor_type = 'Bot' if is_bot else 'Human'
                 bot_name = 'Search Engine Bot' if is_bot else 'Human User'
 
-                # Track session in cookies or header
+                # Session ID
                 session_id = request.COOKIES.get('sf_visitor_session')
                 if not session_id:
                     session_id = f"sf-{abs(hash(ip + user_agent_str))}"
@@ -131,15 +148,15 @@ class VisitorTrackingMiddleware:
                         'visitor_type': visitor_type,
                         'is_bot': is_bot,
                         'bot_name': bot_name,
-                        'current_page': path,
-                        'entry_page': path,
+                        'current_page': request.path,
+                        'entry_page': request.path,
                         'page_views': 1,
                         'user_agent': user_agent_str
                     }
                 )
 
                 if not created:
-                    visitor.current_page = path
+                    visitor.current_page = request.path
                     visitor.page_views += 1
                     visitor.location = location
                     visitor.country_type = country_type
@@ -150,7 +167,7 @@ class VisitorTrackingMiddleware:
                     visitor.user_agent = user_agent_str
                     visitor.save()
 
-                send_visitor_to_google_sheet(visitor)
+                send_visitor_to_google_sheet(visitor, force_sync=created)
 
             except Exception:
                 pass

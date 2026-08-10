@@ -94,7 +94,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000'
 ]
 
-# Session Persistence Settings (1-Year Login Persistence, No Repeated Prompts)
+# Session & Cookie Persistence Settings (1-Year Persistent Login, No Re-login Prompts)
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 31536000  # 1 Year persistence
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
@@ -102,6 +102,10 @@ SESSION_SAVE_EVERY_REQUEST = True
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_NAME = 'sf_admin_sessionid'
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = 'Lax'
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [str(BASE_DIR), str(BASE_DIR / 'static')]
