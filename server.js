@@ -431,7 +431,6 @@ app.post('/api/track', (req, res) => {
 });
 
 // Notifications
-const GOOGLE_SHEET_URL = process.env.GOOGLE_SHEET_URL;
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
@@ -478,24 +477,6 @@ app.post('/api/leads', leadLimiter, async (req, res) => {
       lead_score: calculateLeadAiScore({ email, phone, budget, message: leadMessage }),
       ai_summary: `${leadName} submitted a contact form requirement: "${leadMessage.substring(0, 100)}..."`
     });
-
-    // Forward to Google Apps Script if URL set
-    if (GOOGLE_SHEET_URL) {
-      try {
-        await axios.post(GOOGLE_SHEET_URL, JSON.stringify({
-          fullName: leadName,
-          email: email || '',
-          phone: phone || '',
-          budget: budget || '',
-          requirements: leadMessage
-        }), {
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          timeout: 5000
-        });
-      } catch (gErr) {
-        console.warn('Google Sheet server forward warning:', gErr.message);
-      }
-    }
 
     // Forward to Telegram Group if credentials set
     await sendTelegramNotification({ ...newLead, location: `${geo.city}, ${geo.country}` });

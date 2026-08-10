@@ -11,10 +11,13 @@ let usePostgres = false;
 
 if (connectionString) {
   try {
+    const isLocal = connectionString.includes('localhost') || connectionString.includes('127.0.0.1');
     pool = new Pool({
       connectionString,
-      connectionTimeoutMillis: 3000,
-      idleTimeoutMillis: 10000
+      ssl: isLocal ? false : { rejectUnauthorized: false },
+      max: 10,
+      connectionTimeoutMillis: 5000,
+      idleTimeoutMillis: 30000
     });
 
     pool.on('error', (err) => {
