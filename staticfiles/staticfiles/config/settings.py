@@ -64,8 +64,23 @@ ASGI_APPLICATION = 'config.asgi.application'
 
 # Database Configuration (PostgreSQL 17 / Google Cloud SQL / SQLite fallback)
 DATABASE_URL = os.getenv('DATABASE_URL')
+IS_VERCEL = os.getenv('VERCEL') == '1' or os.getenv('VERCEL_ENV') is not None
 
-if DATABASE_URL:
+if DATABASE_URL and 'localhost' not in DATABASE_URL and '127.0.0.1' not in DATABASE_URL:
+    import urllib.parse
+    url = urllib.parse.urlparse(DATABASE_URL)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': url.path[1:],
+            'USER': url.username,
+            'PASSWORD': url.password,
+            'HOST': url.hostname,
+            'PORT': url.port or 5432,
+            'CONN_MAX_AGE': 600,
+        }
+    }
+elif DATABASE_URL and not IS_VERCEL:
     import urllib.parse
     url = urllib.parse.urlparse(DATABASE_URL)
     DATABASES = {
@@ -80,10 +95,11 @@ if DATABASE_URL:
         }
     }
 else:
+    db_path = '/tmp/db.sqlite3' if IS_VERCEL else (BASE_DIR / 'db.sqlite3')
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+            'NAME': db_path,
         }
     }
 
