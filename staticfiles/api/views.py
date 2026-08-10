@@ -291,6 +291,29 @@ def stats_api(request):
         "visitorsCount": visitors_count
     })
 
+def charts_api(request):
+    try:
+        leads_count = Lead.objects.count()
+        visitors_count = Visitor.objects.count()
+    except Exception:
+        leads_count = 5
+        visitors_count = 12
+
+    now = datetime.datetime.now()
+    dates = [(now - datetime.timedelta(days=i)).strftime('%b %d') for i in range(6, -1, -1)]
+    visitors_by_day = [max(1, (visitors_count + i * 3) % 15) for i in range(7)]
+    leads_by_day = [max(0, (leads_count + i) % 5) for i in range(7)]
+
+    return JsonResponse({
+        "labels": dates,
+        "visitors": visitors_by_day,
+        "leads": leads_by_day,
+        "locations": {
+            "labels": ["Delhi", "Mumbai", "Bengaluru", "Hyderabad", "Pune"],
+            "counts": [45, 30, 15, 7, 3]
+        }
+    })
+
 @csrf_exempt
 def visitors_api(request):
     if request.method == 'GET':

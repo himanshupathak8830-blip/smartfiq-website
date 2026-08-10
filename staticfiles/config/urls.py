@@ -8,7 +8,9 @@ from services.views import list_services
 from case_studies.views import list_case_studies, detail_case_study
 
 urlpatterns = [
-    path('django-admin/', admin.site.urls),
+    path('personal-admin/', admin.site.urls),
+    path('personal/', admin.site.urls),
+    path('personal', admin.site.urls),
     path('admin', admin_panel, name='admin_panel'),
     path('admin/', admin_panel),
     path('admin.html', admin_panel),

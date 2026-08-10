@@ -16,6 +16,8 @@ urlpatterns = [
     
     path('stats', views.stats_api, name='stats_api'),
     path('stats/', views.stats_api),
+    path('charts', views.charts_api, name='charts_api'),
+    path('charts/', views.charts_api),
     
     path('visitors', views.visitors_api, name='visitors_api'),
     path('visitors/', views.visitors_api),
