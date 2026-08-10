@@ -12,7 +12,7 @@ from services.models import Service
 from blog.models import Post
 from case_studies.models import CaseStudy
 from portfolio.models import PortfolioItem
-from core.views import send_telegram_alert
+from core.views import send_telegram_alert, send_google_sheet_lead
 
 JWT_SECRET = os.getenv('JWT_SECRET', 'SmartFiQ_JWT_Secret_Key_2026_Production_Secure_X9!')
 
@@ -220,6 +220,7 @@ def leads_api(request, lead_id=None):
             )
 
             send_telegram_alert(name, email, phone, budget, message)
+            send_google_sheet_lead(name, email, phone, budget, message)
 
             return JsonResponse({
                 "success": True,

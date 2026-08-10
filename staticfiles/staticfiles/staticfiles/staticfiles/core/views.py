@@ -7,8 +7,22 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
-TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
+GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwL8EqUfiH6Twt4ooj5U3K0H1vNaDlwJuWWXp8beZnCemyOYZQ3B9C-f084Hr3CKBDs/exec"
+
+def send_google_sheet_lead(full_name, email, phone, budget, requirement_details):
+    try:
+        import datetime
+        payload = {
+            "Timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "Full Name": full_name or "",
+            "Business Email": email or "",
+            "Phone Number": phone or "",
+            "Budget": budget or "",
+            "Requirement Details": requirement_details or ""
+        }
+        requests.post(GOOGLE_SHEET_URL, json=payload, timeout=5)
+    except Exception as e:
+        print("Google Sheet sync warning:", e)
 
 def send_telegram_alert(lead_name, email, phone, budget, message):
     if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
@@ -63,6 +77,7 @@ def contact(request):
                 ai_summary=f"{name} requirement: {message[:100]}"
             )
             send_telegram_alert(name, email, phone, budget, message)
+            send_google_sheet_lead(name, email, phone, budget, message)
         except Exception as e:
             print("Contact form processing error:", e)
 
