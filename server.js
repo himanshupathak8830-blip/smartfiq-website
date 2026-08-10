@@ -143,14 +143,20 @@ async function resolveRealClientIp(req) {
   return ip || '127.0.0.1';
 }
 
-async function getGeoLocation(ip) {
+async function getGeoLocation(ip, req = {}) {
+  const headers = req.headers || {};
+  const country = headers['x-vercel-ip-country'] || 'India';
+  const countryCode = headers['x-vercel-ip-country-code'] || (country === 'India' ? 'IN' : 'US');
+  const state = headers['x-vercel-ip-country-region'] || 'Delhi';
+  const city = headers['x-vercel-ip-city'] ? decodeURIComponent(headers['x-vercel-ip-city']) : 'New Delhi';
+
   return {
-    country: 'India',
-    countryCode: 'IN',
-    isNational: true,
-    state: 'Delhi',
-    city: 'New Delhi',
-    isp: 'Local Network'
+    country,
+    countryCode,
+    isNational: country === 'India' || countryCode === 'IN',
+    state,
+    city,
+    isp: 'Cloud/Network'
   };
 }
 
@@ -174,7 +180,7 @@ function identifyBotType(ua) {
 
 function parseDeviceDetails(uaString) {
   if (!uaString) {
-    return { isBot: false, botName: null, botCategory: null, device: 'Desktop', deviceModel: 'Windows PC', os: 'Windows 11', browser: 'Chrome' };
+    return { isBot: false, botName: null, botCategory: null, device: 'Desktop', deviceModel: 'PC', os: 'Windows 11', browser: 'Chrome' };
   }
 
   const botObj = identifyBotType(uaString);
@@ -190,44 +196,27 @@ function parseDeviceDetails(uaString) {
     };
   }
 
-  const isMobile = /mobile|iphone|ipod|android.*mobile|blackberry|opera mini|windows phone/i.test(uaString);
-  const isTablet = /ipad|android(?!.*mobile)|tablet/i.test(uaString);
-
-  let os = 'Windows 11';
-  if (/mac OS X|macintosh/i.test(uaString)) os = 'macOS Ventura';
-  else if (/windows nt 10\.0/i.test(uaString)) os = 'Windows 11';
-  else if (/windows nt/i.test(uaString)) os = 'Windows 10';
-  else if (/android/i.test(uaString)) os = 'Android 14';
-  else if (/iphone|ipad|ipod/i.test(uaString)) os = 'iOS 17';
-  else if (/linux/i.test(uaString)) os = 'Linux Ubuntu';
-
-  let browser = 'Chrome';
-  if (/edg/i.test(uaString)) browser = 'Edge';
-  else if (/firefox/i.test(uaString)) browser = 'Firefox';
-  else if (/safari/i.test(uaString) && !/chrome/i.test(uaString)) browser = 'Safari';
-
-  let deviceType = 'Desktop';
-  let deviceModel = 'Windows PC';
-
-  if (isMobile) {
-    deviceType = 'Mobile';
-    if (/iphone/i.test(uaString)) deviceModel = 'iPhone 15 Pro';
-    else if (/samsung|sm-/i.test(uaString)) deviceModel = 'Samsung Galaxy';
-    else if (/pixel/i.test(uaString)) deviceModel = 'Google Pixel';
-    else if (/oneplus/i.test(uaString)) deviceModel = 'OnePlus';
-    else deviceModel = 'Android Mobile';
-  } else if (isTablet) {
-    deviceType = 'Tablet';
-    if (/ipad/i.test(uaString)) deviceModel = 'iPad Pro';
-    else deviceModel = 'Android Tablet';
-  } else {
-    deviceType = 'Desktop';
-    if (os.includes('macOS')) deviceModel = 'MacBook Pro';
-    else if (os.includes('Linux')) deviceModel = 'Linux PC';
-    else deviceModel = 'Windows PC';
-  }
+  const agent = useragent.parse(uaString);
+  const os = agent.os.toString() || 'Desktop OS';
+  const browser = `${agent.family} ${agent.major}`.trim() || 'Browser';
+  const isMobile = /mobile|iphone|ipod|android.*mobile/i.test(uaString);
+  const isTablet = /ipad|tablet/i.test(uaString);
+  const deviceType = isMobile ? 'Mobile' : (isTablet ? 'Tablet' : 'Desktop');
+  const deviceModel = agent.device.family !== 'Other' ? agent.device.toString() : (deviceType === 'Desktop' ? (os.includes('Mac') ? 'Mac' : 'PC') : 'Mobile Device');
 
   return { isBot: false, botName: null, botCategory: null, device: deviceType, deviceModel, os, browser };
+}
+
+function calculateLeadAiScore({ email, phone, budget, message }) {
+  let score = 50;
+  if (phone && phone.trim().length >= 10) score += 20;
+  if (email && email.includes('@') && !email.includes('test')) score += 10;
+  if (budget) {
+    if (budget.includes('1,00,000') || budget.includes('1.5L') || budget.includes('50k')) score += 15;
+    else if (budget.includes('50,000') || budget.includes('25,000')) score += 10;
+  }
+  if (message && message.trim().length > 30) score += 10;
+  return Math.min(100, score);
 }
 
 // Serve landing page at /
@@ -512,7 +501,7 @@ app.post('/api/leads', leadLimiter, async (req, res) => {
   try {
     const { name, email, phone, budget, message, source, fullName, requirements } = req.body;
     const ip = await resolveRealClientIp(req);
-    const geo = await getGeoLocation(ip);
+    const geo = await getGeoLocation(ip, req);
 
     const leadName = name || fullName || 'Anonymous Lead';
     const leadMessage = message || requirements || '';
@@ -531,7 +520,7 @@ app.post('/api/leads', leadLimiter, async (req, res) => {
       timestamp: new Date().toISOString(),
       source: source || 'Hero Form',
       status: 'New',
-      aiScore: Math.floor(Math.random() * 30) + 65,
+      aiScore: calculateLeadAiScore({ email, phone, budget, message: leadMessage }),
       assignedTo: 'Aman',
       notes: ''
     };
@@ -596,7 +585,10 @@ app.post('/api/auth/login', loginLimiter, async (req, res) => {
     }
 
     if (isValidPassword) {
-      const secret = JWT_SECRET || 'smartfiq_fallback_secret_change_me_in_env';
+      const secret = process.env.JWT_SECRET;
+      if (!secret) {
+        return res.status(500).json({ success: false, error: 'Server configuration error: JWT_SECRET not configured.' });
+      }
       const payload = {
         id: found.id,
         username: found.username,
@@ -680,7 +672,7 @@ app.get('/api/stats', requireAuth, (req, res) => {
 
   const result = {
     totalVisitors: totalCount,
-    onlineVisitors: onlineCount || 1,
+    onlineVisitors: onlineCount,
     totalLeads: leads.length,
     humanPercentage: humanPct,
     botsBlocked: botCount
@@ -819,10 +811,6 @@ app.get('/api/charts', requireAuth, (req, res) => {
     const diffDays = Math.floor((now - vDate) / (1000 * 60 * 60 * 24));
     if (diffDays >= 0 && diffDays < 7) {
       visitorsByDay[6 - diffDays]++;
-    } else if (visitors.length > 0) {
-      // Fallback relative distribution for historical seed sessions
-      const bucket = Math.abs(v.sessionId ? v.sessionId.length : 0) % 7;
-      visitorsByDay[bucket]++;
     }
   });
 
@@ -832,9 +820,6 @@ app.get('/api/charts', requireAuth, (req, res) => {
     const diffDays = Math.floor((now - lDate) / (1000 * 60 * 60 * 24));
     if (diffDays >= 0 && diffDays < 7) {
       leadsByDay[6 - diffDays]++;
-    } else if (leads.length > 0) {
-      const bucket = Math.abs(l.id || 0) % 7;
-      leadsByDay[bucket]++;
     }
   });
 
