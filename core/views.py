@@ -59,6 +59,9 @@ def insights_view(request):
     return render(request, 'insights.html')
 
 def serve_root_file(request, filename):
+    if filename == 'logo-transparent.png':
+        filename = 'smartfiq-ai-automation-logo.png'
+
     file_path = BASE_DIR / filename
     if file_path.exists() and file_path.is_file():
         return serve(request, filename, document_root=BASE_DIR)
