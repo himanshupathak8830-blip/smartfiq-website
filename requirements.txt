@@ -1,0 +1,23 @@
+# SmartFiQ Website & Backend System Requirements
+# Runtime Environment: Node.js >= 18.0.0
+# Database: PostgreSQL >= 15 (Tested on PostgreSQL 17)
+
+# --- Node.js Dependencies (npm) ---
+express==4.18.2
+pg==8.23.0
+axios==1.6.8
+bcryptjs==2.4.3
+jsonwebtoken==9.0.2
+dotenv==17.4.2
+cors==2.8.5
+cookie-parser==1.4.6
+express-rate-limit==8.6.2
+request-ip==3.3.0
+useragent==2.3.0
+
+# --- Required Environment Variables (.env) ---
+# DATABASE_URL=postgresql://smartfiq_user:YOUR_PASSWORD@YOUR_POSTGRES_HOST:5432/smartfiq
+# JWT_SECRET=SmartFiQ_JWT_Secret_Key_2026_Production_Secure_X9!
+# TELEGRAM_BOT_TOKEN=YOUR_TELEGRAM_BOT_TOKEN
+# TELEGRAM_CHAT_ID=YOUR_TELEGRAM_CHAT_ID
+# PORT=3000
