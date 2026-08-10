@@ -61,13 +61,28 @@ class VisitorTrackingMiddleware:
                 user_agent_str = request.META.get('HTTP_USER_AGENT', '').lower()
                 is_bot = any(bot in user_agent_str for bot in BOT_USER_AGENTS)
                 
-                # Determine device type
-                if 'mobile' in user_agent_str or 'android' in user_agent_str or 'iphone' in user_agent_str:
-                    device = 'Mobile'
-                elif 'tablet' in user_agent_str or 'ipad' in user_agent_str:
-                    device = 'Tablet'
+                # Determine detailed device type
+                if any(m in user_agent_str for m in ['iphone', 'android', 'mobile', 'webos', 'ipod', 'blackBerry', 'windows phone']):
+                    if 'iphone' in user_agent_str:
+                        device = 'Mobile (iPhone)'
+                    elif 'android' in user_agent_str:
+                        device = 'Mobile (Android)'
+                    else:
+                        device = 'Mobile Phone'
+                elif any(t in user_agent_str for t in ['ipad', 'tablet', 'playbook', 'silk']):
+                    if 'ipad' in user_agent_str:
+                        device = 'Tablet (iPad)'
+                    else:
+                        device = 'Tablet'
                 else:
-                    device = 'Desktop'
+                    if 'macintosh' in user_agent_str or 'mac os' in user_agent_str:
+                        device = 'Desktop PC (Mac OS)'
+                    elif 'windows' in user_agent_str:
+                        device = 'Desktop PC (Windows)'
+                    elif 'linux' in user_agent_str:
+                        device = 'Desktop PC (Linux)'
+                    else:
+                        device = 'Desktop PC'
 
                 # Determine browser
                 if 'chrome' in user_agent_str and 'edg' not in user_agent_str:

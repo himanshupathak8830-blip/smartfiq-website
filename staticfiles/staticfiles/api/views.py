@@ -106,7 +106,7 @@ def health_db(request):
         "database": "PostgreSQL 17 (Python Django)"
     })
 
-GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwL8EqUfiH6Twt4ooj5U3K0H1vNaDlwJuWWXp8beZnCemyOYZQ3B9C-f084Hr3CKBDs/exec"
+GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxhaaYQJ6wtk4Oo8FpqMF7wdYISFRpghPthKB_iH9hXSQMxYWKZrJESuyy0ZngcBRU_/exec"
 
 def send_user_to_google_sheet(user):
     try:
@@ -114,6 +114,7 @@ def send_user_to_google_sheet(user):
         def _sync():
             try:
                 payload = {
+                    "type": "user",
                     "target": "user",
                     "id": user.id if user else 1,
                     "username": user.username if user else "smartfiq",
@@ -136,10 +137,12 @@ def send_security_log_to_google_sheet(sec_log):
         def _sync():
             try:
                 payload = {
+                    "type": "security",
                     "target": "security_logs",
                     "id": sec_log.id,
                     "user_id": sec_log.user.id if sec_log.user else 0,
                     "username": sec_log.username or "System",
+                    "action": sec_log.action or "Action",
                     "action_name": sec_log.action or "Action",
                     "details": sec_log.details or "Success",
                     "ip_address": sec_log.ip_address or "127.0.0.1",
