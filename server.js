@@ -95,8 +95,24 @@ app.get('/services/:slug', (req, res) => {
   return res.redirect('/services');
 });
 
-app.get('/case-studies/:slug', (req, res, next) => {
-  const slug = req.params.slug.replace(/\.html$/, '');
+app.use((req, res, next) => {
+  if (req.path.length > 1 && req.path.endsWith('/')) {
+    const query = req.url.slice(req.path.length);
+    const safePath = req.path.slice(0, -1);
+    return res.redirect(301, safePath + query);
+  }
+  next();
+});
+
+app.get(['/case-studies', '/case-studies/'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'templates', 'case-studies.html'));
+});
+
+app.get('/case-studies/:slug', (req, res) => {
+  const slug = (req.params.slug || '').replace(/\.html$/, '').trim().toLowerCase();
+  if (!slug) {
+    return res.sendFile(path.join(__dirname, 'templates', 'case-studies.html'));
+  }
   const htmlFile = path.join(__dirname, 'case-studies', `${slug}.html`);
   if (fs.existsSync(htmlFile)) {
     return res.sendFile(htmlFile);
@@ -104,13 +120,20 @@ app.get('/case-studies/:slug', (req, res, next) => {
   return res.sendFile(path.join(__dirname, 'templates', 'case-studies.html'));
 });
 
-app.get('/blog/:slug', (req, res, next) => {
-  const slug = req.params.slug.replace(/\.html$/, '');
+app.get(['/blog', '/blog/'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'templates', 'blog.html'));
+});
+
+app.get('/blog/:slug', (req, res) => {
+  const slug = (req.params.slug || '').replace(/\.html$/, '').trim().toLowerCase();
+  if (!slug) {
+    return res.sendFile(path.join(__dirname, 'templates', 'blog.html'));
+  }
   const htmlFile = path.join(__dirname, 'blog', `${slug}.html`);
   if (fs.existsSync(htmlFile)) {
     return res.sendFile(htmlFile);
   }
-  return res.sendFile(path.join(__dirname, 'templates', 'blog-detail.html'));
+  return res.sendFile(path.join(__dirname, 'templates', 'blog.html'));
 });
 
 app.get('/health', (req, res) => {
