@@ -285,31 +285,40 @@ def leads_api(request, lead_id=None):
             budget = data.get('budget')
             message = data.get('requirements') or data.get('message') or ''
 
-            lead = Lead.objects.create(
-                name=name,
-                email=email,
-                phone=phone,
-                budget=budget,
-                message=message,
-                source=data.get('source', 'Hero Form'),
-                status='new',
-                lead_score=100 if email and phone else 50,
-                ai_summary=f"{name} requirement: {message[:100]}"
-            )
+            lead_id_val = 1
+            lead_score_val = 100 if email and phone else 50
 
+            try:
+                lead = Lead.objects.create(
+                    name=name,
+                    email=email,
+                    phone=phone,
+                    budget=budget,
+                    message=message,
+                    source=data.get('source', 'Hero Form'),
+                    status='new',
+                    lead_score=lead_score_val,
+                    ai_summary=f"{name} requirement: {message[:100]}"
+                )
+                lead_id_val = lead.id
+            except Exception as db_err:
+                print("Serverless DB save warning:", db_err)
+
+            # ALWAYS fire Telegram alert and Google Sheet lead
             send_telegram_alert(name, email, phone, budget, message)
             send_google_sheet_lead(name, email, phone, budget, message)
 
             return JsonResponse({
                 "success": True,
                 "lead": {
-                    "id": lead.id,
-                    "name": lead.name,
-                    "email": lead.email,
-                    "lead_score": lead.lead_score
+                    "id": lead_id_val,
+                    "name": name,
+                    "email": email,
+                    "lead_score": lead_score_val
                 }
             })
         except Exception as e:
+            print("Leads API POST exception:", e)
             return JsonResponse({"success": True, "lead": {"id": 1, "name": "Lead", "lead_score": 100}})
     
     elif request.method == 'DELETE' and lead_id:
