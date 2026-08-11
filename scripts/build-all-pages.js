@@ -205,14 +205,14 @@ function renderFullPageHTML({ title, metaDesc, canonicalUrl, sectionName, sectio
     <title>${seoTitle}</title>
     <meta name="description" content="${metaDesc}" />
     <link rel="canonical" href="${canonicalUrl}" />
-    <link rel="icon" type="image/png" href="/logo-transparent.png" />
+    <link rel="icon" type="image/png" href="/smartfiq-ai-automation-logo.png" />
 
     <!-- Open Graph & Social Cards -->
     <meta property="og:type" content="article" />
     <meta property="og:url" content="${canonicalUrl}" />
     <meta property="og:title" content="${seoTitle}" />
     <meta property="og:description" content="${metaDesc}" />
-    <meta property="og:image" content="${coverImage || 'https://smartfiq.website/logo-transparent.png'}" />
+    <meta property="og:image" content="${coverImage || 'https://smartfiq.website/smartfiq-ai-automation-logo.png'}" />
     <meta name="twitter:card" content="summary_large_image" />
 
     <script type="application/ld+json">
@@ -224,7 +224,7 @@ function renderFullPageHTML({ title, metaDesc, canonicalUrl, sectionName, sectio
           "@id": "${canonicalUrl}#article",
           "headline": "${title.replace(/"/g, '\\"')}",
           "description": "${metaDesc.replace(/"/g, '\\"')}",
-          "image": "${coverImage || 'https://smartfiq.website/logo-transparent.png'}",
+          "image": "${coverImage || 'https://smartfiq.website/smartfiq-ai-automation-logo.png'}",
           "author": {
             "@type": "Organization",
             "name": "${author || 'SmartFiQ AI Lab'}"
@@ -235,7 +235,7 @@ function renderFullPageHTML({ title, metaDesc, canonicalUrl, sectionName, sectio
             "url": "https://smartfiq.website",
             "logo": {
               "@type": "ImageObject",
-              "url": "https://smartfiq.website/logo-transparent.png"
+              "url": "https://smartfiq.website/smartfiq-ai-automation-logo.png"
             }
           }
         },

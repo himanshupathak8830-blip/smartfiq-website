@@ -180,7 +180,7 @@ caseStudiesConfig.forEach(item => {
     <title>${item.title} | SmartFiQ Case Study</title>
     <meta name="description" content="${item.metaDesc}" />
     <link rel="canonical" href="https://smartfiq.website/case-studies/${item.slug}" />
-    <link rel="icon" type="image/png" href="../logo-transparent.png" />
+    <link rel="icon" type="image/png" href="../smartfiq-ai-automation-logo.png" />
 
     <!-- Open Graph & Social Cards -->
     <meta property="og:type" content="article" />
@@ -210,7 +210,7 @@ caseStudiesConfig.forEach(item => {
             "url": "https://smartfiq.website",
             "logo": {
               "@type": "ImageObject",
-              "url": "https://smartfiq.website/logo-transparent.png"
+              "url": "https://smartfiq.website/smartfiq-ai-automation-logo.png"
             }
           }
         },
