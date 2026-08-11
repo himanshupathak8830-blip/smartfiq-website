@@ -16,6 +16,8 @@ BOT_USER_AGENTS = [
 # Cache to prevent duplicate Google Sheet row spam for same session within 5 minutes
 RECENT_SHEET_SYNCS = {}
 
+from core.google_sheets import GoogleSheetsService
+
 def send_visitor_to_google_sheet(visitor, force_sync=False):
     def _async_sync():
         try:
@@ -28,35 +30,35 @@ def send_visitor_to_google_sheet(visitor, force_sync=False):
 
             RECENT_SHEET_SYNCS[visitor.session_id] = now
 
-            payload = {
-                "type": "visitor",
-                "target": "visitors",
-                "id": visitor.id,
+            GoogleSheetsService.send_visitor({
+                "visitor_id": f"VIS-{visitor.id:05d}",
                 "session_id": visitor.session_id,
+                "first_seen": visitor.timestamp.strftime("%Y-%m-%d %H:%M:%S") if visitor.timestamp else now.strftime("%Y-%m-%d %H:%M:%S"),
+                "last_seen": visitor.last_active.strftime("%Y-%m-%d %H:%M:%S") if visitor.last_active else now.strftime("%Y-%m-%d %H:%M:%S"),
                 "ip_address": visitor.ip_address or "127.0.0.1",
-                "email": visitor.email or "Guest",
-                "location": visitor.location or "India",
-                "country_type": visitor.country_type or "India",
+                "country": visitor.location or "Unknown",
+                "country_code": getattr(visitor, 'country_type', 'Unknown'),
+                "city": "Unknown",
+                "region": "Unknown",
+                "timezone": "IST" if visitor.country_type == 'India' else "UTC",
                 "visitor_type": visitor.visitor_type or "Human",
-                "isp": visitor.isp or "Telecom",
-                "is_bot": visitor.is_bot,
-                "bot_name": visitor.bot_name or ("Bot Crawler" if visitor.is_bot else "Human User"),
-                "bot_category": visitor.bot_category or ("Search Engine" if visitor.is_bot else "User"),
-                "device": visitor.device or "Desktop PC",
-                "device_model": visitor.device_model or "PC",
+                "device_type": "Mobile" if "Mobile" in (visitor.device or "") else ("Tablet" if "Tablet" in (visitor.device or "") else "Desktop"),
+                "device_model": visitor.device_model or visitor.device or "Unknown",
+                "os": visitor.os or "Unknown",
                 "browser": visitor.browser or "Chrome",
-                "os": visitor.os or "Windows",
                 "entry_page": visitor.entry_page or "/",
                 "current_page": visitor.current_page or "/",
                 "exit_page": visitor.exit_page or "/",
-                "session_duration": visitor.session_duration or 0,
-                "scroll_pct": visitor.scroll_pct or 0,
                 "page_views": visitor.page_views or 1,
-                "user_agent": visitor.user_agent or "",
-                "timestamp": visitor.timestamp.isoformat() if visitor.timestamp else "",
-                "last_active": visitor.last_active.isoformat() if visitor.last_active else ""
-            }
-            requests.post(GOOGLE_SHEET_URL, json=payload, headers={'Content-Type': 'application/json'}, timeout=8)
+                "session_duration": visitor.session_duration or 0,
+                "max_scroll": getattr(visitor, 'scroll_pct', 0) or 0,
+                "referrer": getattr(visitor, 'user_agent', '') or "",
+                "landing_source": "Direct",
+                "is_bot": visitor.is_bot,
+                "bot_name": visitor.bot_name or ("Bot Crawler" if visitor.is_bot else "Human User"),
+                "email": visitor.email or "Guest",
+                "lead_id": ""
+            })
         except Exception as e:
             print("Google Sheet Visitor Sync Warning:", e)
 
@@ -121,13 +123,20 @@ class VisitorTrackingMiddleware:
                     ip = request.META.get('REMOTE_ADDR', '127.0.0.1')
 
                 # Country Detection (Cloudflare / Vercel header or IP fallback)
-                country_code = request.META.get('HTTP_CF_IPCOUNTRY') or request.META.get('HTTP_X_VERCEL_IP_COUNTRY') or 'IN'
-                if country_code in ('IN', 'IND') or ip.startswith(('127.', '192.168.', '10.')):
+                country_code = request.META.get('HTTP_CF_IPCOUNTRY') or request.META.get('HTTP_X_VERCEL_IP_COUNTRY')
+                if country_code:
+                    if country_code.upper() in ('IN', 'IND'):
+                        country_type = 'India'
+                        location = 'India'
+                    else:
+                        country_type = 'International'
+                        location = f"{country_code.upper()} (International)"
+                elif ip.startswith(('127.', '192.168.', '10.', '172.16.')):
                     country_type = 'India'
-                    location = 'India'
+                    location = 'India (Localhost)'
                 else:
-                    country_type = 'International'
-                    location = f"{country_code} (International)"
+                    country_type = 'Unknown'
+                    location = 'Unknown Location'
 
                 visitor_type = 'Bot' if is_bot else 'Human'
                 bot_name = 'Search Engine Bot' if is_bot else 'Human User'

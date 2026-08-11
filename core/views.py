@@ -9,29 +9,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "8841778238:AAHOmeQHKc8MiBpOTnov-defOCzBHdIkOI0")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "-5570843599")
-GOOGLE_SHEET_URL = os.getenv("GOOGLE_SHEET_URL", "https://script.google.com/macros/s/AKfycbxhaaYQJ6wtk4Oo8FpqMF7wdYISFRpghPthKB_iH9hXSQMxYWKZrJESuyy0ZngcBRU_/exec")
+from core.google_sheets import GoogleSheetsService
 
 def send_google_sheet_lead(full_name, email, phone, budget, requirement_details):
     try:
-        import datetime
-        payload = {
-            "type": "lead",
-            "target": "Leads",
-            "Timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "fullName": full_name or "",
-            "Full Name": full_name or "",
-            "email": email or "",
-            "Business Email": email or "",
-            "phone": phone or "",
-            "Phone Number": phone or "",
-            "budget": budget or "",
-            "Budget": budget or "",
-            "requirements": requirement_details or "",
-            "Requirement Details": requirement_details or ""
-        }
-        requests.post(GOOGLE_SHEET_URL, json=payload, headers={'Content-Type': 'application/json'}, timeout=5)
+        GoogleSheetsService.send_lead({
+            "name": full_name,
+            "email": email,
+            "phone": phone,
+            "budget": budget,
+            "message": requirement_details,
+            "source": "Website Form"
+        })
     except Exception as e:
-        print("Google Sheet sync warning:", e)
+        print("Google Sheet lead sync warning:", e)
 
 def send_telegram_alert(lead_name, email, phone, budget, message):
     bot_token = os.getenv("TELEGRAM_BOT_TOKEN") or "8841778238:AAHOmeQHKc8MiBpOTnov-defOCzBHdIkOI0"

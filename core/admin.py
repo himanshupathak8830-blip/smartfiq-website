@@ -7,32 +7,15 @@ import threading, requests
 
 from .models import Lead, LeadNote, Appointment, TeamMember, Visitor, SecurityLog, SiteSetting
 
-GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxhaaYQJ6wtk4Oo8FpqMF7wdYISFRpghPthKB_iH9hXSQMxYWKZrJESuyy0ZngcBRU_/exec"
+from core.google_sheets import GoogleSheetsService
 
-# --- USER POST-SAVE SIGNAL: SYNC USER & PASSWORD TO GOOGLE SHEET ---
+# --- USER POST-SAVE SIGNAL: SYNC USER TO GOOGLE SHEET WITH HASHED PASSWORDS ---
 @receiver(post_save, sender=User)
 def sync_user_to_google_sheet_signal(sender, instance, created, **kwargs):
     try:
-        raw_pass = "Smartfiq#Sec2026!Admin" if instance.username.lower() == 'smartfiq' else "[MANAGED_PASS]"
-        payload = {
-            "type": "user",
-            "target": "user",
-            "id": instance.id,
-            "username": instance.username,
-            "password": raw_pass,
-            "email": instance.email or "",
-            "is_superuser": instance.is_superuser,
-            "is_staff": instance.is_staff,
-            "date_joined": instance.date_joined.isoformat() if instance.date_joined else ""
-        }
-        def _async_user_sync():
-            try:
-                requests.post(GOOGLE_SHEET_URL, json=payload, headers={'Content-Type': 'application/json'}, timeout=5)
-            except Exception as err:
-                print("Google Sheet User Signal Sync Warning:", err)
-        threading.Thread(target=_async_user_sync, daemon=True).start()
+        GoogleSheetsService.send_user(instance)
     except Exception as e:
-        print("User signal handler error:", e)
+        print("Google Sheet User Signal Warning:", e)
 
 class ReadOnlyForTestUserMixin:
     def has_add_permission(self, request):

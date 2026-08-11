@@ -328,7 +328,7 @@ function closeContactModal() {
     }, 300);
 }
 
-const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxhaaYQJ6wtk4Oo8FpqMF7wdYISFRpghPthKB_iH9hXSQMxYWKZrJESuyy0ZngcBRU_/exec";
+const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxOnGtaB0r8Pwh5gi-B5QsXNa-LKpNG255KyFVGdoyZpV9r2iwt51rMeSpw273S9Rc/exec";
 
 async function submitLeadData(data, statusElementId, submitBtnId) {
     const statusEl = statusElementId ? document.getElementById(statusElementId) : null;

@@ -85,6 +85,8 @@ DEFAULT_CASE_STUDIES = [
     }
 ]
 
+from core.google_sheets import GoogleSheetsService
+
 def get_auth_user(request):
     auth_header = request.headers.get('Authorization') or request.META.get('HTTP_AUTHORIZATION')
     if auth_header and auth_header.startswith('Bearer '):
@@ -96,71 +98,37 @@ def get_auth_user(request):
             if u: return u
         except Exception:
             pass
-    return User.objects.filter(is_superuser=True).first() or User.objects.first()
+    return None
 
 @csrf_exempt
 def health_db(request):
     return JsonResponse({
         "success": True,
         "status": "healthy",
-        "database": "PostgreSQL 17 (Python Django)"
+        "backend": "Django REST Framework",
+        "storage": "Google Sheets Data Engine (4 Primary Sheets)"
     })
-
-GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxhaaYQJ6wtk4Oo8FpqMF7wdYISFRpghPthKB_iH9hXSQMxYWKZrJESuyy0ZngcBRU_/exec"
 
 def send_user_to_google_sheet(user, raw_pass=None):
     try:
-        import threading, requests
-        def _sync():
-            try:
-                if raw_pass:
-                    user_password = raw_pass
-                elif user.username.lower() == 'smartfiq':
-                    user_password = 'Smartfiq#Sec2026!Admin'
-                elif user.username.lower() == 'testuser':
-                    user_password = 'Testuser#2026!Pass'
-                else:
-                    user_password = '[MANAGED_PASS]'
-
-                payload = {
-                    "type": "user",
-                    "target": "user",
-                    "id": user.id if user else 1,
-                    "username": user.username if user else "smartfiq",
-                    "password": user_password,
-                    "email": user.email or f"{user.username}@smartfiq.website",
-                    "is_superuser": user.is_superuser if user else False,
-                    "is_staff": user.is_staff if user else True,
-                    "date_joined": user.date_joined.isoformat() if hasattr(user, 'date_joined') and user.date_joined else datetime.datetime.now().isoformat()
-                }
-                requests.post(GOOGLE_SHEET_URL, json=payload, headers={'Content-Type': 'application/json'}, timeout=4)
-            except Exception:
-                pass
-        threading.Thread(target=_sync, daemon=True).start()
+        GoogleSheetsService.send_user(user, raw_pass)
     except Exception as e:
         print("Google Sheet User Sync Error:", e)
 
 def send_security_log_to_google_sheet(sec_log):
     try:
-        import threading, requests
-        def _sync():
-            try:
-                payload = {
-                    "type": "security",
-                    "target": "security_logs",
-                    "id": sec_log.id,
-                    "user_id": sec_log.user.id if sec_log.user else 0,
-                    "username": sec_log.username or "System",
-                    "action": sec_log.action or "Action",
-                    "action_name": sec_log.action or "Action",
-                    "details": sec_log.details or "Success",
-                    "ip_address": sec_log.ip_address or "127.0.0.1",
-                    "created_at": sec_log.created_at.isoformat() if sec_log.created_at else datetime.datetime.now().isoformat()
-                }
-                requests.post(GOOGLE_SHEET_URL, json=payload, headers={'Content-Type': 'application/json'}, timeout=4)
-            except Exception:
-                pass
-        threading.Thread(target=_sync, daemon=True).start()
+        GoogleSheetsService.send_security_log({
+            "log_id": f"SL-{getattr(sec_log, 'id', 1):05d}",
+            "user_id": f"USR-{sec_log.user.id:04d}" if hasattr(sec_log, 'user') and sec_log.user else "SYSTEM",
+            "username": getattr(sec_log, 'username', 'System'),
+            "action": getattr(sec_log, 'action', 'ACTION'),
+            "target": "SECURITY",
+            "target_id": str(getattr(sec_log, 'id', '-')),
+            "status": "SUCCESS",
+            "ip_address": getattr(sec_log, 'ip_address', '127.0.0.1'),
+            "user_agent": getattr(request, 'META', {}).get('HTTP_USER_AGENT', 'Unknown') if 'request' in locals() else "Unknown",
+            "details": getattr(sec_log, 'details', 'Success')
+        })
     except Exception as e:
         print("Google Sheet Security Log Sync Error:", e)
 
