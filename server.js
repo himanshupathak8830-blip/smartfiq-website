@@ -10,14 +10,6 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false
 }));
 
-app.use('/static', express.static(path.join(__dirname, 'static')));
-app.use(express.static(path.join(__dirname, 'static', 'images')));
-app.use(express.static(path.join(__dirname, 'templates')));
-app.use(express.static(__dirname, {
-  index: false,
-  dotfiles: 'ignore'
-}));
-
 const pages = {
   '/': 'index.html',
   '/services': 'services.html',
@@ -28,7 +20,8 @@ const pages = {
   '/faq': 'smartfiq-faq.html',
   '/smartfiq-faq': 'smartfiq-faq.html',
   '/privacy-policy': 'privacy-policy.html',
-  '/terms': 'terms.html'
+  '/terms': 'terms.html',
+  '/admin': 'admin.html'
 };
 
 Object.entries(pages).forEach(([route, file]) => {
@@ -36,6 +29,14 @@ Object.entries(pages).forEach(([route, file]) => {
     res.sendFile(path.join(__dirname, 'templates', file));
   });
 });
+
+app.use('/static', express.static(path.join(__dirname, 'static')));
+app.use(express.static(path.join(__dirname, 'static', 'images')));
+app.use(express.static(path.join(__dirname, 'templates')));
+app.use(express.static(__dirname, {
+  index: false,
+  dotfiles: 'ignore'
+}));
 
 const fs = require('fs');
 
@@ -134,6 +135,18 @@ app.get('/blog/:slug', (req, res) => {
     return res.sendFile(htmlFile);
   }
   return res.sendFile(path.join(__dirname, 'templates', 'blog.html'));
+});
+
+app.get('/industries/:slug', (req, res) => {
+  const slug = (req.params.slug || '').replace(/\.html$/, '').trim().toLowerCase();
+  let htmlFile = path.join(__dirname, 'templates', 'industries', `${slug}.html`);
+  if (!fs.existsSync(htmlFile)) {
+    htmlFile = path.join(__dirname, 'industries', `${slug}.html`);
+  }
+  if (fs.existsSync(htmlFile)) {
+    return res.sendFile(htmlFile);
+  }
+  return res.redirect('/');
 });
 
 app.get('/health', (req, res) => {

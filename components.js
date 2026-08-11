@@ -13,33 +13,82 @@
         const existingHeader = document.getElementById('smartfiq-header');
         const headerContainer = document.getElementById('site-header') || document.getElementById('smartfiq-header-container');
 
-        const navLinks = [
-            { name: 'Home', href: '/', targetKey: 'index' },
-            { name: 'Services', href: '/services', targetKey: 'services' },
-            { name: 'Case Studies', href: '/case-studies', targetKey: 'case-studies' },
-            { name: 'Blog', href: '/blog', targetKey: 'blog' },
-            { name: 'About', href: '/about-smartfiq', targetKey: 'about-smartfiq' }
-        ];
+        const isIndustriesActive = activeSegment === 'industries';
 
-        const desktopNavHTML = navLinks.map(link => {
-            const isActive = activeSegment === link.targetKey || (activeSegment === '' && link.targetKey === 'index');
-            const textClass = isActive ? 'text-[#FF6B3D]' : 'text-[#B8B8B8] hover:text-[#FF6B3D]';
-            const lineClass = isActive ? 'w-full' : 'w-0 group-hover:w-full';
-            return `
-                <a href="${link.href}" class="relative py-1 text-[15px] font-medium tracking-[0.2px] ${textClass} transition-colors duration-300 group">
-                    ${link.name}
-                    <span class="absolute bottom-0 left-1/2 -translate-x-1/2 ${lineClass} h-[2px] bg-[#FF6B3D] rounded-full transition-all duration-300"></span>
-                </a>
-            `;
-        }).join('');
+        const desktopNavHTML = `
+            <a href="/" class="relative py-1 text-[15px] font-medium tracking-[0.2px] ${activeSegment === 'index' || activeSegment === '' ? 'text-[#FF6B3D]' : 'text-[#B8B8B8] hover:text-[#FF6B3D]'} transition-colors duration-300 group">
+                Home
+                <span class="absolute bottom-0 left-1/2 -translate-x-1/2 ${activeSegment === 'index' || activeSegment === '' ? 'w-full' : 'w-0 group-hover:w-full'} h-[2px] bg-[#FF6B3D] rounded-full transition-all duration-300"></span>
+            </a>
+            <a href="/services" class="relative py-1 text-[15px] font-medium tracking-[0.2px] ${activeSegment === 'services' ? 'text-[#FF6B3D]' : 'text-[#B8B8B8] hover:text-[#FF6B3D]'} transition-colors duration-300 group">
+                Services
+                <span class="absolute bottom-0 left-1/2 -translate-x-1/2 ${activeSegment === 'services' ? 'w-full' : 'w-0 group-hover:w-full'} h-[2px] bg-[#FF6B3D] rounded-full transition-all duration-300"></span>
+            </a>
+            
+            <!-- Industries Dropdown -->
+            <div class="relative group">
+                <button class="relative py-1 text-[15px] font-medium tracking-[0.2px] ${isIndustriesActive ? 'text-[#FF6B3D]' : 'text-[#B8B8B8] group-hover:text-[#FF6B3D]'} transition-colors duration-300 flex items-center gap-1 cursor-pointer">
+                    Industries
+                    <span class="material-symbols-outlined text-sm transition-transform duration-300 group-hover:rotate-180">expand_more</span>
+                    <span class="absolute bottom-0 left-1/2 -translate-x-1/2 ${isIndustriesActive ? 'w-full' : 'w-0 group-hover:w-full'} h-[2px] bg-[#FF6B3D] rounded-full transition-all duration-300"></span>
+                </button>
+                <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-[rgba(15,15,18,0.95)] backdrop-blur-[24px] border border-[rgba(255,255,255,0.12)] p-2 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 flex flex-col gap-1 z-50">
+                    <a href="/industries/real-estate" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-[#E7BDB2] hover:text-white hover:bg-white/10 flex items-center gap-2.5 transition-all">
+                        <span class="material-symbols-outlined text-[#FF6B3D] text-base">real_estate_agent</span>
+                        Real Estate
+                    </a>
+                    <a href="/industries/gym" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-[#E7BDB2] hover:text-white hover:bg-white/10 flex items-center gap-2.5 transition-all">
+                        <span class="material-symbols-outlined text-[#FF6B3D] text-base">fitness_center</span>
+                        Gym & Fitness
+                    </a>
+                    <a href="/industries/ecommerce" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-[#E7BDB2] hover:text-white hover:bg-white/10 flex items-center gap-2.5 transition-all">
+                        <span class="material-symbols-outlined text-[#FF6B3D] text-base">shopping_cart</span>
+                        E-Commerce
+                    </a>
+                    <a href="/industries/yoga-center" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-[#E7BDB2] hover:text-white hover:bg-white/10 flex items-center gap-2.5 transition-all">
+                        <span class="material-symbols-outlined text-[#FF6B3D] text-base">self_improvement</span>
+                        Yoga Center
+                    </a>
+                    <a href="/industries/doctor-clinic" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-[#E7BDB2] hover:text-white hover:bg-white/10 flex items-center gap-2.5 transition-all">
+                        <span class="material-symbols-outlined text-[#FF6B3D] text-base">medical_services</span>
+                        Doctor & Clinic
+                    </a>
+                </div>
+            </div>
 
-        const mobileNavHTML = navLinks.map(link => {
-            const isActive = activeSegment === link.targetKey || (activeSegment === '' && link.targetKey === 'index');
-            const textClass = isActive ? 'text-[#FF6B3D]' : 'text-[#B8B8B8] hover:text-[#FF6B3D]';
-            return `
-                <a href="${link.href}" onclick="toggleSmartfiqMobileMenu()" class="${textClass} font-medium text-[16px] tracking-[0.2px] py-2 border-b border-white/5 transition-colors">${link.name}</a>
-            `;
-        }).join('');
+            <a href="/case-studies" class="relative py-1 text-[15px] font-medium tracking-[0.2px] ${activeSegment === 'case-studies' ? 'text-[#FF6B3D]' : 'text-[#B8B8B8] hover:text-[#FF6B3D]'} transition-colors duration-300 group">
+                Case Studies
+                <span class="absolute bottom-0 left-1/2 -translate-x-1/2 ${activeSegment === 'case-studies' ? 'w-full' : 'w-0 group-hover:w-full'} h-[2px] bg-[#FF6B3D] rounded-full transition-all duration-300"></span>
+            </a>
+            <a href="/blog" class="relative py-1 text-[15px] font-medium tracking-[0.2px] ${activeSegment === 'blog' ? 'text-[#FF6B3D]' : 'text-[#B8B8B8] hover:text-[#FF6B3D]'} transition-colors duration-300 group">
+                Blog
+                <span class="absolute bottom-0 left-1/2 -translate-x-1/2 ${activeSegment === 'blog' ? 'w-full' : 'w-0 group-hover:w-full'} h-[2px] bg-[#FF6B3D] rounded-full transition-all duration-300"></span>
+            </a>
+            <a href="/about-smartfiq" class="relative py-1 text-[15px] font-medium tracking-[0.2px] ${activeSegment === 'about-smartfiq' ? 'text-[#FF6B3D]' : 'text-[#B8B8B8] hover:text-[#FF6B3D]'} transition-colors duration-300 group">
+                About
+                <span class="absolute bottom-0 left-1/2 -translate-x-1/2 ${activeSegment === 'about-smartfiq' ? 'w-full' : 'w-0 group-hover:w-full'} h-[2px] bg-[#FF6B3D] rounded-full transition-all duration-300"></span>
+            </a>
+        `;
+
+        const mobileNavHTML = `
+            <a href="/" onclick="toggleSmartfiqMobileMenu()" class="${activeSegment === 'index' || activeSegment === '' ? 'text-[#FF6B3D]' : 'text-[#B8B8B8] hover:text-[#FF6B3D]'} font-medium text-[16px] py-2 border-b border-white/5">Home</a>
+            <a href="/services" onclick="toggleSmartfiqMobileMenu()" class="${activeSegment === 'services' ? 'text-[#FF6B3D]' : 'text-[#B8B8B8] hover:text-[#FF6B3D]'} font-medium text-[16px] py-2 border-b border-white/5">Services</a>
+            
+            <div class="py-2 border-b border-white/5">
+                <span class="text-xs font-bold uppercase tracking-widest text-[#FF6B3D] block mb-2">Industries</span>
+                <div class="flex flex-col gap-2 pl-3">
+                    <a href="/industries/real-estate" onclick="toggleSmartfiqMobileMenu()" class="text-[#E7BDB2] text-sm py-1 hover:text-white">Real Estate</a>
+                    <a href="/industries/gym" onclick="toggleSmartfiqMobileMenu()" class="text-[#E7BDB2] text-sm py-1 hover:text-white">Gym & Fitness</a>
+                    <a href="/industries/ecommerce" onclick="toggleSmartfiqMobileMenu()" class="text-[#E7BDB2] text-sm py-1 hover:text-white">E-Commerce</a>
+                    <a href="/industries/yoga-center" onclick="toggleSmartfiqMobileMenu()" class="text-[#E7BDB2] text-sm py-1 hover:text-white">Yoga Center</a>
+                    <a href="/industries/doctor-clinic" onclick="toggleSmartfiqMobileMenu()" class="text-[#E7BDB2] text-sm py-1 hover:text-white">Doctor & Clinic</a>
+                </div>
+            </div>
+
+            <a href="/case-studies" onclick="toggleSmartfiqMobileMenu()" class="${activeSegment === 'case-studies' ? 'text-[#FF6B3D]' : 'text-[#B8B8B8] hover:text-[#FF6B3D]'} font-medium text-[16px] py-2 border-b border-white/5">Case Studies</a>
+            <a href="/blog" onclick="toggleSmartfiqMobileMenu()" class="${activeSegment === 'blog' ? 'text-[#FF6B3D]' : 'text-[#B8B8B8] hover:text-[#FF6B3D]'} font-medium text-[16px] py-2 border-b border-white/5">Blog</a>
+            <a href="/about-smartfiq" onclick="toggleSmartfiqMobileMenu()" class="${activeSegment === 'about-smartfiq' ? 'text-[#FF6B3D]' : 'text-[#B8B8B8] hover:text-[#FF6B3D]'} font-medium text-[16px] py-2 border-b border-white/5">About</a>
+        `;
 
         if (headerContainer && !existingHeader) {
             headerContainer.innerHTML = `
@@ -201,7 +250,7 @@
         if (!modalContainer) return;
 
         modalContainer.outerHTML = `
-        <div id="contactModal" class="fixed inset-0 z-[200] hidden items-center justify-center bg-black/80 backdrop-blur-md p-4 transition-all duration-300 opacity-0">
+        <div id="contactModal" style="display: none;" class="fixed inset-0 z-[200] hidden items-center justify-center bg-black/80 backdrop-blur-md p-4 transition-all duration-300 opacity-0">
             <div class="glass-card relative w-full max-w-lg bg-[#0F0F12]/95 border border-white/10 rounded-2xl p-6 md:p-8 shadow-2xl transition-all duration-300 scale-95 text-left">
                 <button onclick="closeContactModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors p-2 rounded-full hover:bg-white/5">
                     <span class="material-symbols-outlined">close</span>
@@ -307,6 +356,7 @@ function openContactModal() {
     const modal = document.getElementById('contactModal');
     if (!modal) return;
     const card = modal.querySelector('.glass-card');
+    modal.style.display = 'flex';
     modal.classList.remove('hidden');
     modal.classList.add('flex');
     setTimeout(() => {
@@ -324,6 +374,7 @@ function closeContactModal() {
     setTimeout(() => {
         modal.classList.remove('flex');
         modal.classList.add('hidden');
+        modal.style.display = 'none';
     }, 300);
 }
 

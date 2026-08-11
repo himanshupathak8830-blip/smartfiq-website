@@ -442,68 +442,8 @@
             </a>
         </div>
     </div>
-    <!-- Header Component -->
-    <div id="site-header">
-        <header id="smartfiq-header"
-            class="fixed top-[20px] left-1/2 -translate-x-1/2 z-[100] w-[calc(100%-2rem)] max-w-[1180px] h-[64px] rounded-full bg-[rgba(15,15,18,0.75)] backdrop-blur-[20px] border border-[rgba(255,255,255,0.12)] shadow-[0_12px_40px_rgba(0,0,0,0.35)] transition-all duration-300 ease-in-out font-plus-jakarta">
-            <div class="w-full h-full px-6 flex items-center justify-between relative">
-                <!-- LEFT: Transparent Logo -->
-                <a href="/" class="flex items-center group">
-                    <img src="/smartfiq-ai-automation-logo.png" alt="SmartFiQ AI Automation Agency Logo" class="h-8 md:h-9 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
-                </a>
-
-                <!-- CENTER: Navigation Links -->
-                <nav class="hidden md:flex items-center space-x-7 lg:space-x-9">
-                    <a href="/" class="relative py-1 text-[15px] font-medium tracking-[0.2px] text-[#FF6B3D] transition-colors duration-300 group">
-                        Home
-                        <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-[2px] bg-[#FF6B3D] rounded-full transition-all duration-300"></span>
-                    </a>
-                    <a href="/services" class="relative py-1 text-[15px] font-medium tracking-[0.2px] text-[#B8B8B8] hover:text-[#FF6B3D] transition-colors duration-300 group">
-                        Services
-                        <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 group-hover:w-full h-[2px] bg-[#FF6B3D] rounded-full transition-all duration-300"></span>
-                    </a>
-                    <a href="/case-studies" class="relative py-1 text-[15px] font-medium tracking-[0.2px] text-[#B8B8B8] hover:text-[#FF6B3D] transition-colors duration-300 group">
-                        Case Studies
-                        <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 group-hover:w-full h-[2px] bg-[#FF6B3D] rounded-full transition-all duration-300"></span>
-                    </a>
-                    <a href="/blog" class="relative py-1 text-[15px] font-medium tracking-[0.2px] text-[#B8B8B8] hover:text-[#FF6B3D] transition-colors duration-300 group">
-                        Blog
-                        <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 group-hover:w-full h-[2px] bg-[#FF6B3D] rounded-full transition-all duration-300"></span>
-                    </a>
-                    <a href="/about-smartfiq" class="relative py-1 text-[15px] font-medium tracking-[0.2px] text-[#B8B8B8] hover:text-[#FF6B3D] transition-colors duration-300 group">
-                        About
-                        <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 group-hover:w-full h-[2px] bg-[#FF6B3D] rounded-full transition-all duration-300"></span>
-                    </a>
-                </nav>
-
-                <!-- RIGHT: Primary CTA Button -->
-                <div class="hidden md:flex items-center">
-                    <button onclick="openContactModal()" class="inline-flex items-center justify-center px-[28px] py-[14px] text-[15px] font-semibold text-white bg-gradient-to-r from-[#FF6B3D] to-[#FF3D00] rounded-full transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-[0_0_25px_rgba(255,107,61,0.5)] active:scale-95 cursor-pointer">
-                        Book Consultation &rarr;
-                    </button>
-                </div>
-
-                <!-- Mobile Hamburger Menu Button -->
-                <button id="mobileMenuBtn" onclick="toggleSmartfiqMobileMenu()" class="md:hidden flex flex-col justify-center items-center w-9 h-9 text-white focus:outline-none p-1 rounded-full hover:bg-white/5 transition-colors" aria-label="Toggle Navigation Menu">
-                    <div id="bar1" class="w-5 h-[2px] bg-white rounded-full transition-all duration-300"></div>
-                    <div id="bar2" class="w-5 h-[2px] bg-white rounded-full transition-all duration-300 my-1"></div>
-                    <div id="bar3" class="w-5 h-[2px] bg-white rounded-full transition-all duration-300"></div>
-                </button>
-
-                <!-- Mobile Glass Dropdown Menu -->
-                <div id="smartfiqMobileDropdown" class="hidden md:hidden absolute top-[calc(100%+12px)] left-0 w-full bg-[rgba(15,15,18,0.95)] backdrop-blur-[24px] border border-[rgba(255,255,255,0.12)] p-6 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col gap-4 z-50">
-                    <a href="/" class="text-[#FF6B3D] font-medium text-[16px] py-2 border-b border-white/5">Home</a>
-                    <a href="/services" class="text-white font-medium text-[16px] py-2 border-b border-white/5">Services</a>
-                    <a href="/case-studies" class="text-white font-medium text-[16px] py-2 border-b border-white/5">Case Studies</a>
-                    <a href="/blog" class="text-white font-medium text-[16px] py-2 border-b border-white/5">Blog</a>
-                    <a href="/about-smartfiq" class="text-white font-medium text-[16px] py-2 border-b border-white/5">About</a>
-                    <button onclick="openContactModal(); toggleSmartfiqMobileMenu();" class="w-full mt-2 inline-flex items-center justify-center px-[28px] py-[14px] text-[15px] font-semibold text-white bg-gradient-to-r from-[#FF6B3D] to-[#FF3D00] rounded-full transition-all duration-300">
-                        Book Consultation &rarr;
-                    </button>
-                </div>
-            </div>
-        </header>
-    </div>
+    <!-- Header Component (Loaded dynamically via components.js) -->
+    <div id="site-header"></div>
     <main class="relative overflow-hidden">
         <!-- Hero Section -->
         <section class="hero-section relative w-full mb-16 z-10 overflow-hidden">
