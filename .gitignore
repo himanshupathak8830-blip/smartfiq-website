@@ -4,3 +4,5 @@ node_modules/
 *.log
 db.json
 staticfiles/
+*.sqlite3
+db.sqlite3

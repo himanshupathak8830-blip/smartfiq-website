@@ -6,6 +6,7 @@ class PortfolioItem(models.Model):
     description = models.TextField()
     category = models.CharField(max_length=100, default='AI Automation')
     image_url = models.URLField(blank=True, null=True)
+    client_link = models.URLField(blank=True, null=True, help_text="Optional live project or case study link")
     display_order = models.IntegerField(default=1)
     is_featured = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)

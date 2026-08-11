@@ -13,6 +13,7 @@ class PostAdmin(admin.ModelAdmin):
     list_filter = ('status', 'category', 'published_at')
     search_fields = ('title', 'excerpt', 'body', 'slug')
     prepopulated_fields = {'slug': ('title',)}
+    readonly_fields = ('reading_time', 'view_count')
     list_editable = ()
     fieldsets = (
         ('Article Overview', {
