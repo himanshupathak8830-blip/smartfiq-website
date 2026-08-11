@@ -109,13 +109,17 @@ def serve_root_file(request, filename):
     if filename == 'logo-transparent.png':
         filename = 'smartfiq-ai-automation-logo.png'
 
-    file_path = BASE_DIR / filename
-    if file_path.exists() and file_path.is_file():
-        return serve(request, filename, document_root=BASE_DIR)
-    
     # Check static/images/ fallback for images and logos
     static_img_path = BASE_DIR / 'static' / 'images' / filename
     if static_img_path.exists() and static_img_path.is_file():
         return serve(request, filename, document_root=BASE_DIR / 'static' / 'images')
-        
+
+    static_path = BASE_DIR / 'static' / filename
+    if static_path.exists() and static_path.is_file():
+        return serve(request, filename, document_root=BASE_DIR / 'static')
+
+    file_path = BASE_DIR / filename
+    if file_path.exists() and file_path.is_file():
+        return serve(request, filename, document_root=BASE_DIR)
+
     return render(request, 'index.html')
