@@ -16,6 +16,7 @@
         const navLinks = [
             { name: 'Home', href: '/', targetKey: 'index' },
             { name: 'Services', href: '/services', targetKey: 'services' },
+            { name: 'Portfolio', href: '/portfolio', targetKey: 'portfolio' },
             { name: 'Case Studies', href: '/case-studies', targetKey: 'case-studies' },
             { name: 'Blog', href: '/blog', targetKey: 'blog' },
             { name: 'About', href: '/about-smartfiq', targetKey: 'about-smartfiq' }
