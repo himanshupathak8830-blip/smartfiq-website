@@ -108,7 +108,7 @@ CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = 'Lax'
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [str(BASE_DIR), str(BASE_DIR / 'static')]
+STATICFILES_DIRS = [str(BASE_DIR / 'static')]
 STATIC_ROOT = str(BASE_DIR / 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
