@@ -96,7 +96,7 @@ def contact(request):
 
 @ensure_csrf_cookie
 def faq(request):
-    return render(request, 'faq.html')
+    return render(request, 'smartfiq-faq.html')
 
 @ensure_csrf_cookie
 def terms(request):

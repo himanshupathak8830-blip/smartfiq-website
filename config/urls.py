@@ -19,6 +19,8 @@ urlpatterns = [
     path('contact', contact, name='contact'),
     path('faq', faq, name='faq'),
     path('faq.html', faq),
+    path('smartfiq-faq', faq, name='smartfiq_faq'),
+    path('smartfiq-faq.html', faq),
     path('terms', terms, name='terms'),
     path('terms.html', terms),
     path('privacy-policy', privacy, name='privacy'),

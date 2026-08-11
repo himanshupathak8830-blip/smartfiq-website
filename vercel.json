@@ -1,50 +1,15 @@
 {
   "version": 2,
-  "cleanUrls": true,
-  "trailingSlash": false,
   "builds": [
     {
-      "src": "api/index.js",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": [
-          "templates/**",
-          "services/**",
-          "blog/**",
-          "case-studies/**",
-          "components.js",
-          "cms-engine.js",
-          "blog-js/**",
-          "static/**",
-          "*.html"
-        ]
-      }
+      "src": "api/index.py",
+      "use": "@vercel/python"
     }
   ],
   "routes": [
     {
-      "src": "/components.js",
-      "dest": "/components.js"
-    },
-    {
-      "src": "/cms-engine.js",
-      "dest": "/cms-engine.js"
-    },
-    {
-      "src": "/smartfiq-ai-automation-logo.png",
-      "dest": "/smartfiq-ai-automation-logo.png"
-    },
-    {
-      "src": "/sitemap.xml",
-      "dest": "/sitemap.xml"
-    },
-    {
-      "src": "/robots.txt",
-      "dest": "/robots.txt"
-    },
-    {
       "src": "/(.*)",
-      "dest": "api/index.js"
+      "dest": "api/index.py"
     }
   ]
 }
