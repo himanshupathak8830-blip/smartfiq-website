@@ -1,258 +1,99 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SmartFiQ Real-Time Admin Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; color: #f8fafc; }
-    .kpi-card {
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-    }
-    .nav-tab {
-      padding: 8px 16px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 700;
-      color: #94a3b8;
-      transition: all 0.2s;
-      cursor: pointer;
-    }
-    .nav-tab.active, .nav-tab:hover {
-      background: #ff5625;
-      color: #ffffff;
-    }
-  </style>
-</head>
-<body class="min-h-screen p-4 md:p-8">
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
 
-  <!-- TOP HEADER -->
-  <header class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4 bg-slate-800/80 backdrop-blur-md p-4 rounded-2xl border border-slate-700 mb-6">
-    <div class="flex items-center gap-3">
-      <span class="text-2xl">⚡</span>
-      <div>
-        <h1 class="text-lg font-extrabold text-white">SmartFiQ Admin</h1>
-        <p class="text-xs text-slate-400">Google Sheets Data Engine & Analytics</p>
-      </div>
+{% block extrastyle %}{{ block.super }}
+<style>
+  .sf-dashboard { display: grid; gap: 16px; margin-bottom: 24px; }
+  .sf-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  .sf-card { border: 1px solid var(--hairline-color); border-radius: 8px; padding: 14px; background: var(--body-bg); }
+  .sf-card strong { display: block; font-size: 24px; line-height: 1.1; margin-top: 6px; }
+  .sf-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+  .sf-list { margin: 0; padding: 0; list-style: none; }
+  .sf-list li { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--hairline-color); padding: 8px 0; }
+  .sf-list li:last-child { border-bottom: 0; }
+</style>
+{% endblock %}
+
+{% block content %}
+{% if smartfiq_dashboard %}
+<section class="sf-dashboard">
+  <div class="sf-kpis">
+    <div class="sf-card">Total Leads<strong>{{ smartfiq_dashboard.total_leads }}</strong></div>
+    <div class="sf-card">New Leads<strong>{{ smartfiq_dashboard.new_leads }}</strong></div>
+    <div class="sf-card">Subscribers<strong>{{ smartfiq_dashboard.subscribers }}</strong></div>
+    <div class="sf-card">Visitors Today<strong>{{ smartfiq_dashboard.visitors_today }}</strong></div>
+    <div class="sf-card">Visitors This Week<strong>{{ smartfiq_dashboard.visitors_week }}</strong></div>
+    <div class="sf-card">Indian / International<strong>{{ smartfiq_dashboard.indian_visitors }} / {{ smartfiq_dashboard.international_visitors }}</strong></div>
+    <div class="sf-card">Mobile / Desktop<strong>{{ smartfiq_dashboard.mobile_visitors }} / {{ smartfiq_dashboard.desktop_visitors }}</strong></div>
+  </div>
+
+  <div class="sf-grid">
+    <div class="sf-card">
+      <h2>Top Pages</h2>
+      <ul class="sf-list">
+        {% for page in smartfiq_dashboard.top_pages %}
+          <li><span>{{ page.current_page }}</span><strong>{{ page.total }}</strong></li>
+        {% empty %}
+          <li>No page data yet.</li>
+        {% endfor %}
+      </ul>
     </div>
-
-    <!-- Centralized Navigation Tabs -->
-    <nav class="flex flex-wrap gap-2" id="admin-tabs">
-      <button onclick="switchTab('dashboard')" class="nav-tab active" id="tab-dashboard">📊 Dashboard</button>
-      <button onclick="switchTab('leads')" class="nav-tab" id="tab-leads">📥 Leads</button>
-      <button onclick="switchTab('visitors')" class="nav-tab" id="tab-visitors">👁️ Visitors</button>
-      <button onclick="switchTab('appointments')" class="nav-tab" id="tab-appointments">📅 Appointments</button>
-      <button onclick="switchTab('portfolio')" class="nav-tab" id="tab-portfolio">🎨 Portfolio</button>
-      <button onclick="switchTab('users')" class="nav-tab" id="tab-users">👥 Users</button>
-      <button onclick="switchTab('security')" class="nav-tab" id="tab-security">🛡️ Security Logs</button>
-      <button onclick="switchTab('settings')" class="nav-tab" id="tab-settings">⚙️ CMS Settings</button>
-    </nav>
-
-    <div class="flex items-center gap-3">
-      <span id="user-display-name" class="text-xs font-bold text-slate-300">Admin</span>
-      <button onclick="handleLogout()" class="px-3 py-1.5 bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 rounded-xl text-xs font-bold transition-all">Logout</button>
+    <div class="sf-card">
+      <h2>Recent Leads</h2>
+      <ul class="sf-list">
+        {% for lead in smartfiq_dashboard.recent_leads %}
+          <li><span>{{ lead.name }}</span><strong>{{ lead.status }}</strong></li>
+        {% empty %}
+          <li>No leads yet.</li>
+        {% endfor %}
+      </ul>
     </div>
-  </header>
+    <div class="sf-card">
+      <h2>Recent Admin Activity</h2>
+      <ul class="sf-list">
+        {% for log in smartfiq_dashboard.recent_activity %}
+          <li><span>{{ log.action }}</span><strong>{{ log.username|default:"System" }}</strong></li>
+        {% empty %}
+          <li>No security activity yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+{% endif %}
 
-  <!-- MAIN CONTAINER -->
-  <main class="max-w-7xl mx-auto space-y-6">
-
-    <!-- DASHBOARD VIEW -->
-    <section id="view-dashboard" class="space-y-6">
-      <div class="bg-gradient-to-r from-[#00658d] via-[#104a6b] to-[#0f172a] rounded-2xl p-6 text-white shadow-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border border-cyan-500/20">
-        <div>
-          <h2 class="text-2xl font-extrabold tracking-tight">Real-Time Intelligence & Lead CRM</h2>
-          <p class="text-sm text-cyan-200 mt-1">Live Express.js + Google Sheets Architecture</p>
-        </div>
-        <div class="flex items-center gap-3">
-          <span class="inline-flex items-center gap-2 px-3 py-1 bg-green-500/20 border border-green-400/40 rounded-full text-xs font-bold text-green-300">
-            <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-            Storage Engine Operational
-          </span>
-        </div>
-      </div>
-
-      <!-- KPI CARDS GRID -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="kpi-card">
-          <div class="text-xs font-bold uppercase text-slate-400 mb-1">Total Verified Leads</div>
-          <div class="text-3xl font-extrabold text-white" id="kpi-leads">42</div>
-        </div>
-        <div class="kpi-card">
-          <div class="text-xs font-bold uppercase text-slate-400 mb-1">Daily Visitors</div>
-          <div class="text-3xl font-extrabold text-cyan-400" id="kpi-daily">128</div>
-        </div>
-        <div class="kpi-card">
-          <div class="text-xs font-bold uppercase text-slate-400 mb-1">Monthly Visitors</div>
-          <div class="text-3xl font-extrabold text-indigo-400" id="kpi-monthly">3,450</div>
-        </div>
-        <div class="kpi-card">
-          <div class="text-xs font-bold uppercase text-slate-400 mb-1">GEO Origin (India / Intl)</div>
-          <div class="text-lg font-bold text-slate-200 mt-1 flex items-center justify-between">
-            <span>🇮🇳 <strong id="kpi-india">2,890</strong></span>
-            <span>🌍 <strong id="kpi-intl">560</strong></span>
-          </div>
-        </div>
-      </div>
-
-      <!-- CHARTS GRID -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-2 kpi-card">
-          <h3 class="text-sm font-bold uppercase text-slate-400 mb-4">Traffic & Leads Trend (Last 7 Days)</h3>
-          <div class="h-64"><canvas id="trendChart"></canvas></div>
-        </div>
-        <div class="kpi-card">
-          <div class="text-sm font-bold uppercase text-slate-400 mb-4">Visitor Breakdown</div>
-          <div class="h-64 flex items-center justify-center"><canvas id="originChart"></canvas></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- GENERIC DATA VIEW CONTAINER -->
-    <section id="view-generic" class="hidden kpi-card space-y-4">
-      <div class="flex justify-between items-center">
-        <h2 class="text-xl font-extrabold text-white" id="generic-title">Section Title</h2>
-        <span class="text-xs text-slate-400" id="generic-subtitle">Live Google Sheets Sync</span>
-      </div>
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-xs text-slate-300">
-          <thead class="bg-slate-800 text-slate-400 uppercase font-extrabold text-[11px]" id="table-head"></thead>
-          <tbody class="divide-y divide-slate-700/50 font-medium" id="table-body"></tbody>
-        </table>
-      </div>
-    </section>
-
-  </main>
-
-  <script>
-    // Centralized Authenticated API Fetcher
-    async function apiFetch(url, options = {}) {
-      const token = localStorage.getItem('smartfiq_token');
-      const headers = {
-        'Content-Type': 'application/json',
-        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-        ...(options.headers || {})
-      };
-
-      const res = await fetch(url, { ...options, headers });
-      if (res.status === 401) {
-        // Token genuinely expired or unauthorized
-        localStorage.removeItem('smartfiq_token');
-        const loginPass = prompt('Enter Admin Password:');
-        if (loginPass) {
-          const authRes = await fetch('/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: 'smartfiq', password: loginPass })
-          });
-          const authData = await authRes.json();
-          if (authData.token) {
-            localStorage.setItem('smartfiq_token', authData.token);
-            return apiFetch(url, options);
-          }
-        }
-      }
-      return res;
-    }
-
-    function switchTab(tabName) {
-      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-      const activeBtn = document.getElementById(`tab-${tabName}`);
-      if (activeBtn) activeBtn.classList.add('active');
-
-      const dashView = document.getElementById('view-dashboard');
-      const genView = document.getElementById('view-generic');
-
-      if (tabName === 'dashboard') {
-        dashView.classList.remove('hidden');
-        genView.classList.add('hidden');
-        loadDashboardData();
-      } else {
-        dashView.classList.add('hidden');
-        genView.classList.remove('hidden');
-        loadTableData(tabName);
-      }
-    }
-
-    async function loadDashboardData() {
-      try {
-        const res = await apiFetch('/api/charts');
-        if (!res.ok) return;
-        const data = await res.json();
-        
-        // Render Chart.js
-        if (window.trendChartInst) window.trendChartInst.destroy();
-        window.trendChartInst = new Chart(document.getElementById('trendChart'), {
-          type: 'line',
-          data: {
-            labels: data.data?.labels || ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-            datasets: [
-              { label: 'Visitors', data: data.data?.visitors || [320, 450, 510, 480, 600, 520, 570], borderColor: '#38bdf8', backgroundColor: 'rgba(56, 189, 248, 0.1)', fill: true },
-              { label: 'Leads', data: data.data?.leads || [5, 8, 12, 7, 15, 9, 11], borderColor: '#34d399', backgroundColor: 'rgba(52, 211, 153, 0.1)', fill: true }
-            ]
-          },
-          options: { responsive: true, maintainAspectRatio: false }
-        });
-      } catch (e) {
-        console.warn('Dashboard load warning:', e);
-      }
-    }
-
-    async function loadTableData(type) {
-      const titleEl = document.getElementById('generic-title');
-      const headEl = document.getElementById('table-head');
-      const bodyEl = document.getElementById('table-body');
-
-      titleEl.textContent = type.toUpperCase();
-      headEl.innerHTML = '';
-      bodyEl.innerHTML = '<tr><td class="py-4 text-slate-500 text-center" colspan="5">Loading data from Google Sheets...</td></tr>';
-
-      try {
-        const endpointMap = {
-          leads: '/api/leads',
-          visitors: '/api/visitors',
-          appointments: '/api/appointments',
-          portfolio: '/api/portfolio',
-          users: '/api/users',
-          security: '/api/security-logs',
-          settings: '/api/settings'
-        };
-
-        const res = await apiFetch(endpointMap[type] || '/api/leads');
-        const json = await res.json();
-        const rows = json.data || [];
-
-        if (rows.length === 0) {
-          bodyEl.innerHTML = '<tr><td class="py-4 text-slate-500 text-center" colspan="5">No records found.</td></tr>';
-          return;
-        }
-
-        const keys = Object.keys(rows[0]).slice(0, 6);
-        headEl.innerHTML = `<tr>${keys.map(k => `<th class="p-3">${k}</th>`).join('')}</tr>`;
-        bodyEl.innerHTML = rows.map(r => `
-          <tr class="hover:bg-slate-800/50">
-            ${keys.map(k => `<td class="p-3">${r[k] !== undefined ? r[k] : ''}</td>`).join('')}
+{% if app_list %}
+  {% for app in app_list %}
+    <div class="app-{{ app.app_label }} module{% if app.app_url in request.path|urlencode %} current-app{% endif %}">
+      <table>
+        <caption>
+          <a href="{{ app.app_url }}" class="section" title="{% blocktranslate with name=app.name %}Models in the {{ name }} application{% endblocktranslate %}">{{ app.name }}</a>
+        </caption>
+        {% for model in app.models %}
+          <tr class="model-{{ model.object_name|lower }}{% if model.admin_url in request.path|urlencode %} current-model{% endif %}">
+            {% if model.admin_url %}
+              <th scope="row"><a href="{{ model.admin_url }}"{% if model.admin_url in request.path|urlencode %} aria-current="page"{% endif %}>{{ model.name }}</a></th>
+            {% else %}
+              <th scope="row">{{ model.name }}</th>
+            {% endif %}
+            {% if model.add_url %}
+              <td><a href="{{ model.add_url }}" class="addlink">{% translate "Add" %}</a></td>
+            {% else %}
+              <td></td>
+            {% endif %}
+            {% if model.admin_url and model.view_only %}
+              <td><a href="{{ model.admin_url }}" class="viewlink">{% translate "View" %}</a></td>
+            {% elif model.admin_url %}
+              <td><a href="{{ model.admin_url }}" class="changelink">{% translate "Change" %}</a></td>
+            {% else %}
+              <td></td>
+            {% endif %}
           </tr>
-        `).join('');
-      } catch (err) {
-        bodyEl.innerHTML = '<tr><td class="py-4 text-rose-400 text-center" colspan="5">Error loading Google Sheets data.</td></tr>';
-      }
-    }
-
-    function handleLogout() {
-      localStorage.removeItem('smartfiq_token');
-      apiFetch('/api/auth/logout', { method: 'POST' });
-      window.location.reload();
-    }
-
-    document.addEventListener('DOMContentLoaded', () => loadDashboardData());
-  </script>
-</body>
-</html>
+        {% endfor %}
+      </table>
+    </div>
+  {% endfor %}
+{% else %}
+  <p>{% translate "You don't have permission to view or edit anything." %}</p>
+{% endif %}
+{% endblock %}

@@ -1,149 +1,138 @@
 const express = require('express');
-const path = require('path');
-const cors = require('cors');
 const helmet = require('helmet');
-const env = require('./config/env');
-
-const authRoutes = require('./routes/auth');
-const leadRoutes = require('./routes/leads');
-const userRoutes = require('./routes/users');
-const visitorRoutes = require('./routes/visitors');
-const securityRoutes = require('./routes/security');
-const portfolioRoutes = require('./routes/portfolio');
-const appointmentRoutes = require('./routes/appointments');
-const cmsRoutes = require('./routes/cms');
-
-const errorHandler = require('./middleware/errorHandler');
-const { apiLimiter } = require('./middleware/rateLimiter');
+const path = require('path');
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-// Security Middlewares
 app.use(helmet({
-  contentSecurityPolicy: false, // Allow external fonts, images, and inline styles for rich UI
+  contentSecurityPolicy: false,
   crossOriginEmbedderPolicy: false
 }));
 
-app.use(cors({
-  origin: true,
-  credentials: true
+app.use('/static', express.static(path.join(__dirname, 'static')));
+app.use(express.static(path.join(__dirname, 'static', 'images')));
+app.use(express.static(path.join(__dirname, 'templates')));
+app.use(express.static(__dirname, {
+  index: false,
+  dotfiles: 'ignore'
 }));
 
-app.use(express.json({ limit: '2mb' }));
-app.use(express.urlencoded({ extended: true, limit: '2mb' }));
+const pages = {
+  '/': 'index.html',
+  '/services': 'services.html',
+  '/case-studies': 'case-studies.html',
+  '/blog': 'blog.html',
+  '/about-smartfiq': 'about-smartfiq.html',
+  '/our-story': 'our-story.html',
+  '/faq': 'smartfiq-faq.html',
+  '/smartfiq-faq': 'smartfiq-faq.html',
+  '/privacy-policy': 'privacy-policy.html',
+  '/terms': 'terms.html'
+};
 
-// Simple Cookie Parser Middleware
-app.use((req, res, next) => {
-  req.cookies = {};
-  const cookieHeader = req.headers.cookie;
-  if (cookieHeader) {
-    cookieHeader.split(';').forEach(cookie => {
-      const parts = cookie.split('=');
-      if (parts.length === 2) {
-        req.cookies[parts[0].trim()] = decodeURIComponent(parts[1].trim());
-      }
-    });
-  }
-  next();
-});
-
-// Serve Static Assets & Root Assets
-app.use('/static', express.static(path.join(__dirname, 'static')));
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'templates')));
-app.use(express.static(__dirname));
-
-// General API Rate Limiting
-app.use('/api', apiLimiter);
-
-// API Routes Mount
-app.use('/api/auth', authRoutes);
-app.use('/api/leads', leadRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/visitors', visitorRoutes);
-app.use('/api/security-logs', securityRoutes);
-app.use('/api/portfolio', portfolioRoutes);
-app.use('/api/appointments', appointmentRoutes);
-app.use('/api', visitorRoutes); // For /api/track & /api/analytics
-app.use('/api', cmsRoutes);     // For /api/services, /api/settings, /api/stats, /api/charts
-
-// HTML Page Routes
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'templates/index.html'));
-});
-
-app.get('/services', (req, res) => {
-  res.sendFile(path.join(__dirname, 'templates/services.html'));
-});
-
-app.get('/portfolio', (req, res) => {
-  res.sendFile(path.join(__dirname, 'templates/case-studies.html'));
-});
-
-app.get('/case-studies', (req, res) => {
-  res.sendFile(path.join(__dirname, 'templates/case-studies.html'));
-});
-
-app.get('/blog', (req, res) => {
-  res.sendFile(path.join(__dirname, 'templates/blog.html'));
-});
-
-app.get('/blog/:slug', (req, res) => {
-  res.sendFile(path.join(__dirname, 'templates/blog-detail.html'));
-});
-
-app.get('/about-smartfiq', (req, res) => {
-  res.sendFile(path.join(__dirname, 'templates/about-smartfiq.html'));
-});
-
-app.get('/our-story', (req, res) => {
-  res.sendFile(path.join(__dirname, 'templates/our-story.html'));
-});
-
-app.get('/faq', (req, res) => {
-  res.sendFile(path.join(__dirname, 'templates/faq.html'));
-});
-
-app.get('/privacy-policy', (req, res) => {
-  res.sendFile(path.join(__dirname, 'templates/privacy-policy.html'));
-});
-
-app.get('/terms', (req, res) => {
-  res.sendFile(path.join(__dirname, 'templates/terms.html'));
-});
-
-// Admin Dashboard Routes
-app.get(['/personal-admin*', '/admin*'], (req, res) => {
-  const adminIndex = path.join(__dirname, 'templates/admin/index.html');
-  res.sendFile(adminIndex);
-});
-
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({
-    status: 'healthy',
-    backend: 'Node.js Express',
-    storage: 'Google Sheets Data Engine',
-    timestamp: new Date().toISOString()
+Object.entries(pages).forEach(([route, file]) => {
+  app.get(route, (req, res) => {
+    res.sendFile(path.join(__dirname, 'templates', file));
   });
 });
 
-// Catch-all 404 Handler for HTML pages
-app.use((req, res, next) => {
-  if (req.accepts('html')) {
-    return res.status(404).sendFile(path.join(__dirname, 'templates/404.html'));
+const fs = require('fs');
+
+app.get('/services/:slug', (req, res) => {
+  let rawSlug = req.params.slug.replace(/\.html$/, '').trim().toLowerCase();
+  
+  // 1. Direct file check
+  let htmlFile = path.join(__dirname, 'services', `${rawSlug}.html`);
+  if (fs.existsSync(htmlFile)) {
+    return res.sendFile(htmlFile);
   }
-  res.status(404).json({ success: false, error: 'Endpoint not found' });
+  
+  // 2. Fuzzy match in services directory
+  const servicesDir = path.join(__dirname, 'services');
+  if (fs.existsSync(servicesDir)) {
+    const files = fs.readdirSync(servicesDir).filter(f => f.endsWith('.html'));
+    
+    let matchedFile = files.find(f => {
+      const name = f.replace(/\.html$/, '').toLowerCase();
+      return name === rawSlug || rawSlug.startsWith(name) || name.startsWith(rawSlug);
+    });
+    
+    if (matchedFile) {
+      return res.sendFile(path.join(servicesDir, matchedFile));
+    }
+  }
+  
+  // 3. Keyword fallback mapping
+  if (rawSlug.includes('voice') || rawSlug.includes('call')) {
+    return res.sendFile(path.join(__dirname, 'services', 'ai-voice-call-agents.html'));
+  }
+  if (rawSlug.includes('whatsapp') && (rawSlug.includes('market') || rawSlug.includes('bulk'))) {
+    return res.sendFile(path.join(__dirname, 'services', 'bulk-whatsapp-marketing.html'));
+  }
+  if (rawSlug.includes('whatsapp') || rawSlug.includes('bot')) {
+    return res.sendFile(path.join(__dirname, 'services', 'whatsapp-chatbot-setup.html'));
+  }
+  if (rawSlug.includes('website')) {
+    return res.sendFile(path.join(__dirname, 'services', 'website-development.html'));
+  }
+  if (rawSlug.includes('viral') || rawSlug.includes('reel') || rawSlug.includes('pilot')) {
+    return res.sendFile(path.join(__dirname, 'services', 'viralpilot-ai-social-reel-automation.html'));
+  }
+  if (rawSlug.includes('logo') || rawSlug.includes('brand')) {
+    return res.sendFile(path.join(__dirname, 'services', 'logo-brand-identity-design.html'));
+  }
+  if (rawSlug.includes('crm')) {
+    return res.sendFile(path.join(__dirname, 'services', 'custom-crm-systems.html'));
+  }
+  if (rawSlug.includes('gym')) {
+    return res.sendFile(path.join(__dirname, 'services', 'gym-management-system.html'));
+  }
+  if (rawSlug.includes('marketing') || rawSlug.includes('seo')) {
+    return res.sendFile(path.join(__dirname, 'services', 'digital-marketing-seo.html'));
+  }
+  
+  return res.redirect('/services');
 });
 
-// Global Error Handler
-app.use(errorHandler);
+app.get('/case-studies/:slug', (req, res, next) => {
+  const slug = req.params.slug.replace(/\.html$/, '');
+  const htmlFile = path.join(__dirname, 'case-studies', `${slug}.html`);
+  if (fs.existsSync(htmlFile)) {
+    return res.sendFile(htmlFile);
+  }
+  return res.sendFile(path.join(__dirname, 'templates', 'case-studies.html'));
+});
 
-// Start Server
+app.get('/blog/:slug', (req, res, next) => {
+  const slug = req.params.slug.replace(/\.html$/, '');
+  const htmlFile = path.join(__dirname, 'blog', `${slug}.html`);
+  if (fs.existsSync(htmlFile)) {
+    return res.sendFile(htmlFile);
+  }
+  return res.sendFile(path.join(__dirname, 'templates', 'blog-detail.html'));
+});
+
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'healthy',
+    backend: 'Static Node fallback',
+    admin: 'Django Admin at /admin/',
+    api: 'Django'
+  });
+});
+
+app.use((req, res) => {
+  if (req.accepts('html')) {
+    return res.status(404).sendFile(path.join(__dirname, 'templates', '404.html'));
+  }
+  return res.status(404).json({ success: false, error: 'Endpoint not found. Use Django for API routes.' });
+});
+
 if (require.main === module) {
-  app.listen(env.PORT, () => {
-    console.log(`⚡ [SmartFiQ Server] Running on http://localhost:${env.PORT}`);
-    console.log(`📊 [Storage Engine] Primary Storage: Google Sheets + Google Apps Script`);
+  app.listen(PORT, () => {
+    console.log(`SmartFiQ static fallback running on http://localhost:${PORT}`);
+    console.log('Django is authoritative for /admin/ and /api/.');
   });
 }
 

@@ -61,7 +61,7 @@
                 "metrics": "$120k Saved Annually",
                 "challenge": "Data scattered across multi-channel sales reports caused delayed financial decision-making.",
                 "solution": "Engineered automated ETL pipelines and Looker Studio DAX dashboards providing real-time revenue forecasting and operational bottleneck alerts.",
-                "image": "https://assets.qlik.com/image/upload/w_2378/q_auto/qlik/glossary/dashboard-examples/seo-hero-dashboard-examples_uyouwd.png",
+                "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200&auto=format&fit=crop",
                 "featured": true,
                 "content": "# Automated Data Modeling & Executive BI Dashboard\n\n## Transforming Complex Business Data into Automated Executive Insights\n\nModern businesses generate enormous amounts of data every day.\n\nSales transactions, customer information, marketing performance, financial records, inventory data, operational metrics, employee performance, website analytics, CRM activities, and other business systems continuously produce new information.\n\nThe challenge is no longer simply collecting data.\n\nThe real challenge is **turning that data into accurate, understandable, and actionable business intelligence.**\n\nMany organizations still depend on manually maintained spreadsheets, disconnected reports, repetitive data exports, and dashboards that require constant human intervention.\n\nThis creates several problems:\n\n- Reports take too long to prepare.\n- Data becomes outdated quickly.\n- Different departments use different numbers.\n- Executives struggle to get a single source of truth.\n- Analysts spend time preparing data instead of analyzing it.\n- Manual reporting increases the risk of errors.\n- Business decisions are delayed.\n\nSmartFiQ built an **Automated Data Modeling & Executive BI Dashboard** solution to solve this problem.\n\nThe system brings together **data modeling, business intelligence, automated reporting, Power BI dashboards, data transformation, KPI tracking, and workflow automation** to create a centralized decision-making environment.\n\nInstead of asking teams to manually prepare reports every week or month, the business can establish an automated analytics pipeline that continuously transforms raw data into executive-ready insights.\n\n---\n\n# The Business Challenge\n\nImagine an organization receiving data from multiple sources.\n\nThe sales team maintains one Excel file.\n\nThe finance team uses another spreadsheet.\n\nThe CRM contains customer information.\n\nThe marketing team uses advertising platforms.\n\nThe operations team maintains internal databases.\n\nManagement receives manually prepared reports at the end of the week.\n\nEach system may contain useful information.\n\nBut the systems don't necessarily communicate with each other.\n\nThis creates a fragmented data environment.\n\nAn executive might ask:\n\n> \"How much revenue did we generate this month?\"\n\nThe answer should be simple.\n\nBut in a fragmented environment, the analyst may have to:\n\n1. Export sales data.\n2. Download CRM information.\n3. Clean Excel files.\n4. Remove duplicates.\n5. Match customer records.\n6. Calculate revenue.\n7. Compare previous periods.\n8. Build charts.\n9. Update the presentation.\n10. Send the report to management.\n\nBy the time the report reaches the executive, the underlying data may already have changed.\n\nThis is exactly the type of repetitive process that can benefit from **data analytics automation**.\n\n---\n\n# The SmartFiQ Solution\n\nSmartFiQ designed an automated analytics architecture that connects business data sources to a centralized analytical model and executive dashboard.\n\nThe simplified architecture is:\n\n**Data Sources**\n\n↓\n\n**Data Extraction**\n\n↓\n\n**Data Cleaning**\n\n↓\n\n**Data Transformation**\n\n↓\n\n**Automated Data Model**\n\n↓\n\n**Business Intelligence Layer**\n\n↓\n\n**Executive Dashboard**\n\n↓\n\n**Decision Making**\n\nThe objective is to create a reliable pipeline where new data can flow into the reporting system without requiring analysts to rebuild everything manually.\n\n---\n\n# What Is Automated Data Modeling?\n\nData modeling is the process of organizing data so that different datasets can work together logically.\n\nFor example, a business may have:\n\n### Sales Table\n\n- Order ID\n- Customer ID\n- Product ID\n- Date\n- Quantity\n- Revenue\n\n### Customer Table\n\n- Customer ID\n- Customer Name\n- Location\n- Segment\n\n### Product Table\n\n- Product ID\n- Product Name\n- Category\n- Cost\n\n### Date Table\n\n- Date\n- Month\n- Quarter\n- Year\n\nThese tables can be connected through relationships.\n\nThis creates a structured analytical model.\n\nInstead of keeping everything inside one giant spreadsheet, the data can be organized into a model that supports reliable calculations and reporting.\n\n---\n\n# Why Data Modeling Matters\n\nA dashboard is only as reliable as the data behind it.\n\nA beautiful dashboard with an incorrect data model can produce misleading results.\n\nA strong data model helps establish:\n\n- Correct relationships\n- Consistent calculations\n- Reusable metrics\n- Better dashboard performance\n- Easier maintenance\n- More reliable reporting\n- Scalable analytics\n\nThis is why SmartFiQ treats **data modeling** as a foundational component of business intelligence.\n\n---\n\n# Automated Data Pipeline\n\nThe dashboard itself is only one part of the solution.\n\nBehind the dashboard is an automated data pipeline.\n\nA typical workflow can look like:\n\n**Source Data**\n\n→\n\n**Extract**\n\n→\n\n**Clean**\n\n→\n\n**Transform**\n\n→\n\n**Validate**\n\n→\n\n**Load**\n\n→\n\n**Model**\n\n→\n\n**Calculate KPIs**\n\n→\n\n**Refresh Dashboard**\n\nThis reduces the amount of repetitive work required from analysts.\n\n---\n\n# Data Sources\n\nDepending on the organization, the system can connect to multiple data sources.\n\nExamples include:\n\n- Excel\n- CSV\n- Google Sheets\n- PostgreSQL\n- MySQL\n- APIs\n- CRM platforms\n- E-commerce platforms\n- Marketing platforms\n- Internal databases\n- Business applications\n\nThe exact architecture depends on the client's existing technology stack.\n\n---\n\n# Data Extraction\n\nThe first step is bringing data into the analytics environment.\n\nInstead of manually downloading files every reporting period, automated processes can retrieve data from supported sources.\n\nFor example:\n\n**CRM → API → Data Pipeline**\n\nor\n\n**Database → SQL Query → Analytics Model**\n\nor\n\n**Google Sheets → Automated Import → BI Model**\n\nThis creates a more repeatable reporting process.\n\n---\n\n# Data Cleaning\n\nRaw business data is rarely perfect.\n\nCommon issues include:\n\n- Missing values\n- Duplicate records\n- Incorrect formats\n- Inconsistent naming\n- Invalid dates\n- Incorrect categories\n- Empty fields\n- Formatting differences\n\nFor example:\n\nOne file may contain:\n\n> Delhi\n\nAnother:\n\n> New Delhi\n\nAnother:\n\n> DELHI\n\nWithout normalization, these values may be treated as separate categories.\n\nData cleaning can standardize the values.\n\n---\n\n# Data Transformation\n\nAfter cleaning, the data needs to be transformed into a format suitable for analysis.\n\nTransformation may include:\n\n- Calculating metrics\n- Creating categories\n- Combining datasets\n- Creating derived fields\n- Converting data types\n- Aggregating information\n- Creating business rules\n\nThis creates the foundation for the analytical model.\n\n---\n\n# Building the Data Model\n\nOnce the data has been cleaned and transformed, the next step is creating relationships between tables.\n\nFor example:\n\n**Customers**\n\n↓\n\nCustomer ID\n\n↓\n\n**Sales**\n\n↓\n\nProduct ID\n\n↓\n\n**Products**\n\nThis relational structure makes it possible to answer questions such as:\n\n- Which customers generated the most revenue?\n- Which products are performing best?\n- Which region has the highest sales?\n- Which customer segment has the strongest growth?\n- What is the monthly revenue trend?\n\n---\n\n# Executive BI Dashboard\n\nThe final layer is the executive dashboard.\n\nAn executive dashboard should not overwhelm management with hundreds of charts.\n\nIt should answer the most important business questions quickly.\n\nFor example:\n\n### Revenue\n\n₹2.4 Cr\n\n### Gross Profit\n\n₹72 L\n\n### Profit Margin\n\n30%\n\n### Orders\n\n18,420\n\n### Customers\n\n8,950\n\n### Growth\n\n+18.6%\n\nThese numbers provide an immediate overview of business performance.\n\n---\n\n# Executive Dashboard Design Philosophy\n\nA good executive dashboard follows one important principle:\n\n> **Show decision-making information, not just data.**\n\nExecutives usually want to know:\n\n- What happened?\n- Why did it happen?\n- Is performance improving?\n- Where is the problem?\n- What requires attention?\n- What should we do next?\n\nThe dashboard should therefore prioritize:\n\n**KPIs → Trends → Comparisons → Exceptions → Insights**\n\n---\n\n# KPI Tracking\n\nKey Performance Indicators allow executives to monitor the health of the organization.\n\nDepending on the business, KPIs can include:\n\n### Sales KPIs\n\n- Revenue\n- Orders\n- Average Order Value\n- Conversion Rate\n- Sales Growth\n\n### Financial KPIs\n\n- Gross Profit\n- Net Profit\n- Profit Margin\n- Expenses\n- Revenue vs Budget\n\n### Customer KPIs\n\n- New Customers\n- Returning Customers\n- Customer Lifetime Value\n- Retention Rate\n- Churn Rate\n\n### Marketing KPIs\n\n- Leads\n- Cost Per Lead\n- Conversion Rate\n- Campaign ROI\n- Customer Acquisition Cost\n\n### Operations KPIs\n\n- Order Fulfillment\n- Processing Time\n- Inventory\n- Productivity\n- Operational Cost\n\nThe exact KPI framework should be designed around the organization's business model.\n\n---\n\n# Power BI Executive Dashboard\n\nMicrosoft Power BI can be used as the visualization and business intelligence layer.\n\nPower BI allows organizations to combine:\n\n- Data modeling\n- DAX calculations\n- Interactive reports\n- Filters\n- Drill-downs\n- KPI cards\n- Charts\n- Tables\n- Geographic analysis\n- Automated refresh\n\nThis makes it suitable for executive reporting and business analytics.\n\n---\n\n# DAX & Business Metrics\n\nA BI dashboard often requires more than basic aggregation.\n\nBusiness-specific metrics can be created using DAX.\n\nFor example:\n\n- Revenue YTD\n- Revenue MTD\n- Previous Year Revenue\n- YoY Growth\n- Profit Margin\n- Average Order Value\n- Budget Variance\n- Rolling Revenue\n- Customer Growth\n\nThis allows the dashboard to move beyond simple charts and become a real analytical system.\n\n---\n\n# Automated Reporting\n\nOne of the biggest benefits of the solution is automated reporting.\n\nInstead of:\n\n**Every Monday → Analyst manually updates report**\n\nthe process can become:\n\n**Data Refresh → Model Update → Dashboard Refresh → Report Ready**\n\nThis can significantly reduce repetitive reporting tasks.\n\n---\n\n# Before Automation\n\nThe traditional process may look like:\n\n**Excel Files**\n\n↓\n\n**Manual Cleaning**\n\n↓\n\n**Manual Calculations**\n\n↓\n\n**Copy/Paste**\n\n↓\n\n**Charts**\n\n↓\n\n**PowerPoint**\n\n↓\n\n**Management**\n\nThis process is slow and prone to human error.\n\n---\n\n# After Automation\n\nThe automated architecture becomes:\n\n**Data Sources**\n\n↓\n\n**Automated Data Pipeline**\n\n↓\n\n**Data Transformation**\n\n↓\n\n**Data Model**\n\n↓\n\n**BI Dashboard**\n\n↓\n\n**Executive Insights**\n\nThis creates a much more scalable reporting environment.\n\n---\n\n# Single Source of Truth\n\nOne of the most important outcomes of centralized business intelligence is creating a **single source of truth**.\n\nDifferent departments may otherwise report different numbers.\n\nFor example:\n\nSales says:\n\n> Revenue = ₹1.95 Cr\n\nFinance says:\n\n> Revenue = ₹1.87 Cr\n\nManagement says:\n\n> Revenue = ₹2.01 Cr\n\nThis creates confusion.\n\nA centralized data model can establish standardized definitions for important business metrics.\n\nEveryone can then work from the same analytical foundation.\n\n---\n\n# Automated Data Analytics\n\nAutomation can also improve the role of analysts.\n\nInstead of spending hours every week preparing the same report, analysts can focus on:\n\n- Finding trends\n- Investigating anomalies\n- Building forecasting models\n- Understanding customer behavior\n- Identifying opportunities\n- Supporting strategic decisions\n\nThis changes analytics from **report production** to **business intelligence**.\n\n---\n\n# Real-Time and Near Real-Time Analytics\n\nDepending on the data source and technical architecture, dashboards can be designed for different refresh frequencies.\n\nFor example:\n\n- Daily refresh\n- Hourly refresh\n- Scheduled refresh\n- Near real-time updates\n\nNot every business requires real-time reporting.\n\nThe correct refresh frequency should be based on how quickly the business needs to make decisions.\n\n---\n\n# Automated Sales Dashboard\n\nA sales dashboard can provide executives with information such as:\n\n- Total Revenue\n- Revenue Growth\n- Sales by Region\n- Sales by Product\n- Sales by Salesperson\n- Top Customers\n- Monthly Trends\n- Target vs Actual\n\nManagement can quickly identify which areas are performing well and which require attention.\n\n---\n\n# Financial Analytics Dashboard\n\nFinancial reporting can also be automated.\n\nA financial dashboard may include:\n\n- Revenue\n- Cost\n- Gross Profit\n- Operating Expenses\n- EBITDA\n- Net Profit\n- Budget\n- Actual\n- Variance\n- Profit Margin\n\nThis creates a centralized view of financial performance.\n\n---\n\n# Marketing Analytics Dashboard\n\nMarketing teams can connect campaign data with business results.\n\nThe dashboard can track:\n\n- Leads\n- Marketing Spend\n- Conversion Rate\n- Customer Acquisition Cost\n- Revenue\n- Campaign Performance\n- ROI\n\nThis allows management to understand which marketing activities are actually contributing to growth.\n\n---\n\n# Customer Analytics\n\nCustomer data can provide valuable insights.\n\nAn executive dashboard can identify:\n\n- Customer growth\n- Customer retention\n- Repeat purchases\n- Customer segments\n- High-value customers\n- Geographic distribution\n- Churn patterns\n\nThis helps organizations understand their customer base.\n\n---\n\n# Operational Analytics\n\nOperations teams can also benefit from automated dashboards.\n\nMetrics may include:\n\n- Orders processed\n- Delivery performance\n- Inventory levels\n- Processing time\n- Operational costs\n- Employee productivity\n- Service-level performance\n\nThis allows operational bottlenecks to become visible.\n\n---\n\n# Automated Alerts\n\nA BI system can also be connected to automated alerts.\n\nFor example:\n\n**If sales fall below target → Notify management**\n\n**If inventory reaches threshold → Notify operations**\n\n**If a KPI drops significantly → Send alert**\n\n**If unusual activity is detected → Trigger review**\n\nThis moves analytics from passive reporting toward proactive business monitoring.\n\n---\n\n# Data Validation\n\nAutomation should not mean blindly trusting the pipeline.\n\nData validation rules can check for:\n\n- Missing records\n- Unexpected values\n- Duplicate transactions\n- Invalid dates\n- Broken relationships\n- Sudden data-volume changes\n\nIf something goes wrong, the system can flag the issue instead of silently producing an incorrect dashboard.\n\n---\n\n# Scalable Analytics Architecture\n\nA well-designed BI system should be capable of growing with the business.\n\nThe architecture can start with:\n\n**Excel → Power BI**\n\nand later evolve into:\n\n**APIs → Database → Transformation → Data Warehouse → BI → Executive Dashboard**\n\nThe exact architecture depends on data volume, business requirements, budget, and technical infrastructure.\n\n---\n\n# Example Business Scenario\n\nConsider an e-commerce company processing thousands of transactions every month.\n\nThe company has:\n\n- Shopify data\n- Google Ads\n- Meta Ads\n- Customer data\n- Product data\n- Financial data\n\nPreviously, management received a manually prepared report every month.\n\nThe reporting process took several days.\n\nSmartFiQ can design an automated analytics pipeline where data from supported sources is consolidated into an analytical model.\n\nThe executive dashboard can then display:\n\n### Revenue\n\n₹4.8 Cr\n\n### Orders\n\n42,800\n\n### Average Order Value\n\n₹1,121\n\n### Marketing Spend\n\n₹62 L\n\n### ROAS\n\n7.7x\n\n### Repeat Customer Rate\n\n32%\n\nManagement can now view performance from one centralized dashboard.\n\n---\n\n# Business Impact\n\nThe value of an automated BI system isn't limited to dashboard aesthetics.\n\nIt can help organizations:\n\n- Reduce manual reporting\n- Improve data consistency\n- Increase reporting speed\n- Improve decision-making\n- Standardize KPIs\n- Reduce spreadsheet dependency\n- Identify trends faster\n- Improve operational visibility\n- Scale analytics\n\nThe exact impact depends on the organization's starting point and implementation.\n\n---\n\n# Why SmartFiQ?\n\nSmartFiQ combines **data analytics, business intelligence, workflow automation, AI automation, and custom technology development**.\n\nInstead of treating a dashboard as an isolated visualization project, we look at the entire data pipeline.\n\nOur process includes:\n\n### Understand\n\nUnderstand the organization's business questions.\n\n### Connect\n\nIdentify relevant data sources.\n\n### Transform\n\nClean and structure the data.\n\n### Model\n\nBuild a reliable analytical model.\n\n### Visualize\n\nCreate executive-ready dashboards.\n\n### Automate\n\nReduce repetitive reporting processes.\n\n### Optimize\n\nContinuously improve the analytics system.\n\n---\n\n# Our Data Analytics Stack\n\nDepending on project requirements, SmartFiQ can work with technologies such as:\n\n- Microsoft Power BI\n- Excel\n- SQL\n- PostgreSQL\n- MySQL\n- Python\n- Pandas\n- APIs\n- Google Sheets\n- n8n\n- REST APIs\n- Data visualization tools\n- Cloud databases\n\nThe technology is selected according to the business problem rather than using the same stack for every project.\n\n---\n\n# From Raw Data to Executive Decision\n\nThe entire transformation can be summarized as:\n\n### Raw Data\n\nThousands or millions of records.\n\n↓\n\n### Clean Data\n\nValidated and standardized information.\n\n↓\n\n### Data Model\n\nConnected business entities and metrics.\n\n↓\n\n### Business Intelligence\n\nKPIs and analytical calculations.\n\n↓\n\n### Executive Dashboard\n\nSimple visual representation.\n\n↓\n\n### Business Decision\n\nAction based on reliable information.\n\nThis is the core objective of modern business intelligence.\n\n---\n\n# Common Problems We Solve\n\n### \"Our reports take too long.\"\n\nAutomate the reporting pipeline.\n\n### \"Everyone has different numbers.\"\n\nCreate a centralized analytical model.\n\n### \"We depend too much on Excel.\"\n\nConnect operational data directly to the BI system.\n\n### \"Management can't understand the data.\"\n\nCreate an executive-focused dashboard.\n\n### \"Our data is spread across multiple systems.\"\n\nIntegrate the relevant sources.\n\n### \"Our analysts spend all their time preparing reports.\"\n\nAutomate repetitive data preparation.\n\n### \"We don't know which KPIs matter.\"\n\nDefine a business-focused KPI framework.\n\n---\n\n# Frequently Asked Questions\n\n## What is an executive BI dashboard?\n\nAn executive BI dashboard is a high-level business intelligence interface designed to help leadership monitor important KPIs, trends, performance indicators, and business outcomes.\n\n## What is automated data modeling?\n\nAutomated data modeling involves creating repeatable processes that transform and organize business data into a structured analytical model with minimal manual intervention.\n\n## Can Power BI automate reporting?\n\nPower BI supports scheduled data refresh and automated report updates when the underlying data sources and infrastructure are configured appropriately.\n\n## Can Excel data be connected to Power BI?\n\nYes. Excel can be used as a data source for Power BI, although larger or more complex organizations may benefit from a database-driven architecture.\n\n## Can multiple databases be combined?\n\nYes. Multiple compatible data sources can be integrated into a centralized analytical model.\n\n## Can SQL be used for data modeling?\n\nYes. SQL is commonly used to extract, transform, and prepare data for analytics.\n\n## Can PostgreSQL connect to Power BI?\n\nYes, PostgreSQL can be used as a data source for Power BI with the appropriate configuration and connectivity.\n\n## What is DAX?\n\nDAX, or Data Analysis Expressions, is the formula language used in Power BI and other Microsoft analytical products for creating calculations and measures.\n\n## Can dashboards be customized for executives?\n\nYes. Executive dashboards should be designed around the KPIs, decisions, and business questions that matter most to leadership.\n\n## Can automated alerts be added?\n\nDepending on the architecture and platforms involved, automated alerts and notifications can be integrated into the reporting workflow.\n\n---\n\n# The Future of Business Intelligence\n\nBusiness intelligence is moving beyond static reports.\n\nModern analytics environments increasingly combine:\n\n**Data + Automation + AI + Business Intelligence**\n\nOrganizations don't simply want to know what happened.\n\nThey want to understand:\n\n- Why did it happen?\n- What is changing?\n- What could happen next?\n- Which areas need attention?\n- What action should be taken?\n\nThis is where automated analytics becomes increasingly valuable.\n\n---\n\n# Conclusion\n\nBusinesses generate more data than ever before.\n\nBut data by itself does not create business value.\n\nThe value comes from turning data into information, information into insight, and insight into action.\n\nSmartFiQ's **Automated Data Modeling & Executive BI Dashboard** solution is designed to create that transformation.\n\nFrom data extraction and cleaning to modeling, KPI calculations, Power BI dashboards, automated reporting, and executive insights, the complete analytics workflow can be designed around the organization's requirements.\n\nThe objective is simple:\n\n**Less manual reporting.**\n\n**Better data.**\n\n**Faster insights.**\n\n**Smarter decisions.**\n\nIf your business is still spending hours every week preparing reports, managing spreadsheets, or combining data manually, an automated business intelligence system can transform the way your organization works.\n\n### Ready to turn your business data into actionable intelligence?\n\nSmartFiQ builds customized **Power BI dashboards, automated reporting systems, data analytics solutions, automated data pipelines, business intelligence dashboards, and AI-powered business automation workflows** for growing businesses.\n\n**SmartFiQ — Build smarter. Automate faster. Scale better.**"
         }
@@ -72,13 +72,6 @@
         team: [],
         caseStudies: [],
         initPromise: null,
-
-        getAuthHeaders() {
-            const headers = { 'Content-Type': 'application/json' };
-            const token = localStorage.getItem('smartfiq_token');
-            if (token) headers['Authorization'] = `Bearer ${token}`;
-            return headers;
-        },
 
         async init() {
             if (this.initPromise) return this.initPromise;
@@ -126,63 +119,6 @@
             return this.getAgencyTeam().find(m => m.id === Number(id));
         },
 
-        async saveAgencyTeamMember(member) {
-            let team = this.getAgencyTeam();
-            if (member.id) {
-                const idx = team.findIndex(m => m.id === member.id);
-                if (idx !== -1) team[idx] = member;
-                else team.push(member);
-            } else {
-                member.id = team.length > 0 ? Math.max(...team.map(m => m.id || 0)) + 1 : 1;
-                team.push(member);
-            }
-            this.team = team;
-            localStorage.setItem('smartfiq_agency_team', JSON.stringify(team));
-
-            try {
-                const res = await fetch('/api/agency-team', {
-                    method: 'POST',
-                    headers: this.getAuthHeaders(),
-                    body: JSON.stringify(member)
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.team) {
-                        this.team = data.team;
-                        localStorage.setItem('smartfiq_agency_team', JSON.stringify(data.team));
-                    }
-                }
-            } catch (e) {
-                console.warn('API save fallback:', e);
-            }
-            window.dispatchEvent(new CustomEvent('smartfiq_cms_loaded'));
-            return member;
-        },
-
-        async deleteAgencyTeamMember(id) {
-            let team = this.getAgencyTeam().filter(m => m.id !== Number(id));
-            this.team = team;
-            localStorage.setItem('smartfiq_agency_team', JSON.stringify(team));
-
-            try {
-                const headers = {};
-                const token = localStorage.getItem('smartfiq_token');
-                if (token) headers['Authorization'] = `Bearer ${token}`;
-                const res = await fetch(`/api/agency-team/${id}`, { method: 'DELETE', headers });
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.team) {
-                        this.team = data.team;
-                        localStorage.setItem('smartfiq_agency_team', JSON.stringify(data.team));
-                    }
-                }
-            } catch (e) {
-                console.warn('API delete fallback:', e);
-            }
-            window.dispatchEvent(new CustomEvent('smartfiq_cms_loaded'));
-            return true;
-        },
-
         getCaseStudies() {
             if (!this.caseStudies || this.caseStudies.length === 0) {
                 const stored = localStorage.getItem('smartfiq_case_studies');
@@ -193,56 +129,6 @@
 
         getCaseStudyById(id) {
             return this.getCaseStudies().find(c => c.id === Number(id));
-        },
-
-        async saveCaseStudy(cs) {
-            let list = this.getCaseStudies();
-            if (cs.id) {
-                const idx = list.findIndex(c => c.id === cs.id);
-                if (idx !== -1) list[idx] = cs;
-                else list.push(cs);
-            } else {
-                cs.id = list.length > 0 ? Math.max(...list.map(c => c.id || 0)) + 1 : 1;
-                list.push(cs);
-            }
-            this.caseStudies = list;
-            localStorage.setItem('smartfiq_case_studies', JSON.stringify(list));
-
-            try {
-                const res = await fetch('/api/case-studies', {
-                    method: 'POST',
-                    headers: this.getAuthHeaders(),
-                    body: JSON.stringify(cs)
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.caseStudies) {
-                        this.caseStudies = data.caseStudies;
-                        localStorage.setItem('smartfiq_case_studies', JSON.stringify(data.caseStudies));
-                    }
-                }
-            } catch (e) {
-                console.warn('API save fallback:', e);
-            }
-            window.dispatchEvent(new CustomEvent('smartfiq_cms_loaded'));
-            return cs;
-        },
-
-        async deleteCaseStudy(id) {
-            let list = this.getCaseStudies().filter(c => c.id !== Number(id));
-            this.caseStudies = list;
-            localStorage.setItem('smartfiq_case_studies', JSON.stringify(list));
-
-            try {
-                const headers = {};
-                const token = localStorage.getItem('smartfiq_token');
-                if (token) headers['Authorization'] = `Bearer ${token}`;
-                await fetch(`/api/case-studies/${id}`, { method: 'DELETE', headers });
-            } catch (e) {
-                console.warn('API delete fallback:', e);
-            }
-            window.dispatchEvent(new CustomEvent('smartfiq_cms_loaded'));
-            return true;
         },
 
         async loadCMSContent() {

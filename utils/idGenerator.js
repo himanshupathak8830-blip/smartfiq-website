@@ -20,10 +20,6 @@ function generateVisitorId() {
   return generateId('VIS');
 }
 
-function generatePortfolioId() {
-  return generateId('PRT');
-}
-
 function generateAppointmentId() {
   return generateId('APT');
 }
@@ -34,6 +30,5 @@ module.exports = {
   generateUserId,
   generateLogId,
   generateVisitorId,
-  generatePortfolioId,
   generateAppointmentId
 };

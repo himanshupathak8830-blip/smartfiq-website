@@ -5,14 +5,16 @@ app_name = 'api'
 
 urlpatterns = [
     path('health/db', views.health_db, name='health_db'),
-    path('auth/login', views.auth_login, name='auth_login'),
-    path('auth/me', views.auth_me, name='auth_me'),
     
     path('leads', views.leads_api, name='leads_api'),
     path('leads/', views.leads_api),
     path('leads/<int:lead_id>', views.leads_api, name='leads_detail_api'),
-    path('leads/update', views.lead_update, name='lead_update'),
-    path('leads/notes', views.lead_notes, name='lead_notes'),
+    path('public/leads', views.leads_api, name='public_leads_api'),
+    path('public/leads/', views.leads_api),
+    path('public/subscribers', views.subscribers_api, name='public_subscribers_api'),
+    path('public/subscribers/', views.subscribers_api),
+    path('public/appointments', views.appointments_api, name='public_appointments_api'),
+    path('public/appointments/', views.appointments_api),
     
     path('stats', views.stats_api, name='stats_api'),
     path('stats/', views.stats_api),
@@ -38,9 +40,6 @@ urlpatterns = [
     
     path('case-studies', views.case_studies_api, name='case_studies_api'),
     path('case-studies/', views.case_studies_api),
-    
-    path('portfolio', views.portfolio_api, name='portfolio_api'),
-    path('portfolio/', views.portfolio_api),
     
     path('appointments', views.appointments_api, name='appointments_api'),
     path('appointments/', views.appointments_api),

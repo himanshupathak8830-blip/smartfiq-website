@@ -21,7 +21,7 @@ function getHtmlFiles(dir) {
             if (file !== 'node_modules' && file !== '.git' && file !== '.agents') {
                 results = results.concat(getHtmlFiles(filePath));
             }
-        } else if (file.endsWith('.html') && file !== 'admin.html') {
+        } else if (file.endsWith('.html')) {
             results.push(filePath);
         }
     });

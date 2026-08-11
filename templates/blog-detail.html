@@ -8,7 +8,7 @@
     <meta id="page-description" name="description" content="Read in-depth AI automation, WhatsApp API integration, and voice AI guides by SmartFiQ." />
     <meta name="keywords" content="AI automation guide, WhatsApp bot tutorial, Voice AI research, SmartFiQ blog detail" />
     <link rel="canonical" href="https://smartfiq.website/blog" />
-    <link rel="icon" type="image/png" href="logo-transparent.png" />
+    <link rel="icon" type="image/png" href="/logo-transparent.png" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
@@ -154,27 +154,34 @@
     <div id="site-footer"></div>
 
     <!-- Scripts -->
-    <script src="components.js"></script>
-    <script src="blog-js/blog-data.js"></script>
-    <script src="blog.js"></script>
+    <script src="/components.js"></script>
+    <script src="/blog-js/blog-data.js"></script>
+    <script src="/blog.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             if (window.SmartfiqBlog && window.SmartfiqBlog.loadArticles) {
                 await window.SmartfiqBlog.loadArticles();
             }
             const params = new URLSearchParams(window.location.search);
-            const articleId = params.get('id');
+            let articleId = params.get('id');
             const container = document.getElementById('article-content-container');
 
-            if (!articleId) {
-                renderNotFound(container, "No Article ID specified.");
-                return;
+            const allArticles = typeof getArticles === 'function' ? getArticles() : [];
+            if (!articleId && allArticles.length > 0) {
+                const pathSlug = window.location.pathname.split('/').pop().replace('.html', '');
+                if (pathSlug && pathSlug !== 'blog-detail') {
+                    const match = allArticles.find(a => a.slug === pathSlug || a.id == pathSlug || (a.title && a.title.toLowerCase().includes(pathSlug.replace(/-/g, ' '))));
+                    if (match) articleId = match.id;
+                }
+            }
+            if (!articleId && allArticles.length > 0) {
+                articleId = allArticles[0].id;
             }
 
-            const article = getArticleById(articleId);
+            const article = getArticleById(articleId) || allArticles[0];
 
             if (!article) {
-                renderNotFound(container, `Article with ID #${articleId} was not found.`);
+                renderNotFound(container, `Article was not found.`);
                 return;
             }
 
@@ -211,7 +218,6 @@
             document.head.appendChild(scriptTag);
 
             // Get Related Articles (Exclude current)
-            const allArticles = getArticles();
             const related = allArticles.filter(a => Number(a.id) !== Number(article.id)).slice(0, 3);
 
             let relatedHTML = '';
@@ -251,7 +257,7 @@
                                             ${rel.excerpt || ''}
                                         </p>
                                     </div>
-                                    <a href="blog-detail.html?id=${rel.id}" class="inline-flex items-center gap-2 text-[#ff5625] text-xs font-bold uppercase tracking-wider group-hover:translate-x-1 transition-transform">
+                                    <a href="/blog/${rel.slug}" class="inline-flex items-center gap-2 text-[#ff5625] text-xs font-bold uppercase tracking-wider group-hover:translate-x-1 transition-transform">
                                         Read Guide <span class="material-symbols-outlined text-sm">arrow_forward</span>
                                     </a>
                                 </div>
@@ -316,7 +322,7 @@
 
                 <!-- Article Main Content Body -->
                 <article class="max-w-3xl mx-auto article-prose">
-                    ${article.content}
+                    ${article.content || `<p>${article.excerpt || ''}</p>`}
                 </article>
 
                 <!-- Newsletter Subscription Box -->

@@ -3,44 +3,42 @@ import requests
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views.static import serve
+from django.views.decorators.csrf import ensure_csrf_cookie
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "8841778238:AAHOmeQHKc8MiBpOTnov-defOCzBHdIkOI0")
-TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "-5570843599")
 from core.google_sheets import GoogleSheetsService
 
 def send_google_sheet_lead(full_name, email, phone, budget, requirement_details):
     try:
-        GoogleSheetsService.send_lead({
-            "name": full_name,
-            "email": email,
-            "phone": phone,
+        GoogleSheetsService.create_lead({
+            "full_name": full_name,
+            "business_email": email,
+            "phone_number": phone,
             "budget": budget,
-            "message": requirement_details,
+            "requirement_details": requirement_details,
             "source": "Website Form"
         })
     except Exception as e:
         print("Google Sheet lead sync warning:", e)
 
 def send_telegram_alert(lead_name, email, phone, budget, message):
-    bot_token = os.getenv("TELEGRAM_BOT_TOKEN") or "8841778238:AAHOmeQHKc8MiBpOTnov-defOCzBHdIkOI0"
-    chat_id = os.getenv("TELEGRAM_CHAT_ID") or "-5570843599"
+    bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
+    chat_id = os.getenv("TELEGRAM_CHAT_ID")
 
     if not bot_token or not chat_id:
-        print("Telegram alert skipped: bot_token or chat_id missing")
         return
 
     try:
         text = (
-            f"🚨 New Lead Received! (Automate With AK)\n\n"
-            f"👤 Name: {lead_name or 'N/A'}\n"
-            f"📧 Email: {email or 'N/A'}\n"
-            f"📞 Phone: {phone or 'N/A'}\n"
-            f"💰 Budget: {budget or 'N/A'}\n"
-            f"📝 Message: {message or 'N/A'}\n"
-            f"🌐 Source: Website Contact Form"
+            f"New Lead Received (SmartFiQ)\n\n"
+            f"Name: {lead_name or 'N/A'}\n"
+            f"Email: {email or 'N/A'}\n"
+            f"Phone: {phone or 'N/A'}\n"
+            f"Budget: {budget or 'N/A'}\n"
+            f"Message: {message or 'N/A'}\n"
+            f"Source: Website Contact Form"
         )
         url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
         resp = requests.post(
@@ -53,17 +51,21 @@ def send_telegram_alert(lead_name, email, phone, budget, message):
     except Exception as e:
         print("Telegram alert execution warning:", e)
 
+@ensure_csrf_cookie
 def home(request):
     return render(request, 'index.html')
 
+@ensure_csrf_cookie
 def about(request):
     return render(request, 'about-smartfiq.html')
 
+@ensure_csrf_cookie
 def our_story(request):
     return render(request, 'our-story.html')
 
 from core.models import Lead
 
+@ensure_csrf_cookie
 def contact(request):
     if request.method == 'POST':
         name = request.POST.get('fullName') or request.POST.get('name') or 'Website Inquiry Lead'
@@ -80,7 +82,7 @@ def contact(request):
                 budget=budget,
                 message=message,
                 source='Contact Form',
-                status='new',
+                status=Lead.Status.NEW,
                 lead_score=100 if email and phone else 50,
                 ai_summary=f"{name} requirement: {message[:100]}"
             )
@@ -92,18 +94,19 @@ def contact(request):
 
     return render(request, 'index.html')
 
+@ensure_csrf_cookie
 def faq(request):
     return render(request, 'faq.html')
 
+@ensure_csrf_cookie
 def terms(request):
     return render(request, 'terms.html')
 
+@ensure_csrf_cookie
 def privacy(request):
     return render(request, 'privacy-policy.html')
 
-def admin_panel(request):
-    return render(request, 'admin.html')
-
+@ensure_csrf_cookie
 def insights_view(request):
     return render(request, 'insights.html')
 

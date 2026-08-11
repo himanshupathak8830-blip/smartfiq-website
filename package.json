@@ -1,7 +1,7 @@
 {
   "name": "smartfiq-website",
   "version": "2.0.0",
-  "description": "SmartFiQ AI Automation - Node.js Express & Google Sheets Backend Architecture",
+  "description": "SmartFiQ AI Automation website static fallback. Django owns admin and API.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -9,19 +9,15 @@
   },
   "keywords": [
     "smartfiq",
-    "express",
+    "django",
     "google-sheets",
     "ai-automation"
   ],
   "author": "SmartFiQ",
   "license": "MIT",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "express-rate-limit": "^7.3.0",
-    "helmet": "^7.1.0",
-    "jsonwebtoken": "^9.0.2"
+    "helmet": "^7.1.0"
   }
 }

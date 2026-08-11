@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -22,11 +23,13 @@ class Post(models.Model):
     cover_image_url = models.URLField(max_length=500, blank=True, null=True, help_text="External image fallback URL")
     excerpt = models.CharField(max_length=250, help_text="List page + social share ke liye summary")
     body = models.TextField(help_text="Blank line = new paragraph. '## ' se heading, '- ' se bullet.")
+    author = models.CharField(max_length=120, default="SmartFiQ")
     youtube_url = models.URLField(max_length=500, blank=True, null=True, help_text="Optional - video guide ka Youtube link. Post ke body ke saath dikhega.")
     meta_title = models.CharField(max_length=200, blank=True, null=True)
     meta_description = models.TextField(blank=True, null=True)
     keywords = models.CharField(max_length=255, blank=True, null=True)
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.PUBLISHED)
+    created_at = models.DateTimeField(default=timezone.now, editable=False)
     published_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     view_count = models.PositiveIntegerField(default=0, editable=False)

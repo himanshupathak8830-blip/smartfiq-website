@@ -16,7 +16,6 @@
         const navLinks = [
             { name: 'Home', href: '/', targetKey: 'index' },
             { name: 'Services', href: '/services', targetKey: 'services' },
-            { name: 'Portfolio', href: '/portfolio', targetKey: 'portfolio' },
             { name: 'Case Studies', href: '/case-studies', targetKey: 'case-studies' },
             { name: 'Blog', href: '/blog', targetKey: 'blog' },
             { name: 'About', href: '/about-smartfiq', targetKey: 'about-smartfiq' }
@@ -158,7 +157,7 @@
                         <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/blog">Insights &amp; Blogs</a></li>
                         <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/about-smartfiq">About Us</a></li>
                         <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/our-story">Our Story</a></li>
-                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/faq">FAQs</a></li>
+                        <li><a class="hover:text-[#ff5625] transition-colors hover:translate-x-1 inline-block transition-transform duration-300" href="/smartfiq-faq">FAQs</a></li>
                     </ul>
                 </div>
                 <div>
@@ -189,7 +188,7 @@
                     <span>•</span>
                     <a href="/terms" class="hover:text-white transition-colors">Terms</a>
                     <span>•</span>
-                    <a href="/faq" class="hover:text-white transition-colors">Help Center</a>
+                    <a href="/smartfiq-faq" class="hover:text-white transition-colors">Help Center</a>
                 </div>
             </div>
         </footer>
@@ -278,7 +277,6 @@
     } else {
         initComponents();
     }
-})();
 
 // --- GLOBAL HELPER FUNCTIONS ---
 function toggleSmartfiqMobileMenu() {
@@ -329,7 +327,12 @@ function closeContactModal() {
     }, 300);
 }
 
-const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxOnGtaB0r8Pwh5gi-B5QsXNa-LKpNG255KyFVGdoyZpV9r2iwt51rMeSpw273S9Rc/exec";
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return '';
+}
 
 async function submitLeadData(data, statusElementId, submitBtnId) {
     const statusEl = statusElementId ? document.getElementById(statusElementId) : null;
@@ -348,53 +351,29 @@ async function submitLeadData(data, statusElementId, submitBtnId) {
         `;
     }
 
-    const sheetPayload = {
-        fullName: data.name || data.fullName || '',
-        email: data.email || '',
-        phone: data.phone || '',
-        budget: data.budget || '',
-        requirements: data.message || data.requirements || ''
-    };
-
     try {
-        await fetch(GOOGLE_SHEET_URL, {
+        const res = await fetch('/api/public/leads', {
             method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(sheetPayload)
-        });
-    } catch (err) {
-        console.error('Google Sheet submission error:', err);
-    }
-
-    try {
-        const res = await fetch('/api/leads', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                ...data,
+                visitor_session_id: sessionStorage.getItem('sf_session_id') || ''
+            })
         });
         const resData = await res.json();
-        if (resData && resData.lead) {
-            const stored = JSON.parse(localStorage.getItem('smartfiq_leads') || '[]');
-            stored.unshift(resData.lead);
-            localStorage.setItem('smartfiq_leads', JSON.stringify(stored));
+        if (!res.ok || !resData.success) {
+            throw new Error(resData.error || 'Lead submission failed');
         }
     } catch (err) {
-        console.warn('Local API save warning:', err);
-        const stored = JSON.parse(localStorage.getItem('smartfiq_leads') || '[]');
-        const localLead = {
-            name: data.name || 'Newsletter Subscriber',
-            email: data.email,
-            phone: data.phone || 'N/A',
-            budget: data.budget || 'N/A',
-            message: data.message || 'Subscribed via Website',
-            source: data.source || 'Newsletter',
-            timestamp: new Date().toISOString(),
-            status: 'New',
-            aiScore: 85
-        };
-        stored.unshift(localLead);
-        localStorage.setItem('smartfiq_leads', JSON.stringify(stored));
+        console.warn('Lead submission failed:', err);
+        if (btnEl) {
+            btnEl.disabled = false;
+            btnEl.innerHTML = originalBtnText;
+        }
+        throw err;
     }
 
     if (btnEl) {
@@ -505,7 +484,37 @@ async function submitNewsletter(event) {
         statusId = statusEl.id;
     }
 
-    await submitLeadData(data, statusId, btnId);
+    const btnEl = document.getElementById(btnId);
+    const originalBtnText = btnEl ? btnEl.innerHTML : '';
+    if (btnEl) {
+        btnEl.disabled = true;
+        btnEl.textContent = 'Submitting...';
+    }
+
+    try {
+        await fetch('/api/public/subscribers', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                ...data,
+                visitor_session_id: sessionStorage.getItem('sf_session_id') || ''
+            })
+        }).then(async res => {
+            const payload = await res.json();
+            if (!res.ok || !payload.success) throw new Error(payload.error || 'Subscription failed');
+        });
+    } catch (err) {
+        showSmartfiqToast(err.message || 'Subscription failed. Please try again.', 'error');
+        return;
+    } finally {
+        if (btnEl) {
+            btnEl.disabled = false;
+            btnEl.innerHTML = originalBtnText;
+        }
+    }
 
     if (statusEl) {
         statusEl.classList.remove('hidden');
@@ -591,19 +600,24 @@ function applyCmsToPage(cms) {
 }
 
 // ==================== ADVANCED VISITOR INTENT TELEMETRY ====================
-const sf_startTime = Date.now();
+window.sf_startTime = window.sf_startTime || Date.now();
+var sf_startTime = window.sf_startTime;
 
-let sessionId = sessionStorage.getItem('sf_session_id');
-if (!sessionId) {
-    sessionId = 'sess_' + Math.random().toString(36).substring(2, 15);
-    sessionStorage.setItem('sf_session_id', sessionId);
+if (!sessionStorage.getItem('sf_session_id')) {
+    sessionStorage.setItem('sf_session_id', 'sess_' + Math.random().toString(36).substring(2, 15));
 }
+var sessionId = sessionStorage.getItem('sf_session_id');
 
 if (!sessionStorage.getItem('sf_entry_page')) {
     sessionStorage.setItem('sf_entry_page', window.location.pathname);
 }
+const sfPagesVisited = JSON.parse(sessionStorage.getItem('sf_pages_visited') || '[]');
+if (!sfPagesVisited.includes(window.location.pathname)) {
+    sfPagesVisited.push(window.location.pathname);
+    sessionStorage.setItem('sf_pages_visited', JSON.stringify(sfPagesVisited));
+}
 
-let clientPublicIp = sessionStorage.getItem('sf_client_ip') || '';
+var clientPublicIp = sessionStorage.getItem('sf_client_ip') || '';
 async function getClientPublicIp() {
     return clientPublicIp;
 }
@@ -659,6 +673,7 @@ async function sendBeaconTelemetry(isUnloading = false, latestClick = null) {
             exitPage: isUnloading ? window.location.pathname : '',
             scrollPercentage: scrollPct,
             sessionDuration: sessionDuration,
+            pagesVisited: JSON.parse(sessionStorage.getItem('sf_pages_visited') || '[]'),
             clickEvent: latestClick || (window.sf_clicksQueue.length > 0 ? window.sf_clicksQueue[window.sf_clicksQueue.length - 1] : null),
             allClicks: window.sf_clicksQueue,
             referrer: document.referrer || ''
@@ -702,3 +717,9 @@ window.addEventListener('scroll', function() {
         sendBeaconTelemetry(false);
     }
 }, { passive: true });
+
+window.toggleSmartfiqMobileMenu = toggleSmartfiqMobileMenu;
+window.openContactModal = openContactModal;
+window.closeContactModal = closeContactModal;
+window.submitLeadData = submitLeadData;
+})();

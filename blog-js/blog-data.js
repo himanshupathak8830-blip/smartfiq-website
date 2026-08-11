@@ -82,11 +82,13 @@
         const excerpt = article.excerpt || article.summary || "";
         const seedMatch = SEED_ARTICLES.find(s => Number(s.id) === Number(article.id) || s.slug === article.slug);
         const slug = article.slug || (seedMatch ? seedMatch.slug : null) || (article.title ? article.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') : `article-${article.id}`);
+        const content = article.content || article.body || (excerpt ? `<p>${excerpt}</p>` : "");
         return {
             ...article,
             slug,
             coverImage: seedMatch ? seedMatch.coverImage : coverImage,
             image: seedMatch ? seedMatch.coverImage : coverImage,
+            content,
             excerpt,
             summary: excerpt,
             readTime: article.readTime || "6 min",
@@ -127,7 +129,7 @@
         },
 
         getArticles: function () {
-            initSeedData();
+            if (!articlesCache) initSeedData();
             return articlesCache;
         },
 

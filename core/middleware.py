@@ -1,11 +1,6 @@
-import re
-import requests
 import threading
 import datetime
-from django.utils import timezone
 from core.models import Visitor
-
-GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxhaaYQJ6wtk4Oo8FpqMF7wdYISFRpghPthKB_iH9hXSQMxYWKZrJESuyy0ZngcBRU_/exec"
 
 BOT_USER_AGENTS = [
     'googlebot', 'bingbot', 'slurp', 'duckduckbot', 'baiduspider',
@@ -30,35 +25,7 @@ def send_visitor_to_google_sheet(visitor, force_sync=False):
 
             RECENT_SHEET_SYNCS[visitor.session_id] = now
 
-            GoogleSheetsService.send_visitor({
-                "visitor_id": f"VIS-{visitor.id:05d}",
-                "session_id": visitor.session_id,
-                "first_seen": visitor.timestamp.strftime("%Y-%m-%d %H:%M:%S") if visitor.timestamp else now.strftime("%Y-%m-%d %H:%M:%S"),
-                "last_seen": visitor.last_active.strftime("%Y-%m-%d %H:%M:%S") if visitor.last_active else now.strftime("%Y-%m-%d %H:%M:%S"),
-                "ip_address": visitor.ip_address or "127.0.0.1",
-                "country": visitor.location or "Unknown",
-                "country_code": getattr(visitor, 'country_type', 'Unknown'),
-                "city": "Unknown",
-                "region": "Unknown",
-                "timezone": "IST" if visitor.country_type == 'India' else "UTC",
-                "visitor_type": visitor.visitor_type or "Human",
-                "device_type": "Mobile" if "Mobile" in (visitor.device or "") else ("Tablet" if "Tablet" in (visitor.device or "") else "Desktop"),
-                "device_model": visitor.device_model or visitor.device or "Unknown",
-                "os": visitor.os or "Unknown",
-                "browser": visitor.browser or "Chrome",
-                "entry_page": visitor.entry_page or "/",
-                "current_page": visitor.current_page or "/",
-                "exit_page": visitor.exit_page or "/",
-                "page_views": visitor.page_views or 1,
-                "session_duration": visitor.session_duration or 0,
-                "max_scroll": getattr(visitor, 'scroll_pct', 0) or 0,
-                "referrer": getattr(visitor, 'user_agent', '') or "",
-                "landing_source": "Direct",
-                "is_bot": visitor.is_bot,
-                "bot_name": visitor.bot_name or ("Bot Crawler" if visitor.is_bot else "Human User"),
-                "email": visitor.email or "Guest",
-                "lead_id": ""
-            })
+            GoogleSheetsService.upsert_visitor(visitor)
         except Exception as e:
             print("Google Sheet Visitor Sync Warning:", e)
 
@@ -73,8 +40,9 @@ class VisitorTrackingMiddleware:
 
         # STRICT FILTER: Ignore static files, images, JS/CSS, API endpoints, and Admin internal URLs
         ignored_extensions = ('.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg', '.ico', '.js', '.css', '.woff', '.woff2', '.ttf', '.map', '.json', '.xml')
-        ignored_prefixes = ('/static/', '/media/', '/api/', '/personal-admin/', '/favicon.ico')
+        ignored_prefixes = ('/static/', '/media/', '/api/', '/admin/', '/favicon.ico')
 
+        set_session_cookie = None
         if not path.endswith(ignored_extensions) and not any(path.startswith(prefix) for prefix in ignored_prefixes):
             try:
                 user_agent_str = request.META.get('HTTP_USER_AGENT', '').lower()
@@ -126,17 +94,23 @@ class VisitorTrackingMiddleware:
                 country_code = request.META.get('HTTP_CF_IPCOUNTRY') or request.META.get('HTTP_X_VERCEL_IP_COUNTRY')
                 if country_code:
                     if country_code.upper() in ('IN', 'IND'):
-                        country_type = 'India'
+                        country_type = 'Indian'
                         location = 'India'
+                        country = 'India'
                     else:
                         country_type = 'International'
                         location = f"{country_code.upper()} (International)"
+                        country = country_code.upper()
                 elif ip.startswith(('127.', '192.168.', '10.', '172.16.')):
-                    country_type = 'India'
-                    location = 'India (Localhost)'
+                    country_type = 'Unknown'
+                    location = 'Unknown'
+                    country = 'Unknown'
+                    country_code = 'Unknown'
                 else:
                     country_type = 'Unknown'
-                    location = 'Unknown Location'
+                    location = 'Unknown'
+                    country = 'Unknown'
+                    country_code = 'Unknown'
 
                 visitor_type = 'Bot' if is_bot else 'Human'
                 bot_name = 'Search Engine Bot' if is_bot else 'Human User'
@@ -145,6 +119,7 @@ class VisitorTrackingMiddleware:
                 session_id = request.COOKIES.get('sf_visitor_session')
                 if not session_id:
                     session_id = f"sf-{abs(hash(ip + user_agent_str))}"
+                    set_session_cookie = session_id
 
                 visitor, created = Visitor.objects.get_or_create(
                     session_id=session_id,
@@ -153,26 +128,35 @@ class VisitorTrackingMiddleware:
                         'device': device,
                         'browser': browser,
                         'location': location,
+                        'country': country,
+                        'country_code': country_code,
                         'country_type': country_type,
                         'visitor_type': visitor_type,
                         'is_bot': is_bot,
                         'bot_name': bot_name,
                         'current_page': request.path,
                         'entry_page': request.path,
+                        'pages_visited': [request.path],
                         'page_views': 1,
                         'user_agent': user_agent_str
                     }
                 )
 
                 if not created:
+                    pages_visited = visitor.pages_visited or []
+                    if request.path not in pages_visited:
+                        pages_visited.append(request.path)
                     visitor.current_page = request.path
                     visitor.page_views += 1
                     visitor.location = location
+                    visitor.country = country
+                    visitor.country_code = country_code
                     visitor.country_type = country_type
                     visitor.visitor_type = visitor_type
                     visitor.is_bot = is_bot
                     visitor.device = device
                     visitor.browser = browser
+                    visitor.pages_visited = pages_visited
                     visitor.user_agent = user_agent_str
                     visitor.save()
 
@@ -182,4 +166,6 @@ class VisitorTrackingMiddleware:
                 pass
 
         response = self.get_response(request)
+        if set_session_cookie:
+            response.set_cookie('sf_visitor_session', set_session_cookie, max_age=60 * 60 * 24 * 365, httponly=True, samesite='Lax')
         return response

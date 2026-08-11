@@ -168,6 +168,54 @@
 
     <script src="cms-engine.js"></script>
     <script>
+        const STATIC_CASE_STUDIES = [
+            {
+                id: 1,
+                slug: 'whatsapp-automation-guide',
+                client: 'E-Commerce Retail Co',
+                title: 'WhatsApp Automation Scaling to 50K+ MAU',
+                metrics: '85% Resolution Cut',
+                image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOxYS-ZbkAlIiB-Hf_glz2BrQKPhekHmrEUu7jefG3s88z854mngU68wi&s=10',
+                challenge: 'High-volume WhatsApp support requests were slowing down order, return, and FAQ responses.',
+                solution: 'SmartFiQ built a WhatsApp automation layer for instant support, order status workflows, FAQs, and human handoff.'
+            },
+            {
+                id: 2,
+                slug: 'lead-extraction-agent',
+                client: 'Real Estate Group',
+                title: 'Lead Extraction & Email Enrichment Agent',
+                metrics: '140+ Meetings Monthly',
+                image: 'https://media.licdn.com/dms/image/v2/D4D12AQE9-axP-Ajqcg/article-cover_image-shrink_720_1280/B4DZWlxArvHAAY-/0/1742242847803?e=1787788800&v=beta&t=TEnsSbWt31XHTTiVQ85cRw3cxEOhrftDy4Xg420Nvos',
+                challenge: 'Manual prospect research, scraping, and enrichment were slowing down outbound sales.',
+                solution: 'SmartFiQ automated lead discovery, data extraction, validation, email enrichment, and CRM-ready output.'
+            },
+            {
+                id: 3,
+                slug: 'data-modeling-bi-dashboard',
+                client: 'Enterprise Logistics',
+                title: 'Automated Data Modeling & Executive BI Dashboard',
+                metrics: '$120k Saved Annually',
+                image: 'https://media.licdn.com/dms/image/v2/D4D12AQH-UggMMOmA6A/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1726486613297?e=1787788800&v=beta&t=4VCCBvsXwqCbtxaomTeV0LLfArPYCjsdqRtgYvCERKI',
+                challenge: 'Manual reporting and inconsistent spreadsheets made leadership decisions slow and unreliable.',
+                solution: 'SmartFiQ built an automated data pipeline, structured model, KPI logic, and executive-ready BI dashboard.'
+            }
+        ];
+
+        function normalizeCaseStudy(cs, index) {
+            const fallback = STATIC_CASE_STUDIES[index] || STATIC_CASE_STUDIES[0];
+            return {
+                id: cs.id || fallback.id,
+                slug: cs.slug || fallback.slug,
+                client: cs.client || cs.client_name || fallback.client,
+                title: cs.title || cs.project_title || fallback.title,
+                metrics: cs.metrics || cs.results || fallback.metrics,
+                image: cs.image || cs.featured_image || fallback.image,
+                challenge: cs.challenge || cs.problem || fallback.challenge,
+                solution: cs.solution || cs.description || fallback.solution,
+                content: cs.content || ''
+            };
+        }
+
         function formatMarkdownToHTML(md) {
             if (!md) return '';
             let html = md
@@ -191,21 +239,27 @@
             if (!grid) return;
 
             let list = [];
-            if (window.SmartfiqCMS) {
+            if (window.SmartfiqCMS && window.SmartfiqCMS.initPromise) {
+                try { await window.SmartfiqCMS.initPromise; } catch (e) {}
+            }
+            if (window.SmartfiqCMS && window.SmartfiqCMS.getCaseStudies) {
                 list = window.SmartfiqCMS.getCaseStudies();
-            } else {
+            }
+            if (!Array.isArray(list) || list.length === 0) {
                 try {
                     const res = await fetch('/api/case-studies');
-                    list = await res.json();
+                    const apiList = await res.json();
+                    if (Array.isArray(apiList) && apiList.length > 0) list = apiList;
                 } catch (e) {
                     console.warn(e);
                 }
             }
 
             if (!list || list.length === 0) {
-                grid.innerHTML = `<div class="col-span-3 text-center text-gray-400 py-12">No case studies loaded yet.</div>`;
-                return;
+                list = STATIC_CASE_STUDIES;
             }
+
+            list = list.slice(0, 3).map(normalizeCaseStudy);
 
             grid.innerHTML = list.map(cs => `
                 <div class="glass-card rounded-3xl overflow-hidden flex flex-col justify-between transition-all duration-300">
@@ -213,7 +267,7 @@
                         <div class="relative h-48 overflow-hidden">
                             <img src="${cs.image || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600'}" alt="${cs.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                             <div class="absolute top-3 right-3 bg-[#0A0A0A]/90 border border-[#ff5625]/40 text-[#ff5625] px-3 py-1 rounded-full text-xs font-extrabold">
-                                ${cs.metrics}
+                                ${cs.metrics || 'Case Study'}
                             </div>
                         </div>
                         <div class="p-6">
@@ -223,7 +277,7 @@
                         </div>
                     </div>
                     <div class="p-6 pt-0">
-                        <a href="${cs.url || (cs.id === 1 ? '/case-studies/whatsapp-automation-guide' : (cs.id === 2 ? '/case-studies/lead-extraction-agent' : '/case-studies/data-modeling-bi-dashboard'))}" class="w-full py-3 bg-white/5 hover:bg-[#ff5625] border border-white/10 hover:border-[#ff5625] text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2">
+                        <a href="${cs.url || `/case-studies/${cs.slug}`}" class="w-full py-3 bg-white/5 hover:bg-[#ff5625] border border-white/10 hover:border-[#ff5625] text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2">
                             <span>Read Full Breakdown</span>
                             <span class="material-symbols-outlined text-sm">arrow_forward</span>
                         </a>
@@ -264,7 +318,8 @@
 
         document.addEventListener('DOMContentLoaded', renderCaseStudies);
     </script>
-    <script src="components.js"></script>
+    <script src="/components.js"></script>
+    <script src="/cms-engine.js"></script>
 </body>
 
 </html>

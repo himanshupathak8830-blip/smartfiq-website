@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ service.meta_title }}</title>
+  <meta name="description" content="{{ service.meta_description }}" />
+  <meta name="keywords" content="{{ service.keywords }}" />
+  <link rel="canonical" href="https://smartfiq.website/services/{{ service.slug }}" />
+  <link rel="icon" type="image/png" href="/logo-transparent.png" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <style>
+    body { background: #0A0A0A; color: #e5e2e1; font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; }
+    .primary-gradient { background: linear-gradient(45deg, #ff5625, #920703); }
+    .lava-gradient-text { background: linear-gradient(45deg, #ff5625, #ffb5a0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .glass-panel { background: rgba(26, 26, 26, 0.72); border: 1px solid rgba(255, 86, 37, 0.18); backdrop-filter: blur(16px); }
+    .service-prose h2 { color: #fff; font-family: Montserrat, sans-serif; font-size: clamp(1.6rem, 3vw, 2.35rem); font-weight: 800; line-height: 1.2; margin: 3rem 0 1rem; }
+    .service-prose h3 { color: #ffb5a0; font-family: Montserrat, sans-serif; font-size: 1.25rem; font-weight: 700; margin: 2rem 0 .75rem; }
+    .service-prose p, .service-prose li { color: #e7bdb2; font-size: 1rem; line-height: 1.85; }
+    .service-prose p { margin-bottom: 1.15rem; }
+    .service-prose strong { color: #fff; font-weight: 700; }
+    .service-prose a { color: #ff5625; font-weight: 700; }
+    .service-prose ul { margin: 1rem 0 1.5rem; padding-left: 1.35rem; list-style: disc; }
+    .service-step { border-left: 3px solid #ff5625; padding-left: 1rem; background: rgba(255, 86, 37, 0.06); border-radius: 0 10px 10px 0; }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main class="relative pt-36 pb-24 px-5 overflow-hidden">
+    <div class="absolute top-0 right-0 w-[520px] h-[520px] rounded-full bg-[#ff5625]/10 blur-3xl pointer-events-none"></div>
+    <div class="max-w-5xl mx-auto relative z-10">
+      <nav class="flex flex-wrap items-center gap-2 text-xs text-[#E7BDB2] mb-8">
+        <a href="/" class="hover:text-white transition-colors">Home</a>
+        <span>/</span>
+        <a href="/services" class="hover:text-white transition-colors">Services</a>
+        <span>/</span>
+        <span class="text-[#ffb5a0] font-semibold">{{ service.slug }}</span>
+      </nav>
+
+      <header class="mb-12">
+        <span class="inline-flex items-center px-4 py-1.5 rounded-full bg-[#ff5625]/10 border border-[#ff5625]/30 text-[#ff5625] text-xs font-bold uppercase tracking-widest mb-6">
+          SmartFiQ Service
+        </span>
+        <h1 class="font-[Montserrat] text-3xl md:text-5xl font-extrabold text-white leading-tight max-w-4xl">
+          {{ service.title }}
+        </h1>
+        {% if service.meta_description %}
+          <p class="mt-6 max-w-3xl text-base md:text-lg text-[#E7BDB2] leading-relaxed">{{ service.meta_description }}</p>
+        {% endif %}
+        <div class="flex flex-col sm:flex-row gap-4 mt-8">
+          <button onclick="openContactModal()" class="primary-gradient px-7 py-4 rounded-xl text-white text-sm font-bold hover:scale-[1.02] active:scale-95 transition-transform">
+            Book Free Consultation
+          </button>
+          <a href="/services" class="px-7 py-4 rounded-xl border border-[#ff5625]/40 text-[#ffb5a0] text-sm font-bold hover:bg-[#ff5625]/10 transition-colors text-center">
+            Back to Services
+          </a>
+        </div>
+      </header>
+
+      <article class="glass-panel rounded-2xl md:rounded-3xl p-6 md:p-10 service-prose">
+        {{ service.content_html|safe }}
+      </article>
+    </div>
+  </main>
+
+  <div id="site-modal"></div>
+  <div id="site-footer"></div>
+  <script src="/components.js"></script>
+  <script src="/cms-engine.js"></script>
+</body>
+</html>

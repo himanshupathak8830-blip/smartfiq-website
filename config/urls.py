@@ -2,20 +2,13 @@ from django.contrib import admin
 from django.urls import path, re_path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from core.views import home, about, our_story, contact, faq, terms, privacy, admin_panel, insights_view, serve_root_file
+from core.views import home, about, our_story, contact, faq, terms, privacy, insights_view, serve_root_file
 from blog.views import list_posts, detail_post
-from services.views import list_services
+from services.views import list_services, service_detail
 from case_studies.views import list_case_studies, detail_case_study
 
-from django.shortcuts import redirect
-
 urlpatterns = [
-    path('personal-admin/', admin.site.urls),
-    path('personal/', admin.site.urls),
-    path('personal', admin.site.urls),
-    path('admin', lambda req: redirect('/personal-admin/')),
-    path('admin/', lambda req: redirect('/personal-admin/')),
-    path('admin.html', lambda req: redirect('/personal-admin/')),
+    path('admin/', admin.site.urls),
     
     path('', home, name='home'),
     path('index.html', home),
@@ -40,6 +33,8 @@ urlpatterns = [
 
     path('services', list_services, name='services_list'),
     path('services.html', list_services),
+    path('services/<slug:slug>', service_detail, name='service_detail'),
+    path('services/<slug:slug>.html', service_detail),
 
     path('case-studies', list_case_studies, name='case_studies_list'),
     path('case-studies.html', list_case_studies),
