@@ -10,7 +10,7 @@
             name: "Himanshu Pathak",
             role: "Founder & AI Automation Engineer",
             bio: "Founder of SmartFiQ. Specializes in Agentic AI architecture, app development, LLM orchestration, and high-concurrency business automation.",
-            image: "https://media.licdn.com/dms/image/v2/D5603AQF3kYT7udRwtQ/profile-displayphoto-crop_800_800/B56Z335B8WIQAM-/0/1777980421180?e=1787788800&v=beta&t=fOfgwNLU04_HlzvnnW0mbeC1oncH36wdCeq2AXj2pcw",
+            image: "/static/images/team-himanshu.webp",
             linkedin: "https://www.linkedin.com/in/himanshu-pathak-33680b340"
         },
         {
@@ -18,7 +18,7 @@
             name: "Aman Saini",
             role: "RAG & Gen AI Specialist",
             bio: "Expert in Retrieval-Augmented Generation (RAG), Generative AI models, Agentic AI systems, and enterprise Data Science pipelines.",
-            image: "https://media.licdn.com/dms/image/v2/D5603AQGMA1kza26zGw/profile-displayphoto-crop_800_800/B56Z4afWPcK0AI-/0/1778560886838?e=1787788800&v=beta&t=zaAuHg11_MG7nNsOMpeXsm7Hopgtik57zG2_fpF9qJk",
+            image: "/static/images/team-aman.webp",
             linkedin: "https://www.linkedin.com/in/aman-saini-912850372"
         },
         {
@@ -26,7 +26,7 @@
             name: "Amit Kumar",
             role: "Python Developer & Web Scraping Specialist",
             bio: "Specializes in Python backend systems, automated web scraping, data extraction pipelines, and REST API middleware.",
-            image: "https://media.licdn.com/dms/image/v2/D4D03AQGXcUYkF-KGxw/profile-displayphoto-crop_800_800/B4DZif6r_iHsAI-/0/1755029620435?e=1787788800&v=beta&t=Te_n4wEWpZkUdF0UNQNTw-phzA4eizSsm-pdxjE-wbU",
+            image: "/static/images/team-amit.webp",
             linkedin: "https://www.linkedin.com/in/amit-k-942b8b239"
         }
     ];
@@ -132,36 +132,21 @@
         },
 
         async loadCMSContent() {
-            // Website CMS Fix: Fetch live CMS configuration from /api/cms and dynamically populate public page DOM elements on page load.
             try {
                 let cms = null;
-                const res = await fetch(`/api/cms?t=${Date.now()}`);
-                if (res.ok) {
-                    cms = await res.json();
-                    localStorage.setItem('smartfiq_cms', JSON.stringify(cms));
-                } else {
-                    const stored = localStorage.getItem('smartfiq_cms');
-                    if (stored) cms = JSON.parse(stored);
+                const stored = sessionStorage.getItem('smartfiq_cms');
+                if (stored) {
+                    try { cms = JSON.parse(stored); } catch (e) {}
+                }
+                if (!cms) {
+                    const res = await fetch('/api/cms');
+                    if (res.ok) {
+                        cms = await res.json();
+                        sessionStorage.setItem('smartfiq_cms', JSON.stringify(cms));
+                    }
                 }
 
                 if (!cms) return;
-
-                // Inject Hero Title safely without triggering font size jumps or layout flickering
-                const heroTitleEl = document.getElementById('hero-title') || document.getElementById('heroTitle');
-                if (heroTitleEl && cms.heroTitle && cms.heroTitle.trim() !== '') {
-                    const cleanTitle = cms.heroTitle.trim();
-                    if (cleanTitle !== heroTitleEl.innerHTML.trim()) {
-                        heroTitleEl.innerHTML = cleanTitle;
-                    }
-                }
-
-                // Inject Hero Subtitle
-                const heroSubtitleEl = document.getElementById('hero-subtitle') || document.getElementById('heroSubtitle');
-                if (heroSubtitleEl && cms.heroSubtitle && cms.heroSubtitle.trim() !== '') {
-                    if (cms.heroSubtitle.trim() !== heroSubtitleEl.textContent.trim()) {
-                        heroSubtitleEl.textContent = cms.heroSubtitle;
-                    }
-                }
 
                 // Inject About Title
                 const aboutTitleEl = document.getElementById('about-title') || document.getElementById('aboutTitle');

@@ -1,8 +1,0 @@
-# SmartFiQ Python Backend Requirements (Django + Google Sheets)
-Django>=5.0.0,<6.0.0
-python-dotenv>=1.0.1
-uvicorn[standard]>=0.27.0
-gunicorn>=21.2.0
-requests>=2.31.0
-django-cors-headers>=4.3.1
-whitenoise>=6.6.0

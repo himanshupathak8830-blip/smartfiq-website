@@ -55,13 +55,17 @@
       ]
     }
     </script>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Inter:wght@400;500;600;700;800;900&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap"
-        rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-        rel="stylesheet" />
+    <!-- Preload Critical LCP Hero Image -->
+    <link rel="preload" as="image" href="/hero-desktop.webp" media="(min-width: 768px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="/hero-mobile.webp" media="(max-width: 767px)" fetchpriority="high" />
+
+    <!-- Google Fonts & Tailwind (Non-blocking Font Display) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <!-- Production Minified Compiled Tailwind CSS (Zero Runtime JIT Overhead) -->
+    <link rel="stylesheet" href="/static/css/tailwind.min.css" />
     <style>
         @keyframes headerSlideDown {
             from {
@@ -301,11 +305,15 @@
         }
 
         .hero-section {
-            min-height: clamp(520px, 70vh, 750px);
+            min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             align-items: center;
+            justify-content: center;
             position: relative;
             width: 100%;
+            padding-top: 120px;
+            padding-bottom: 80px;
         }
 
         .hero-bg-image {
@@ -443,14 +451,19 @@
         </div>
     </div>
     <!-- Header Component (Loaded dynamically via components.js) -->
-    <div id="site-header"></div>
+    <div id="site-header" class="min-h-[84px]"></div>
     <main class="relative overflow-hidden">
         <!-- Hero Section -->
         <section class="hero-section relative w-full mb-16 z-10 overflow-hidden">
             <!-- Full Width Hero Background Image & Overlay (Extends to Top:0) -->
             <div class="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden">
-                <img src="smartfiq-ai-automation-agency-hero.webp" alt="SmartFiQ AI automation agency hero background image India"
-                    class="hero-bg-image w-full h-full object-cover object-top opacity-40">
+                <picture class="w-full h-full">
+                    <source media="(max-width: 767px)" srcset="/hero-mobile.webp" type="image/webp">
+                    <source media="(min-width: 768px)" srcset="/hero-desktop.webp" type="image/webp">
+                    <img src="/hero-desktop.webp" alt="SmartFiQ AI automation agency hero background image India"
+                        width="1200" height="675" fetchpriority="high" decoding="async"
+                        class="hero-bg-image w-full h-full object-cover object-top opacity-40">
+                </picture>
                 <div class="absolute inset-0 bg-gradient-to-b from-[#0e0e0e]/20 via-[#0e0e0e]/70 to-[#0e0e0e]"></div>
             </div>
 
@@ -552,7 +565,7 @@
                                     Started</button>
                             </div>
                             <div class="flex-1 w-full h-48 md:h-64 rounded-xl bg-surface relative overflow-hidden group">
-                                <img src="/static/images/voice-ai-agent-banner.webp" alt="Voice &amp; Calling AI Agent" class="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://www.dronahq.com/wp-content/uploads/2025/12/Voice-ai-agent-blog-banner-scaled.webp'" />
+                                <img src="/static/images/voice-ai-banner.webp" width="600" height="338" loading="lazy" decoding="async" alt="Voice &amp; Calling AI Agent" class="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-500" />
                             </div>
                         </div>
                     </div>
@@ -829,40 +842,45 @@
                     <a href="/blog/what-is-ai-automation-guide" class="group cursor-pointer block">
                         <div class="relative overflow-hidden rounded-2xl aspect-[4/3] mb-4">
                             <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                width="400" height="300" loading="lazy" decoding="async"
                                 alt="AI Automation Workflows for Indian Startups - SmartFiQ"
-                                src="https://media.licdn.com/dms/image/v2/D4D12AQE-AiKp6gZZ9Q/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1727069319719?e=1787788800&v=beta&t=H-eMPdDuZMWH2koOoR1sE6Jsox4wQ8dGGg6QunL4lbM" />
+                                src="/static/images/blog-ai-automation.webp" />
                         </div>
                         <h4 class="font-bold group-hover:text-primary transition-colors">What is AI Automation?</h4>
                     </a>
                     <a href="/blog/whatsapp-automation-guide" class="group cursor-pointer block">
                         <div class="relative overflow-hidden rounded-2xl aspect-[4/3] mb-4">
                             <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                width="400" height="300" loading="lazy" decoding="async"
                                 alt="WhatsApp Business API Automation Dashboard for E-commerce"
-                                src="https://enterpriseautomation.in/wp-content/uploads/2026/08/How-WhatsApp-Automation-Can-Help-Small-Businesses-Increase-Conversions_enterpriseautomation-scaled.jpg" />
+                                src="/static/images/blog-whatsapp.webp" />
                         </div>
                         <h4 class="font-bold group-hover:text-primary transition-colors">WhatsApp Automation</h4>
                     </a>
                     <a href="/blog/ai-chatbots-vs-human-support" class="group cursor-pointer block">
                         <div class="relative overflow-hidden rounded-2xl aspect-[4/3] mb-4">
                             <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                width="400" height="300" loading="lazy" decoding="async"
                                 alt="AI Chatbots vs Human Support Benchmark Comparison"
-                                src="https://www.nextiva.com/cdn-cgi/image/width=1300,format=auto/blog/wp-content/uploads/sites/10/2025/12/AI-Voice-Agent-Services-for-Businesses-1.webp" />
+                                src="/static/images/blog-ai-chatbots.webp" />
                         </div>
                         <h4 class="font-bold group-hover:text-primary transition-colors">AI Chatbots vs Human</h4>
                     </a>
                     <a href="/blog/ai-voice-agents-explained" class="group cursor-pointer block">
                         <div class="relative overflow-hidden rounded-2xl aspect-[4/3] mb-4">
                             <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                width="400" height="300" loading="lazy" decoding="async"
                                 alt="AI Voice Agents & Phone Support Automation"
-                                src="https://media.licdn.com/dms/image/v2/D4E12AQFNmb5Iel8ZCQ/article-cover_image-shrink_720_1280/B4EZY.jkqBHUAI-/0/1744806235909?e=1787788800&v=beta&t=hl-2NZrIHI8tu9WWMWMwAbqrhMC6kjvher3DM-eaFZs" />
+                                src="/static/images/blog-ai-voice.webp" />
                         </div>
                         <h4 class="font-bold group-hover:text-primary transition-colors">AI Voice Agents</h4>
                     </a>
                     <a href="/blog/top-processes-to-automate-with-ai" class="group cursor-pointer block">
                         <div class="relative overflow-hidden rounded-2xl aspect-[4/3] mb-4">
                             <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                width="400" height="300" loading="lazy" decoding="async"
                                 alt="Business Process Automation Checklist for Indian Enterprises"
-                                src="https://community.trustcloud.ai/kbuPFACeFReXReB/uploads/2025/04/Data-privacy-in-2025-What-lies-ahead-Trends-and-predictions.jpg" />
+                                src="/static/images/blog-security.webp" />
                         </div>
                         <h4 class="font-bold group-hover:text-primary transition-colors">Enterprise Security</h4>
                     </a>
@@ -876,8 +894,8 @@
                     <div class="relative">
                         <div
                             class="aspect-square bg-surface-container-highest rounded-3xl overflow-hidden lava-border-gradient">
-                            <img class="w-full h-full object-cover" alt="SmartFiQ AI Engineers & Systems Architect Team in India"
-                                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&amp;w=800&amp;auto=format&amp;fit=crop" />
+                            <img class="w-full h-full object-cover" width="600" height="600" loading="lazy" decoding="async" alt="SmartFiQ AI Engineers & Systems Architect Team in India"
+                                src="/static/images/team-architects.webp" />
                         </div>
                         <div
                             class="absolute -bottom-10 -right-10 bg-primary-container p-8 rounded-3xl lava-glow text-on-primary-container hidden md:block">

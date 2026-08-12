@@ -13,7 +13,7 @@
         const existingHeader = document.getElementById('smartfiq-header');
         const headerContainer = document.getElementById('site-header') || document.getElementById('smartfiq-header-container');
 
-        const isIndustriesActive = activeSegment === 'industries';
+        const isIndustriesActive = activeSegment === 'industries' || rawPath.includes('/industries');
 
         const desktopNavHTML = `
             <a href="/" class="relative py-1 text-[15px] font-medium tracking-[0.2px] ${activeSegment === 'index' || activeSegment === '' ? 'text-[#FF6B3D]' : 'text-[#B8B8B8] hover:text-[#FF6B3D]'} transition-colors duration-300 group">
@@ -25,36 +25,10 @@
                 <span class="absolute bottom-0 left-1/2 -translate-x-1/2 ${activeSegment === 'services' ? 'w-full' : 'w-0 group-hover:w-full'} h-[2px] bg-[#FF6B3D] rounded-full transition-all duration-300"></span>
             </a>
             
-            <!-- Industries Dropdown -->
-            <div class="relative group">
-                <button class="relative py-1 text-[15px] font-medium tracking-[0.2px] ${isIndustriesActive ? 'text-[#FF6B3D]' : 'text-[#B8B8B8] group-hover:text-[#FF6B3D]'} transition-colors duration-300 flex items-center gap-1 cursor-pointer">
-                    Industries
-                    <span class="material-symbols-outlined text-sm transition-transform duration-300 group-hover:rotate-180">expand_more</span>
-                    <span class="absolute bottom-0 left-1/2 -translate-x-1/2 ${isIndustriesActive ? 'w-full' : 'w-0 group-hover:w-full'} h-[2px] bg-[#FF6B3D] rounded-full transition-all duration-300"></span>
-                </button>
-                <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-[rgba(15,15,18,0.95)] backdrop-blur-[24px] border border-[rgba(255,255,255,0.12)] p-2 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 flex flex-col gap-1 z-50">
-                    <a href="/industries/real-estate" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-[#E7BDB2] hover:text-white hover:bg-white/10 flex items-center gap-2.5 transition-all">
-                        <span class="material-symbols-outlined text-[#FF6B3D] text-base">real_estate_agent</span>
-                        Real Estate
-                    </a>
-                    <a href="/industries/gym" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-[#E7BDB2] hover:text-white hover:bg-white/10 flex items-center gap-2.5 transition-all">
-                        <span class="material-symbols-outlined text-[#FF6B3D] text-base">fitness_center</span>
-                        Gym & Fitness
-                    </a>
-                    <a href="/industries/ecommerce" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-[#E7BDB2] hover:text-white hover:bg-white/10 flex items-center gap-2.5 transition-all">
-                        <span class="material-symbols-outlined text-[#FF6B3D] text-base">shopping_cart</span>
-                        E-Commerce
-                    </a>
-                    <a href="/industries/yoga-center" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-[#E7BDB2] hover:text-white hover:bg-white/10 flex items-center gap-2.5 transition-all">
-                        <span class="material-symbols-outlined text-[#FF6B3D] text-base">self_improvement</span>
-                        Yoga Center
-                    </a>
-                    <a href="/industries/doctor-clinic" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-[#E7BDB2] hover:text-white hover:bg-white/10 flex items-center gap-2.5 transition-all">
-                        <span class="material-symbols-outlined text-[#FF6B3D] text-base">medical_services</span>
-                        Doctor & Clinic
-                    </a>
-                </div>
-            </div>
+            <a href="/industries" class="relative py-1 text-[15px] font-medium tracking-[0.2px] ${isIndustriesActive ? 'text-[#FF6B3D]' : 'text-[#B8B8B8] hover:text-[#FF6B3D]'} transition-colors duration-300 group">
+                Industries
+                <span class="absolute bottom-0 left-1/2 -translate-x-1/2 ${isIndustriesActive ? 'w-full' : 'w-0 group-hover:w-full'} h-[2px] bg-[#FF6B3D] rounded-full transition-all duration-300"></span>
+            </a>
 
             <a href="/case-studies" class="relative py-1 text-[15px] font-medium tracking-[0.2px] ${activeSegment === 'case-studies' ? 'text-[#FF6B3D]' : 'text-[#B8B8B8] hover:text-[#FF6B3D]'} transition-colors duration-300 group">
                 Case Studies
@@ -73,18 +47,7 @@
         const mobileNavHTML = `
             <a href="/" onclick="toggleSmartfiqMobileMenu()" class="${activeSegment === 'index' || activeSegment === '' ? 'text-[#FF6B3D]' : 'text-[#B8B8B8] hover:text-[#FF6B3D]'} font-medium text-[16px] py-2 border-b border-white/5">Home</a>
             <a href="/services" onclick="toggleSmartfiqMobileMenu()" class="${activeSegment === 'services' ? 'text-[#FF6B3D]' : 'text-[#B8B8B8] hover:text-[#FF6B3D]'} font-medium text-[16px] py-2 border-b border-white/5">Services</a>
-            
-            <div class="py-2 border-b border-white/5">
-                <span class="text-xs font-bold uppercase tracking-widest text-[#FF6B3D] block mb-2">Industries</span>
-                <div class="flex flex-col gap-2 pl-3">
-                    <a href="/industries/real-estate" onclick="toggleSmartfiqMobileMenu()" class="text-[#E7BDB2] text-sm py-1 hover:text-white">Real Estate</a>
-                    <a href="/industries/gym" onclick="toggleSmartfiqMobileMenu()" class="text-[#E7BDB2] text-sm py-1 hover:text-white">Gym & Fitness</a>
-                    <a href="/industries/ecommerce" onclick="toggleSmartfiqMobileMenu()" class="text-[#E7BDB2] text-sm py-1 hover:text-white">E-Commerce</a>
-                    <a href="/industries/yoga-center" onclick="toggleSmartfiqMobileMenu()" class="text-[#E7BDB2] text-sm py-1 hover:text-white">Yoga Center</a>
-                    <a href="/industries/doctor-clinic" onclick="toggleSmartfiqMobileMenu()" class="text-[#E7BDB2] text-sm py-1 hover:text-white">Doctor & Clinic</a>
-                </div>
-            </div>
-
+            <a href="/industries" onclick="toggleSmartfiqMobileMenu()" class="${isIndustriesActive ? 'text-[#FF6B3D]' : 'text-[#B8B8B8] hover:text-[#FF6B3D]'} font-medium text-[16px] py-2 border-b border-white/5">Industries</a>
             <a href="/case-studies" onclick="toggleSmartfiqMobileMenu()" class="${activeSegment === 'case-studies' ? 'text-[#FF6B3D]' : 'text-[#B8B8B8] hover:text-[#FF6B3D]'} font-medium text-[16px] py-2 border-b border-white/5">Case Studies</a>
             <a href="/blog" onclick="toggleSmartfiqMobileMenu()" class="${activeSegment === 'blog' ? 'text-[#FF6B3D]' : 'text-[#B8B8B8] hover:text-[#FF6B3D]'} font-medium text-[16px] py-2 border-b border-white/5">Blog</a>
             <a href="/about-smartfiq" onclick="toggleSmartfiqMobileMenu()" class="${activeSegment === 'about-smartfiq' ? 'text-[#FF6B3D]' : 'text-[#B8B8B8] hover:text-[#FF6B3D]'} font-medium text-[16px] py-2 border-b border-white/5">About</a>
@@ -131,18 +94,26 @@
             `;
         }
 
-        // Scroll Shrink Listener
+        // Optimized Scroll Shrink Listener with RAF throttling for smooth performance
+        let isScrolledTicking = false;
         window.addEventListener('scroll', function () {
-            const header = document.getElementById('smartfiq-header');
-            if (!header) return;
-            if (window.scrollY > 20) {
-                header.classList.remove('h-[64px]', 'bg-[rgba(15,15,18,0.55)]', 'backdrop-blur-[20px]');
-                header.classList.add('h-[58px]', 'bg-[rgba(10,10,14,0.85)]', 'backdrop-blur-[28px]', 'shadow-[0_16px_48px_rgba(0,0,0,0.4)]');
-            } else {
-                header.classList.remove('h-[58px]', 'bg-[rgba(10,10,14,0.85)]', 'backdrop-blur-[28px]', 'shadow-[0_16px_48px_rgba(0,0,0,0.4)]');
-                header.classList.add('h-[64px]', 'bg-[rgba(15,15,18,0.55)]', 'backdrop-blur-[20px]');
+            if (!isScrolledTicking) {
+                window.requestAnimationFrame(function () {
+                    const header = document.getElementById('smartfiq-header');
+                    if (header) {
+                        if (window.scrollY > 20) {
+                            header.classList.remove('h-[64px]', 'bg-[rgba(15,15,18,0.55)]');
+                            header.classList.add('h-[58px]', 'bg-[rgba(10,10,14,0.85)]', 'shadow-[0_16px_48px_rgba(0,0,0,0.4)]');
+                        } else {
+                            header.classList.remove('h-[58px]', 'bg-[rgba(10,10,14,0.85)]', 'shadow-[0_16px_48px_rgba(0,0,0,0.4)]');
+                            header.classList.add('h-[64px]', 'bg-[rgba(15,15,18,0.55)]');
+                        }
+                    }
+                    isScrolledTicking = false;
+                });
+                isScrolledTicking = true;
             }
-        });
+        }, { passive: true });
     }
 
     // --- 2. FOOTER COMPONENT ---
@@ -593,20 +564,19 @@ async function submitInlineLead(e) {
 
 async function loadCmsData() {
     try {
-        const cmsRes = await fetch(`/api/cms?t=${Date.now()}`, { cache: 'no-store' });
+        const stored = sessionStorage.getItem('smartfiq_cms');
+        if (stored) {
+            try { applyCmsToPage(JSON.parse(stored)); return; } catch (e) {}
+        }
+        const cmsRes = await fetch('/api/cms');
         if (!cmsRes.ok) throw new Error('Failed to fetch CMS');
         const cms = await cmsRes.json();
-
         if (cms) {
-            localStorage.setItem('smartfiq_cms', JSON.stringify(cms));
+            sessionStorage.setItem('smartfiq_cms', JSON.stringify(cms));
             applyCmsToPage(cms);
         }
     } catch (err) {
-        console.warn('CMS payload load fallback to LocalStorage:', err);
-        const stored = localStorage.getItem('smartfiq_cms');
-        if (stored) {
-            try { applyCmsToPage(JSON.parse(stored)); } catch (e) {}
-        }
+        console.warn('CMS payload load fallback:', err);
     }
 }
 
@@ -617,14 +587,6 @@ function applyCmsToPage(cms) {
     const whatsappRaw = (cms.whatsappNumber || cms.contactPhone || '7678188047').replace(/\D/g, '');
     const cleanWa = whatsappRaw.length === 10 ? '91' + whatsappRaw : whatsappRaw;
 
-    const heroTitleEl = document.getElementById('hero-title');
-    if (heroTitleEl && cms.heroTitle && heroTitleEl.innerHTML.trim() !== cms.heroTitle.trim()) {
-        heroTitleEl.innerHTML = cms.heroTitle;
-    }
-    const heroSubtitleEl = document.getElementById('hero-subtitle');
-    if (heroSubtitleEl && cms.heroSubtitle && heroSubtitleEl.textContent.trim() !== cms.heroSubtitle.trim()) {
-        heroSubtitleEl.textContent = cms.heroSubtitle;
-    }
     if (document.getElementById('footer-copyright') && cms.footerText) {
         document.getElementById('footer-copyright').textContent = cms.footerText;
     }
@@ -736,6 +698,7 @@ async function sendBeaconTelemetry(isUnloading = false, latestClick = null) {
         if (isUnloading && navigator.sendBeacon) {
             const blob = new Blob([payloadStr], { type: 'application/json' });
             navigator.sendBeacon('/api/track', blob);
+            return;
         }
         fetch('/api/track', {
             method: 'POST',
@@ -748,9 +711,8 @@ async function sendBeaconTelemetry(isUnloading = false, latestClick = null) {
     }
 }
 
-// Auto-run visitor tracking immediately on page view
+// Auto-run visitor tracking once on page load
 getClientPublicIp().then(() => sendBeaconTelemetry(false));
-setInterval(() => sendBeaconTelemetry(false), 6000);
 
 window.addEventListener('visibilitychange', function() {
     if (document.visibilityState === 'hidden') {

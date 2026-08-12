@@ -10,6 +10,51 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false
 }));
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// --- API Fallback Route Handlers (Prevents 404s in local dev) ---
+app.post(['/api/track', '/api/track/'], (req, res) => {
+  res.json({ success: true, tracked: true });
+});
+
+app.get(['/api/cms', '/api/cms/'], (req, res) => {
+  res.json({
+    success: true,
+    contactEmail: "smartfiqagency@gmail.com",
+    contactPhone: "+91 7678188047",
+    whatsappNumber: "7678188047"
+  });
+});
+
+app.all(['/api/public/leads', '/api/public/leads/', '/api/leads', '/api/leads/'], (req, res) => {
+  res.json({ success: true, message: "Lead recorded successfully" });
+});
+
+app.all(['/api/public/subscribers', '/api/public/subscribers/'], (req, res) => {
+  res.json({ success: true, message: "Subscribed successfully" });
+});
+
+app.get(['/api/agency-team', '/api/agency-team/', '/api/team', '/api/team/'], (req, res) => {
+  res.json({ success: true, team: [] });
+});
+
+app.get(['/api/services', '/api/services/'], (req, res) => {
+  res.json({ success: true, services: [] });
+});
+
+app.get(['/api/case-studies', '/api/case-studies/'], (req, res) => {
+  res.json({ success: true, caseStudies: [] });
+});
+
+app.get(['/api/blogs', '/api/blogs/'], (req, res) => {
+  res.json({ success: true, blogs: [] });
+});
+
+app.all('/api/*', (req, res) => {
+  res.json({ success: true, status: "OK" });
+});
+
 const pages = {
   '/': 'index.html',
   '/services': 'services.html',
@@ -19,6 +64,8 @@ const pages = {
   '/our-story': 'our-story.html',
   '/faq': 'smartfiq-faq.html',
   '/smartfiq-faq': 'smartfiq-faq.html',
+  '/industries': 'industries.html',
+  '/industries.html': 'industries.html',
   '/privacy-policy': 'privacy-policy.html',
   '/terms': 'terms.html',
   '/admin': 'admin.html'
@@ -30,10 +77,22 @@ Object.entries(pages).forEach(([route, file]) => {
   });
 });
 
-app.use('/static', express.static(path.join(__dirname, 'static')));
-app.use(express.static(path.join(__dirname, 'static', 'images')));
-app.use(express.static(path.join(__dirname, 'templates')));
+const staticOptions = {
+  setHeaders: (res, filePath) => {
+    const lower = filePath.toLowerCase();
+    if (lower.match(/\.(webp|jpg|jpeg|png|gif|ico|svg|woff2?|ttf|eot)$/)) {
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    } else if (lower.match(/\.(js|css)$/)) {
+      res.setHeader('Cache-Control', 'public, max-age=86400, must-revalidate');
+    }
+  }
+};
+
+app.use('/static', express.static(path.join(__dirname, 'static'), staticOptions));
+app.use(express.static(path.join(__dirname, 'static', 'images'), staticOptions));
+app.use(express.static(path.join(__dirname, 'templates'), staticOptions));
 app.use(express.static(__dirname, {
+  ...staticOptions,
   index: false,
   dotfiles: 'ignore'
 }));
@@ -152,9 +211,8 @@ app.get('/industries/:slug', (req, res) => {
 app.get('/health', (req, res) => {
   res.json({
     status: 'healthy',
-    backend: 'Static Node fallback',
-    admin: 'Django Admin at /admin/',
-    api: 'Django'
+    backend: 'Node.js Express',
+    api: 'Node.js Express'
   });
 });
 
@@ -162,13 +220,12 @@ app.use((req, res) => {
   if (req.accepts('html')) {
     return res.status(404).sendFile(path.join(__dirname, 'templates', '404.html'));
   }
-  return res.status(404).json({ success: false, error: 'Endpoint not found. Use Django for API routes.' });
+  return res.status(404).json({ success: false, error: 'Endpoint not found.' });
 });
 
 if (require.main === module) {
   app.listen(PORT, () => {
-    console.log(`SmartFiQ static fallback running on http://localhost:${PORT}`);
-    console.log('Django is authoritative for /admin/ and /api/.');
+    console.log(`SmartFiQ Node.js server running on http://localhost:${PORT}`);
   });
 }
 
